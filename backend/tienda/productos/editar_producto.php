@@ -147,7 +147,7 @@
                 if(!filter_var($nuevo_largo,FILTER_VALIDATE_INT)){
                     $err_largo = "El largo tiene que ser un numero entero en centimetros";
                 } else {
-                    if($tmp_largo < 0 || $nuevo_largo > 2147483647){
+                    if($largo_actual < 0 || $nuevo_largo > 2147483647){
                         $nuevo_largo = "El largo tiene que ser como maximo 2147483647";
                     } else{
                         $largo_actual = $nuevo_largo;
