@@ -43,7 +43,56 @@
             }
         } 
     ?>
-    <div class="container">
+    
+    <section class="vh-100">
+    <div class="container-fluid h-custom">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+            <img src="../imagenes/loguito1.png"
+            class="img-fluid" alt="Sample image">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+            <form>
+            <!-- Email input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+                <input type="email" id="form3Example3" class="form-control form-control-lg"
+                placeholder="Introduce un email válido" />
+                <label class="form-label" for="form3Example3">Email</label>
+            </div>
+
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-3">
+                <input type="password" id="form3Example4" class="form-control form-control-lg"
+                placeholder="Introduce la contraseña" />
+                <label class="form-label" for="form3Example4">Contraseña</label>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+                <!-- Checkbox -->
+                <div class="form-check mb-0">
+                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
+                <label class="form-check-label" for="form2Example3">
+                    Recuérdame
+                </label>
+                </div>
+                <a href="#!" class="text-body">He olvidado mi contraseña</a>
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
+                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+                <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
+                <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="#!"
+                    class="link-danger">Registrarse</a></p>
+            </div>
+
+            </form>
+        </div>
+        </div>
+    </div>
+
+    <!-- ANTIGUO: -->
+    <!-- <div class="container">
         <h1>Iniciar sesion</h1>
         <form class="col-6" action="" method="post" enctype="multipart/form-data">
             <div class="mb-3">
@@ -65,7 +114,7 @@
                 <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
             </div>
         </form>
-    </div>
+    </div> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

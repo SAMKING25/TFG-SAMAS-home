@@ -51,14 +51,14 @@
                 </form>
 
                 <div class="text-end">
-                    <button type="button" class="btn btn-outline-light me-2">Login</button>
-                    <button type="button" class="btn btn-inf">Sign-up</button>
+                    <a type="button" class="btn btn-outline-light me-2" href="./usuario/iniciar_sesion.php">Login</a>
+                    <a type="button" class="btn btn-warning" href="./usuario/registro.php">Sign-up</a>
                 </div>
             </div>
         </div>
     </header>
     <div class="d-flex">
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
                 <svg class="bi me-2" width="40" height="32">
                     <use xlink:href="#bootstrap" />
@@ -138,14 +138,70 @@
         ?>
 
         <div class="container">
-            <h1>Tabla Inicio</h1>
+            <h1>Mis productos</h1>
             <div class="mb-3">
                 <?php if (isset($_SESSION["usuario"])) { ?>
                     <a href="productos/index.php" class="btn btn-success">Ir a tabla de productos</a>
                 <?php } ?>
 
             </div>
-            <table class="table table-striped table-hover">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
+            <div class="cards row">
+                <?php
+                while ($fila = $resultado->fetch_assoc()) { ?>
+
+                <div class="col-md-4 mb-4">
+                    <a href="#" class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            <img src="imagenes/<?php echo $fila['imagen']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo $fila['nombre']; ?></h5>
+                                <p class="card-text"><?php echo $fila['descripcion']; ?></p>
+                                <p class="card-text"><strong><?php echo number_format($fila['precio'], 2); ?>€</strong></p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+
+                <!-- <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <img src="imagenes/<?php echo $fila['imagen']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $fila['nombre']; ?></h5>
+                            <p class="card-text"><?php echo $fila['descripcion']; ?></p>
+                            <p class="card-text"><strong><?php echo number_format($fila['precio'], 2); ?>€</strong></p>
+                            <a href="#" class="btn btn-primary">Añadir al carrito</a>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <div class="card" style="max-width: 320px">
+                    <img src="imagenes/<?php echo $fila["imagen"] ?>" class="card-img-top" alt="<?php echo $fila["nombre"] ?>">
+                    <div class="card-body">
+                        <h5 class="card-title"><?php echo $fila["nombre"] ?></h5>
+                        <p class="card-text"><?php echo $fila["descripcion"] ?></p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="h5 mb-0"><?php echo $fila["precio"] ?>€</span>
+                            <div>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-fill text-warning"></i>
+                                <i class="bi bi-star-half text-warning"></i>
+                                <small class="text-muted">(4.5)</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer d-flex justify-content-between bg-light">
+                        <button class="btn btn-primary btn-sm">Añadir al carrito</button>
+                        <button class="btn btn-outline-secondary btn-sm"><i class="bi bi-heart"></i></button>
+                    </div>
+                </div> -->
+                <?php } ?>
+            </div>
+            <!-- <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
                         <th>Nombre</th>
@@ -178,7 +234,7 @@
                         </tr>
                     <?php } ?>
                 </tbody>
-            </table>
+            </table> -->
 
         </div>
     </div>
