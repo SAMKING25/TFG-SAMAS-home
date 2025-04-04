@@ -39,7 +39,6 @@
         <h1>Tabla Productos</h1>
         <div class="mb-3">
             <a href="nuevo_producto.php" class="btn btn-primary">Insertar Producto</a>
-            <a href="../categorias/index.php" class="btn btn-success">Ir a tabla de categorias</a>
         </div>
         <table class="table table-info table-striped table-hover">
             <thead class="table-dark">
