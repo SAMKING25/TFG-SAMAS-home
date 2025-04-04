@@ -150,6 +150,8 @@
                     if($largo_actual < 0 || $nuevo_largo > 2147483647){
                         $nuevo_largo = "El largo tiene que ser como maximo 2147483647";
                     } else{
+                        $sql = "UPDATE productos SET largo = $nuevo_largo WHERE id_producto = '$id_producto'";
+                        $_conexion -> query($sql);
                         $largo_actual = $nuevo_largo;
                     }
                 }
@@ -164,6 +166,8 @@
                     if($nuevo_ancho < 0 || $nuevo_ancho > 2147483647){
                         $err_ancho = "El ancho tiene que ser como maximo 2147483647";
                     } else{
+                        $sql = "UPDATE productos SET ancho = $nuevo_ancho WHERE id_producto = '$id_producto'";
+                        $_conexion -> query($sql);
                         $ancho_actual = $nuevo_ancho;
                     }
                 }
@@ -178,6 +182,8 @@
                     if($nuevo_alto < 0 || $nuevo_alto > 2147483647){
                         $err_alto = "El alto tiene que ser como maximo 2147483647";
                     } else{
+                        $sql = "UPDATE productos SET alto = $nuevo_alto WHERE id_producto = '$id_producto'";
+                        $_conexion -> query($sql);
                         $alto_actual = $nuevo_alto;
                     }
                 }
