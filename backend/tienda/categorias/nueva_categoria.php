@@ -11,11 +11,11 @@
         require('../util/conexion.php'); 
         require('../util/utilidades.php'); 
 
-        session_start();
-        if (!isset($_SESSION["usuario"])) { 
-            header("location: ../usuario/iniciar_sesion.php");
-            exit;
-        }
+        // session_start();
+        // if (!isset($_SESSION["usuario"])) { 
+        //     header("location: ../usuario/iniciar_sesion.php");
+        //     exit;
+        // }
     ?>
     <style>
         .error{
@@ -27,16 +27,11 @@
     <?php 
         if($_SERVER["REQUEST_METHOD"] == "POST"){
             $tmp_categoria = depurar($_POST["categoria"]);
-            $tmp_descripcion = depurar($_POST["descripcion"]); 
 
-            /* $sql="SELECT * FROM categorias WHERE categoria ='$tmp_categoria'";
-            $resultado=$_conexion -> query($sql); */
-
-            // 1
             $sql = $_conexion -> prepare("SELECT * FROM categorias WHERE categoria =?");
-            // 2
+            
             $sql -> bind_param("s",$tmp_categoria);
-            // 3
+            
             $sql -> execute();
             $resultado = $sql -> get_result();
 
@@ -54,28 +49,12 @@
                 }
             }
 
-            if($tmp_descripcion == ''){
-                $err_descripcion = "La descripcion es obligatoria";
-            } else {
-                if(strlen($tmp_descripcion) > 255){
-                    $err_descripcion = "La descripcion no puede tener mas de 255 caracteres";
-                } else{
-                    $descripcion = $tmp_descripcion;
-                }
-            }
-
-            if (isset($descripcion) && isset($categoria)){
-                // Inserta una nueva categoria
-                /* $sql = "INSERT INTO categorias (categoria, descripcion)
-                    VALUES ('$categoria','$descripcion')";
-                $_conexion -> query($sql); */
-
-                // 1
-                $sql = $_conexion -> prepare("INSERT INTO categorias (categoria, descripcion)
-                    VALUES (?,?)");
-                // 2
-                $sql -> bind_param("ss",$categoria,$descripcion);
-                // 3
+            if (isset($categoria)){
+                $sql = $_conexion -> prepare("INSERT INTO categorias (categoria)
+                    VALUES (?)");
+                
+                $sql -> bind_param("s",$categoria);
+                
                 $sql -> execute();
             }
             
@@ -89,11 +68,6 @@
                 <label class="form-label">Categoria</label>
                 <input type="text" class="form-control" name="categoria">
                 <?php if(isset($err_categoria)) echo "<span class='error'>$err_categoria</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Descripcion</label>
-                <textarea class="form-control" name="descripcion"></textarea>
-                <?php if(isset($err_descripcion)) echo "<span class='error'>$err_descripcion</span>"; ?>
             </div>
             <div class="mb-3">
                 <input type="submit" class="btn btn-primary" value="Insertar catergoria">
