@@ -11,7 +11,7 @@
 
         require('../util/conexion.php');
 
-        session_start();
+        /* session_start();
         if (isset($_SESSION["usuario"])) { ?>
             <h2>Bienvenid@ <?php echo $_SESSION["usuario"] ?> </h2>
             <a class="btn btn-warning" href="../usuario/cerrar_sesion.php">Cerrar sesion</a>
@@ -19,7 +19,8 @@
         <?php } else {
             header("location: ../usuario/iniciar_sesion.php");
             exit;
-        } ?>
+        } */
+        ?>
         <style>
             .error {
                 color: red;
@@ -65,7 +66,6 @@
             <thead class="table-dark">
                 <tr>
                     <th>Categoria</th>
-                    <th>Descripcion</th>
                     <th></th>
                     <th></th>
                 </tr>
@@ -75,7 +75,6 @@
                     while($fila = $resultado -> fetch_assoc()){
                         echo "<tr>";
                         echo "<td>" . $fila["categoria"] ."</td>";
-                        echo "<td>" . $fila["descripcion"] ."</td>";
                         
                         ?>
                         <td>
