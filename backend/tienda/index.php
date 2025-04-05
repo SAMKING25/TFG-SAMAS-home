@@ -7,7 +7,6 @@
     <title>Inicio</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link rel="stylesheet" href="estilos/sidebar.css">
     <?php
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -32,12 +31,6 @@
     <header class="p-3 bg-dark text-white">
         <div class="container">
             <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
-                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
-                        <use xlink:href="#bootstrap" />
-                    </svg>
-                </a>
-
                 <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     <li><a href="#" class="nav-link px-2 text-secondary">Inicio</a></li>
                     <li><a href="#" class="nav-link px-2 text-white">Productos</a></li>
@@ -52,7 +45,7 @@
 
                 <div class="text-end">
                     <a type="button" class="btn btn-outline-light me-2" href="./usuario/iniciar_sesion.php">Login</a>
-                    <a type="button" class="btn btn-warning" href="./usuario/registro.php">Sign-up</a>
+                    <a type="button" class="btn btn-outline-info rounded-circle" href="./usuario/registro.php"><i class="bi bi-person-circle fs-5"></i></a>
                 </div>
             </div>
         </div>
@@ -60,50 +53,38 @@
     <div class="d-flex">
         <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;">
             <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                <svg class="bi me-2" width="40" height="32">
-                    <use xlink:href="#bootstrap" />
-                </svg>
+                <img src="imagenes/samas-home-logo.png" class="w-50" alt="">
                 <span class="fs-4">SAMAS home</span>
             </a>
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
                     <a href="#" class="nav-link active" aria-current="page">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#home" />
-                        </svg>
+                        <i class="bi bi-house-door me-2"></i>
                         Inicio
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link link-dark">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#speedometer2" />
-                        </svg>
+                    <a href="./productos/index.php" class="nav-link link-dark">
+                        <i class="bi bi-archive me-2"></i>
                         Productos
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link link-dark">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#table" />
-                        </svg>
+                        <i class="bi bi-star me-2"></i>
                         Suscripción
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link link-dark">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#grid" />
-                        </svg>
+                        <i class="bi bi-cart me-2"></i>
                         Products
                     </a>
                 </li>
                 <li>
                     <a href="#" class="nav-link link-dark">
-                        <svg class="bi me-2" width="16" height="16">
-                            <use xlink:href="#people-circle" />
-                        </svg>
+                        <i class="bi bi-gear me-2"></i>
                         Ajustes
                     </a>
                 </li>
@@ -152,7 +133,7 @@
                 while ($fila = $resultado->fetch_assoc()) { ?>
 
                 <div class="col-md-4 mb-4">
-                    <a href="#" class="text-decoration-none">
+                    <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>" class="text-decoration-none">
                         <div class="card h-100 shadow-sm">
                             <img src="imagenes/<?php echo $fila['imagen']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
                             <div class="card-body">
