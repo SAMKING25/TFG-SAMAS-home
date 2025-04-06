@@ -118,7 +118,7 @@
         $resultado = $_conexion->query($sql);
         ?>
 
-        <div class="container">
+        <div class="container py-5">
             <h1>Mis productos</h1>
             <div class="mb-3">
                 <?php if (isset($_SESSION["usuario"])) { ?>
