@@ -48,6 +48,75 @@
   --color5: #ffd368;
 }
 
+.container-hero {
+	background-color:#F9F5F0;
+  
+}
+
+.hero {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2rem 0;
+}
+
+.customer-support {
+	display: flex;
+	align-items: center;
+	gap: 2rem;
+}
+
+.customer-support i {
+	font-size: 3.3rem;
+}
+
+.content-customer-support {
+	display: flex;
+	flex-direction: column;
+}
+
+.container-logo {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+.container-logo i {
+	font-size: 3rem;
+}
+
+.container-logo h1 a {
+	text-decoration: none;
+	color: #000;
+	font-size: 3rem;
+	text-transform: uppercase;
+	letter-spacing: -1px;
+}
+
+.container-user {
+	display: flex;
+	gap: 1rem;
+	cursor: pointer;
+}
+
+.container-user .fa-user {
+	font-size: 3rem;
+	color: var(--primary-color);
+	padding-right: 2.5rem;
+	border-right: 1px solid #e2e2e2;
+}
+
+.container-user .fa-basket-shopping {
+	font-size: 3rem;
+	color: var(--primary-color);
+	padding-left: 1rem;
+}
+
+.content-shopping-cart {
+	display: flex;
+	flex-direction: column;
+}
+
 /* Estilos personalizados */
 .navbarr {
   background-color: var(--color1);
@@ -69,6 +138,7 @@
   transition: transform 0.3s ease;
   transform-origin: left center;
 }
+
 
 .navbar-brand:hover {
   transform: translateX(10px) scale(1.2);
@@ -110,14 +180,14 @@
   height: 0.2rem;
   background-color: var(--color3);
   bottom: 2.2rem;
-  left: -6px;
+  left: 0px;
   width: 0%;
   opacity: 0;
   transition: all 350ms linear;
 }
 
 .subraya:hover::before {
-  width: 120%;
+  width: 100%;
   opacity: 1;
 }
 
@@ -157,23 +227,23 @@
 
 .section-banner {
   padding: 170px;
-  color: #4b3419;
+  color: var(--color3);
   font-weight: bold;
   font-family: "BebasNeue";
+  text-shadow: 2px 2px 3px rgb(2, 2, 2);
   letter-spacing: 2px;
   font-size: 20px;
-  background: var(--color3);
-  width: 700px;
-  height: 80px;
+  width: 100%;
+  height: 150px;
   text-align: center;
 }
 
 .banner-subtext {
-  color: var(--color2);
+  color: #ce9c6e;
 }
 
 .banner-btn {
-  background-color: var(--color2);
+  background-color: #33210f;
 }
 
 .bi {
@@ -184,9 +254,13 @@
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
 }
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
 
 footer {
-  background-color: #343a40;
+  background-color: var(--color1);
   color: #fff;
   padding: 20px 0;
   text-align: center;
@@ -199,4 +273,9 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
 }
