@@ -1,22 +1,31 @@
-<header class="p-3 bg-dark text-white">
-    <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="#" class="nav-link px-2 text-white">Inicio</a></li>
-                <li><a href="#" class="nav-link px-2 text-secondary">Productos</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">About</a></li>
-            </ul>
+<?php
+    // Consulta SQL
+    session_start();
+    $_SESSION["id_proveedor"] = 1;
+    $id_proveedor = $_SESSION['id_proveedor'];
 
-            <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                <input type="search" class="form-control form-control-dark" placeholder="Buscar..." aria-label="Search">
-            </form>
+    $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = $id_proveedor");
+    $sql->execute();
+    $resultado = $sql->get_result();
 
-            <div class="text-end">
-                <a type="button" class="btn btn-outline-light me-2" href="../usuario/iniciar_sesion.php">Login</a>
-                <a type="button" class="btn btn-outline-info rounded-circle" href="../usuario/registro.php"><i class="bi bi-person-circle fs-5"></i></a>
-            </div>
-        </div>
+    define('IMG_URL','/TFG-SAMAS-home/panel-control/tienda/imagenes/');
+    define('USUARIO','/TFG-SAMAS-home/panel-control/tienda/usuario/');
+
+?>
+
+<header class="p-3 text-white" style="background-color:rgb(96, 49, 30);">
+    <div class="dropdown text-end col-12 ">
+      <a href="#" class=" align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <?php while ($fila = $resultado->fetch_assoc()) { ?>
+            <img src="<?php echo IMG_URL.$fila['foto_proveedor']?>" alt="" width="32" height="32" class="rounded-circle me-2">
+            <strong><?php echo $fila['nombre_proveedor']?></strong>
+        <?php } ?>
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>cambiar_credenciales.php">Perfil</a></li>
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>iniciar_sesion_proveedor.php">Cambiar de cuenta</a></li>
+        <li><hr class="dropdown-divider"></li>
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>cerrar_sesion.php">Salir</a></li>
+      </ul>
     </div>
 </header>
