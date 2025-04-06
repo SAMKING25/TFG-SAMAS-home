@@ -71,9 +71,9 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link link-dark">
-                        <i class="bi bi-star me-2"></i>
-                        Suscripción
+                    <a href="./productos/nuevo_producto.php" class="nav-link link-dark">
+                        <i class="bi bi-folder-plus me-2"></i>
+                        Nuevo producto
                     </a>
                 </li>
                 <li>
