@@ -33,6 +33,13 @@
         $sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
         $_conexion->query($sql);
 
+        $sql = $_conexion->prepare("SELECT * FROM productos WHERE id_producto = $id_producto");
+        $sql->execute();
+        $resultado = $sql->get_result();
+
+        while ($fila = $resultado->fetch_assoc()) {
+            unlink("../../imagenes/".$fila['imagen']);
+        }
         header("location: ../index.php");
     }
     ?>
@@ -64,15 +71,6 @@
                     <p class="text-muted mb-4">ID: <?php echo $fila['id_producto'] ?></p>
                     <div class="mb-3">
                         <span class="h4 me-2"><?php echo $fila['precio'] ?>€</span>
-                    </div>
-
-                    <div class="mb-3">
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-fill text-warning"></i>
-                        <i class="bi bi-star-half text-warning"></i>
-                        <span class="ms-2">4.5 (120 reviews)</span>
                     </div>
 
                     <p class="mb-4"><?php echo $fila['descripcion'] ?></p>
