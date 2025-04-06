@@ -1,5 +1,4 @@
 CREATE SCHEMA prueba_samas_db;
-USE prueba_samas_db;
 
 CREATE TABLE categorias (
 	categoria VARCHAR(30) PRIMARY KEY
@@ -11,7 +10,15 @@ CREATE TABLE usuarios (
     nombre VARCHAR(50),
     contrasena VARCHAR(120),
     suscripcion VARCHAR(20),
-    proveedor BOOLEAN
+    foto_usuario VARCHAR(60)
+);
+
+CREATE TABLE proveedores (
+	id_proveedor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    email_proveedor VARCHAR(50),
+    nombre_proveedor VARCHAR(50),
+    contrasena_proveedor VARCHAR(120),
+    foto_proveedor VARCHAR(60)
 );
 
 CREATE TABLE productos (
@@ -27,5 +34,5 @@ CREATE TABLE productos (
     id_proveedor INT,
     imagen VARCHAR(60),
     FOREIGN KEY (categoria) REFERENCES categorias(categoria),
-    FOREIGN KEY (id_proveedor) REFERENCES usuarios(id_usuario)
+    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 );

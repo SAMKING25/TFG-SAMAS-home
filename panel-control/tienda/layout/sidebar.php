@@ -3,6 +3,10 @@
         background-color:rgb(81, 53, 19) !important;
         color: white !important;
     }
+
+    .nav-link:hover {
+        border: 1px solid rgb(81, 53, 19) !important;
+    }
 </style>
 
 <?php

@@ -13,8 +13,11 @@
 
 ?>
 
-<header class="p-3 text-white" style="background-color:rgb(96, 49, 30);">
-    <div class="dropdown text-end col-12 ">
+<header class="p-3 text-white d-flex" style="background-color:rgb(96, 49, 30);">
+    <div class="col-12 col-md-9 h4" style="padding-left: 280px;">
+        Panel de control
+    </div>  
+    <div class="dropdown text-end col-12 col-md-3 justify-content-center">
       <a href="#" class=" align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
         <?php while ($fila = $resultado->fetch_assoc()) { ?>
             <img src="<?php echo IMG_URL.$fila['foto_proveedor']?>" alt="" width="32" height="32" class="rounded-circle me-2">
