@@ -27,11 +27,11 @@
     //     header("location: ../usuario/iniciar_sesion.php");
     //     exit;
     // } 
-    if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_producto = $_POST["id_producto"];
         //  borrar el producto
         $sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
-        $_conexion -> query($sql);
+        $_conexion->query($sql);
 
         header("location: ../index.php");
     }
@@ -39,98 +39,20 @@
 </head>
 
 <body>
-    <header class="p-3 bg-dark text-white">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="#" class="nav-link px-2 text-white">Inicio</a></li>
-                    <li><a href="#" class="nav-link px-2 text-secondary">Productos</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">Pricing</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">FAQs</a></li>
-                    <li><a href="#" class="nav-link px-2 text-white">About</a></li>
-                </ul>
+    <?php
+    include("../layout/header.php");
+    include("../layout/sidebar.php");
 
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                    <input type="search" class="form-control form-control-dark" placeholder="Buscar..." aria-label="Search">
-                </form>
+    $id_producto = $_GET['id_producto'];
 
-                <div class="text-end">
-                    <a type="button" class="btn btn-outline-light me-2" href="./usuario/iniciar_sesion.php">Login</a>
-                    <a type="button" class="btn btn-outline-info rounded-circle" href="./usuario/registro.php"><i class="bi bi-person-circle fs-5"></i></a>
-                </div>
-            </div>
-        </div>
-    </header>
-    <div class="d-flex">
-        <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;">
-            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-                <img src="../../imagenes/samas-home-logo.png" class="w-50" alt="">
-                <span class="fs-4">SAMAS home</span>
-            </a>
-            <hr>
-            <ul class="nav nav-pills flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="../../" class="nav-link link-dark" aria-current="page">
-                        <i class="bi bi-house-door me-2"></i>
-                        Inicio
-                    </a>
-                </li>
-                <li>
-                    <a href="../index.php" class="nav-link active">
-                        <i class="bi bi-archive me-2"></i>
-                        Productos
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link link-dark">
-                        <i class="bi bi-star me-2"></i>
-                        Suscripción
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link link-dark">
-                        <i class="bi bi-cart me-2"></i>
-                        Products
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="nav-link link-dark">
-                        <i class="bi bi-gear me-2"></i>
-                        Ajustes
-                    </a>
-                </li>
-            </ul>
-            <hr>
-            <div class="dropdown">
-                <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-                    <img src="https://github.com/justmanuva.png" alt="" width="32" height="32" class="rounded-circle me-2">
-                    <strong>justmanuva</strong>
-                </a>
-                <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li><a class="dropdown-item" href="#">Sign out</a></li>
-                </ul>
-            </div>
-        </div>
+    $sql = $_conexion->prepare("SELECT * FROM productos WHERE id_producto = $id_producto");
+    $sql->execute();
+    $resultado = $sql->get_result();
 
-        <?php
-        
-
-        $id_producto = $_GET['id_producto'];
-
-        $sql = $_conexion->prepare("SELECT * FROM productos WHERE id_producto = $id_producto");
-        $sql->execute();
-        $resultado = $sql->get_result();
-
-        ?>
-        <div class="container mt-5">
-            <div class="row">
-                <?php while ($fila = $resultado->fetch_assoc()) { ?>
+    ?>
+    <div class="container mt-5">
+        <div class="row">
+            <?php while ($fila = $resultado->fetch_assoc()) { ?>
                 <!-- Imagen del producto -->
                 <div class="col-md-6 mb-4">
                     <img src="../../imagenes/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
@@ -164,7 +86,7 @@
                         <label for="dimensions" class="form-label">Dimensiones (largo,ancho,alto):</label>
                         <p id="dimensions"><?php echo $fila['largo'] ?>cm x <?php echo $fila['ancho'] ?>cm x <?php echo $fila['alto'] ?>cm</p>
                     </div>
-                    
+
                     <form action="" method="post">
                         <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn btn-primary btn-lg mb-3 me-2">
                             <i class="bi bi-cart-plus"></i> Editar
@@ -173,9 +95,9 @@
                         <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"] ?>">
                     </form>
                 </div>
-                <?php } ?>
-            </div>
+            <?php } ?>
         </div>
+    </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -62,7 +62,7 @@
     $resultado = $_conexion->query($sql);
     ?>
 
-    <div class="container-fluid" style="margin-left: 280px; padding-top: 80px;">
+    <div class="container-fluid py-5" style="margin-left: 280px;">
         <h1 class="text-center mb-4">Gestión de Productos</h1>
 
         <!-- Buscador -->
@@ -83,9 +83,9 @@
         </div>
 
         <?php if ($resultado->num_rows > 0): ?>
-            <div class="row g-4">
+            <div class="row g-3">
                 <?php while ($fila = $resultado->fetch_assoc()): ?>
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-12 col-md-6 col-xxl-4">
                         <div class="card h-100 shadow-sm">
                             <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>" class="text-decoration-none">
                                 <img src="../imagenes/<?php echo $fila["imagen"]; ?>" class="card-img-top" style="height: 260px; object-fit: cover;" alt="Imagen del producto">
@@ -95,7 +95,7 @@
                                 <p class="card-text text-muted"><?php echo $fila["descripcion"]; ?></p>
                                 <ul class="list-unstyled mb-3">
                                     <li><strong>Id:</strong> <?php echo $fila["id_producto"]; ?></li>
-                                    <li><strong>Precio:</strong> $<?php echo $fila["precio"]; ?></li>
+                                    <li><strong>Precio:</strong> <?php echo $fila["precio"]; ?>€</li>
                                     <li><strong>Categoría:</strong> <?php echo $fila["categoria"]; ?></li>
                                     <li><strong>Stock:</strong> <?php echo $fila["stock"]; ?></li>
                                     <li><strong>Medidas:</strong> <?php echo $fila["largo"] . "cm × " . $fila["ancho"] . "cm × " . $fila["alto"] . "cm"; ?></li>
