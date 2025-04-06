@@ -1,0 +1,202 @@
+@font-face {
+  font-family: "TrebuchetMS";
+  src: url("../fonts/TrebuchetMS.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "BebasNeue";
+  src: url("../fonts/BebasNeue.otf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* https://www.fontsquirrel.com/fonts/web-symbols */
+@font-face {
+  font-family: "WebSymbolsRegular";
+  src: url("../fonts/websymbols-regular-webfont.eot");
+  src: url("../fonts/websymbols-regular-webfont.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/websymbols-regular-webfont.woff") format("woff"),
+    url("../fonts/websymbols-regular-webfont.ttf") format("truetype"),
+    url("../fonts/websymbols-regular-webfont.svg#WebSymbolsRegular") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Iniciamos estilos personalizados  */
+/* Definición Variables, definimos familia de fuente que voy a utilizar */
+:root {
+  --mx-width: 1500px;
+  --mx-width-tablet: 1024px;
+  --mx-width-movil: 600px;
+  --color-primary: #37bcf9;
+  --color-secondary: #fff;
+  --color-backgroung: #ccc;
+  --color-bg: black;
+  --color-text-white: white;
+  --color-text-title: #00538c;
+  --color-grey: gray;
+  --color-box-shadow: #ddd;
+  --color-box-shadow2: #393d3f;
+  --color-focus: #555;
+  /*Colores propios*/
+  --color1: #381d12;
+  --color2: #5d3720;
+  --color3: #8d5d33;
+  --color4: #c8904a;
+  --color5: #ffd368;
+}
+
+/* Estilos personalizados */
+.navbarr {
+  background-color: var(--color1);
+  font-family: "TrebuchetMS";
+}
+
+.nav-img {
+  width: 100px;
+  height: 80px;
+  margin-top: -30px;
+}
+
+.navbar-brand {
+  display: grid;
+  font-weight: bold;
+  margin-left: 10px;
+  font-size: 1.5rem;
+  transition: all 200ms;
+  transition: transform 0.3s ease;
+  transform-origin: left center;
+}
+
+.navbar-brand:hover {
+  transform: translateX(10px) scale(1.2);
+  color: var(--color3);
+}
+
+.nav-bar {
+  display: grid;
+  grid-template-columns: 7fr 1fr;
+}
+
+.nav-foto {
+  width: 70px;
+  height: 70px;
+  margin-left: 10px;
+}
+
+.nav-link {
+  /* position */
+  position: relative;
+  line-height: 6rem;
+  font-weight: 500;
+  /* efecto */
+  transition: all 300ms ease-in-out;
+}
+
+.nav-link:hover {
+  color: var(--color3);
+  transform: scale(1.1);
+}
+
+.subraya {
+  margin-top: 1px;
+}
+
+.subraya::before {
+  content: "";
+  position: absolute;
+  height: 0.2rem;
+  background-color: var(--color3);
+  bottom: 2.2rem;
+  left: -6px;
+  width: 0%;
+  opacity: 0;
+  transition: all 350ms linear;
+}
+
+.subraya:hover::before {
+  width: 120%;
+  opacity: 1;
+}
+
+.nav-link:hover {
+  transform: scale(1.1);
+}
+
+.bar-bus {
+  width: 400px;
+}
+
+.search-icon {
+  background-color: #d4bbb1;
+  font-family: "WebSymbolsRegular";
+}
+
+.navbar-logo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-right: 90px;
+  margin-left: -70px;
+  margin-top: 10px;
+}
+
+.index-section {
+  background-image: url("../img/PortadaSamas.png");
+  background-size: cover;
+  background-position: 50%;
+  padding: 50px 0;
+  text-align: center;
+  padding: 0;
+  margin-bottom: 20px;
+  /* Espacio entre la imagen y el contenido siguiente */
+  width: 100%;
+  height: 500px;
+}
+
+.section-banner {
+  padding: 170px;
+  color: #4b3419;
+  font-weight: bold;
+  font-family: "BebasNeue";
+  letter-spacing: 2px;
+  font-size: 20px;
+  background: var(--color3);
+  width: 700px;
+  height: 80px;
+  text-align: center;
+}
+
+.banner-subtext {
+  color: var(--color2);
+}
+
+.banner-btn {
+  background-color: var(--color2);
+}
+
+.bi {
+  font-size: 20px;
+}
+
+.product-card {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+footer {
+  background-color: #343a40;
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+}
+
+footer a {
+  color: #ffc107;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}

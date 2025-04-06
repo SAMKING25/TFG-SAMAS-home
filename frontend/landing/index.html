@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAMAS</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="shortcut icon" href="img/loguito1-removebg-preview.ico">
+    <!-- Archivo CSS personalizado -->
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+    <header class="navbarr p-3 text-white">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-white text-decoration-none">
+                    <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                        <use xlink:href="#bootstrap" />
+                    </svg>
+                </a>
+
+                <div class="navbar-logo">
+                    <a class="mt-2" href="#"><img class="nav-img" src="img/loguito1-removebg-preview.png"></a>
+                    <a class="navbar-brand mt-2" href="#">SAMAS home</a>
+                </div>
+
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="#" class="nav-link subraya px-2 text-white">Inicio</a></li>
+                    <li><a href="#" class="nav-link subraya px-2 text-white">Muebles</a></li>
+                    <li><a href="#" class="nav-link subraya px-2 text-white">Plano</a></li>
+                    <li><a href="#" class="nav-link subraya px-2 text-white">Suscripción</a></li>
+                    <li><a href="#" class="nav-link subraya px-2 text-white">Contacto</a></li>
+                </ul>
+
+                <form class="nav-bar col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
+                    <input type="search" class="bar-bus form-control form-control-dark" placeholder="Buscar" aria-label="Buscar">
+                    <input type="button" value="L" class="search-icon form-control form-control">
+                </form>
+
+                <div class="text-end">
+                    <a class="mt-2" href="#"><img class="nav-foto" src="img/fotoperfil.png"></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección para la imagen de portada -->
+    <div class="col ">
+        <section class="index-section">
+            <div class="section-banner">
+                <h1 class="banner-text">Tu hogar comienza aquí</h1>
+                <p class="banner-subtext">Encuentra los mejores muebles para tu hogar</p>
+                <button type="button" class="banner-btn btn btn-dark">Ver Productos</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Productos -->
+    <section class="container my-5">
+        <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+                    aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"
+                    aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"
+                    aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="https://pablomonteserin.com/lorempixel/900x150" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>First slide label</h5>
+                        <p>Some representative placeholder content for the first slide.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://pablomonteserin.com/lorempixel/900x150" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Second slide label</h5>
+                        <p>Some representative placeholder content for the second slide.</p>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <img src="https://pablomonteserin.com/lorempixel/900x150" class="d-block w-100" alt="...">
+                    <div class="carousel-caption d-none d-md-block">
+                        <h5>Third slide label</h5>
+                        <p>Some representative placeholder content for the third slide.</p>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Mobiliarios. Todos los derechos reservados.</p>
+            <p><a href="#">Política de Privacidad</a> | <a href="#">Términos y Condiciones</a></p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
