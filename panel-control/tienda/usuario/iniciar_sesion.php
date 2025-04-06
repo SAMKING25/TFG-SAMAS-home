@@ -11,6 +11,8 @@
 
         require('../util/conexion.php');
         require('../util/utilidades.php');
+
+        define('USUARIO','/TFG-SAMAS-home/panel-control/tienda/usuario/');
     ?>
     <style>
         .error {
@@ -82,7 +84,7 @@
                 <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
                 style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
                 <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
-                <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="#!"
+                <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="<?php echo USUARIO?>registro.php"
                     class="link-danger">Registrarse</a></p>
             </div>
 
