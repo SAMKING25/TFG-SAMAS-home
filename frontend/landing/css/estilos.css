@@ -137,12 +137,14 @@
   transition: all 200ms;
   transition: transform 0.3s ease;
   transform-origin: left center;
+  text-shadow: 2px 2px 3px rgb(2, 2, 2);
+  color: var(--color3);
 }
 
 
 .navbar-brand:hover {
   transform: translateX(10px) scale(1.2);
-  color: var(--color3);
+  color: var(--color2);
 }
 
 .nav-bar {
@@ -161,6 +163,7 @@
   position: relative;
   line-height: 6rem;
   font-weight: 500;
+  text-shadow: 2px 2px 3px rgb(2, 2, 2);
   /* efecto */
   transition: all 300ms ease-in-out;
 }
@@ -222,7 +225,7 @@
   margin-bottom: 20px;
   /* Espacio entre la imagen y el contenido siguiente */
   width: 100%;
-  height: 500px;
+  height: 72.5vh;
 }
 
 .section-banner {
@@ -266,16 +269,95 @@ footer {
   text-align: center;
 }
 
-footer a {
-  color: #ffc107;
+.footer-link {
+  display: grid;
+  line-height: 2rem;
+  font-weight: 500;
   text-decoration: none;
+  transition: transform 0.3s ease;
+  transform-origin: left center;
+  color: white;
+  position: relative;
 }
 
-footer a:hover {
-  text-decoration: underline;
+.footer-link:hover {
+  transform: translateX(-20px) scale(1.2);
+  background: linear-gradient(360deg, white, var(--color4));
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: simpleGradient 2s ease infinite;
+}
+
+@keyframes simpleGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+
+
+.footer-title {
+  font-size: large;
+  color: var(--color3);
 }
 
 .card-img-top {
   height: 200px;
   object-fit: cover;
+}
+
+/*Categorias*/
+@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+
+.containerr {
+  display: flex;
+  width: 90vw;
+}
+
+.panel {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 80vh;
+  border-radius: 50px;
+  color: #fff;
+  cursor: pointer;
+  flex: 0.5;
+  margin: 10px;
+  position: relative;
+  -webkit-transition: all 700ms ease-in;
+}
+
+.panel h3 {
+  font-size: 24px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  opacity: 0;
+}
+
+.panel.active {
+  flex: 5;
+}
+
+.panel.active h3 {
+  opacity: 1;
+  transition: opacity 0.3s ease-in 0.4s;
+}
+
+@media (max-width: 480px) {
+  .containerr {
+    width: 100vw;
+  }
+
+  .panel:nth-of-type(4),
+  .panel:nth-of-type(5) {
+    display: none;
+  }
 }
