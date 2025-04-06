@@ -1,4 +1,4 @@
-CREATE SCHEMA prueba_samas;
+CREATE SCHEMA prueba_samas_db;
 
 USE prueba_samas;
 
@@ -41,7 +41,7 @@ CREATE TABLE proveedores (
 	id_proveedor INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     email_proveedor VARCHAR(50),
     nombre_proveedor VARCHAR(50),
-    contrasena VARCHAR(120),
+    contrasena_proveedor VARCHAR(120),
     foto_proveedor VARCHAR(60)
 );
 

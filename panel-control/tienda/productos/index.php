@@ -9,11 +9,11 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         .btn-outline-primary {
-            color: #c8904a !important;
-            border:1px solid #c8904a !important;
+            color:rgb(163, 112, 48) !important;
+            border:1px solid rgb(163, 112, 48) !important;
         }
         .btn-outline-primary:hover {
-            background-color: #c8904a;
+            background-color: rgb(163, 112, 48);
             color: white !important;
             border:1px solid white !important;
         }
