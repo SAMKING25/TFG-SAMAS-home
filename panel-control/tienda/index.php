@@ -13,17 +13,11 @@
 
     require('util/conexion.php');
 
-    // session_start();
-    // if (isset($_SESSION["usuario"])) {
-    //     echo "<h2>Bienvenid@ " . $_SESSION["usuario"] .  "</h2>"; 
-    ?>
-    <!-- <a class="btn btn-warning" href="usuario/cerrar_sesion.php">Cerrar sesion</a> 
-            <a class="btn btn-primary" href="usuario/cambiar_credenciales.php?usuario=<?php // echo $_SESSION["usuario"] 
-                                                                                        ?>">Cambiar credenciales</a> -->
-    <?php  // } else { 
-    ?>
-    <!-- <a class="btn btn-warning" href="usuario/iniciar_sesion.php">Iniciar sesion</a> -->
-    <?php // } 
+    session_start();
+    if (!isset($_SESSION["usuario"])) { 
+        header("location: ./usuario/iniciar_sesion_proveedor.php");
+        exit;
+    }
     ?>
     <style>
         body {
