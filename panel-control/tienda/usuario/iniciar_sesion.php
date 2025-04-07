@@ -103,7 +103,12 @@
                             </div>
 
                             <div class="d-flex align-items-center justify-content-center pb-4">
-                                <p class="mb-0 me-2">No tienes cuenta?
+                                <p class="mb-0 me-2">¿Eres una empresa?
+                                    <a style="text-decoration: none; color: black;" href="./iniciar_sesion_proveedor.php"><u>Iniciar sesión</u></a>
+                                </p>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-center pb-4">
+                                <p class="mb-0 me-2">¿No tienes cuenta?
                                     <a style="text-decoration: none; color: black;" href="./registro.php"><u>Registrarse</u></a>
                                 </p>
                             </div>

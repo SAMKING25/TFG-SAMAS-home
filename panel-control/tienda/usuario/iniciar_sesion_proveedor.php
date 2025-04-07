@@ -61,7 +61,7 @@
 
                 if($acceso_concedido){
                     session_start();
-                    $_SESSION["usuario"] = $usuario;
+                    $_SESSION["usuario"] = $email_proveedor;
                     header("location: ../index.php");
                 }else{
                     $err_contrasena_proveedor = "Contraseña incorrecta";
@@ -81,7 +81,7 @@
                         <div class="text-center">
                         <img src="../imagenes/loguito1-removebg-preview.png"
                             style="width: 185px;" alt="logo">
-                        <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
+                        <h4 class="mt-1 mb-5 pb-1">SAMAS home Enterprise</h4>
                         </div>
 
                         <form method="post" enctype="multipart/form-data">
@@ -100,6 +100,12 @@
 
                             <div class="pt-1 mb-5 pb-1">
                                 <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar sesión</button>
+                            </div>
+
+                            <div class="d-flex align-items-center justify-content-center pb-4">
+                                <p class="mb-0 me-2">¿Eres un usuario normal?
+                                    <a style="text-decoration: none; color: black;" href="./iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                </p>
                             </div>
 
                             <div class="d-flex align-items-center justify-content-center pb-4">
