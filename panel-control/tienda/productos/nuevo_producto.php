@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo producto</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -27,6 +28,9 @@
 
 <body class="bg-light">
     <?php
+    include('../layout/header.php');
+    include('../layout/sidebar.php');
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $tmp_nombre = depurar($_POST["nombre"]);
         $tmp_precio = depurar($_POST["precio"]);
@@ -56,7 +60,6 @@
                 }
             }
         }
-
 
         if ($tmp_precio == '') {
             $err_precio = "El precio es obligatorio";
@@ -172,8 +175,6 @@
             }
         }
 
-
-
         if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto)) {
             // Inserta un nuevo producto
             $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto)
@@ -191,7 +192,7 @@
     }
 
     ?>
-    <div class="container  py-5">
+    <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <div class="card shadow rounded-4">
@@ -271,6 +272,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
