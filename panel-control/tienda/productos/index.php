@@ -55,16 +55,16 @@
         $busqueda = $_GET["busqueda"];
         // Si es numérico, busca por id_producto. Si no, busca por nombre
         if (is_numeric($busqueda)) {
-            $filtro = "WHERE id_producto = '$busqueda'";
+            $filtro = "AND id_producto = '$busqueda'";
         } else {
             $busqueda = $_conexion->real_escape_string($busqueda); // protección básica
-            $filtro = "WHERE nombre LIKE '%$busqueda%'";
+            $filtro = "AND nombre LIKE '%$busqueda%'";
         }
     }
 
 
     // Consulta SQL
-    $sql = "SELECT * FROM productos $filtro";
+    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['usuario'] . "' $filtro"; ;
     $resultado = $_conexion->query($sql);
     ?>
 

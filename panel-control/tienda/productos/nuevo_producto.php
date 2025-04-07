@@ -45,6 +45,7 @@
         $tmp_largo = depurar($_POST["largo"]);
         $tmp_ancho = depurar($_POST["ancho"]);
         $tmp_alto = depurar($_POST["alto"]);
+        $id_proveedor = $_SESSION["usuario"];
 
         $nombre_imagen = $_FILES["imagen"]["name"];
         $ubicacion_temporal = $_FILES["imagen"]["tmp_name"];
@@ -179,10 +180,10 @@
             }
         }
 
-        if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto)) {
+        if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
             // Inserta un nuevo producto
-            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto)
-            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto)";
+            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto, id_proveedor)
+            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto, $id_proveedor)";
             $_conexion->query($sql);
 
             header("location: index.php");
