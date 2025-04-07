@@ -25,6 +25,11 @@
     <!-- <a class="btn btn-warning" href="usuario/iniciar_sesion.php">Iniciar sesion</a> -->
     <?php // } 
     ?>
+    <style>
+        body {
+            background-color: #F7E5CB;
+        }
+    </style>
 </head>
 
 <body>

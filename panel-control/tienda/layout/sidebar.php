@@ -1,4 +1,8 @@
 <style>
+    hr {
+        color: rgb(81, 53, 19) !important;
+    }
+    
     .active {
         background-color:rgb(81, 53, 19) !important;
         color: white !important;

@@ -24,6 +24,10 @@
         .error {
             color: red;
         }
+
+        body {
+            background-color: #F7E5CB;
+        }
     </style>
 </head>
 
