@@ -13,11 +13,11 @@
     require('../util/conexion.php');
     require('../util/utilidades.php');
 
-    // session_start();
-    // if (!isset($_SESSION["usuario"])) { 
-    //     header("location: ../usuario/iniciar_sesion.php");
-    //     exit;
-    // }
+    session_start();
+    if (!isset($_SESSION["usuario"])) { 
+        header("location: ../usuario/iniciar_sesion_proveedor.php");
+        exit;
+    }
     ?>
     <style>
         .error {
@@ -184,6 +184,9 @@
             $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto)
             VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto)";
             $_conexion->query($sql);
+
+            header("location: index.php");
+            exit;
         }
     }
 

@@ -14,11 +14,11 @@
     require('../util/conexion.php');
     require('../util/utilidades.php');
 
-    // session_start();
-    // if (!isset($_SESSION["usuario"])) { 
-    //     header("location: ../usuario/iniciar_sesion.php");
-    //     exit;
-    // }
+    session_start();
+    if (!isset($_SESSION["usuario"])) { 
+        header("location: ../usuario/iniciar_sesion_proveedor.php");
+        exit;
+    }
     ?>
     <style>
         .error {
@@ -199,7 +199,8 @@
             }
         }
 
-        header('Location: ./index.php');
+        header('location: ./index.php');
+        exit;
     }
 
     ?>
