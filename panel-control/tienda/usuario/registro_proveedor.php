@@ -62,9 +62,8 @@
             if ($resultado->num_rows == 1) {
                 $err_email_proveedor = "El email $tmp_email_proveedor ya existe";
             } else {
-                $patron = "/^\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi+$/";
-                if (!preg_match($patron, $tmp_email_proveedor)) {
-                    $err_email_proveedor = "El email solo puede tener letras y números";
+                if (filter_var($tmp_email_proveedor, FILTER_VALIDATE_EMAIL) === false) {
+                    $err_email_proveedor = "El email no es válido";
                 } else {
                     $email_proveedor = $tmp_email_proveedor;
                 }
@@ -80,7 +79,7 @@
             if ($resultado->num_rows == 1) {
                 $err_nombre_proveedor = "El nombre $tmp_nombre_proveedor ya existe";
             } else {
-                $patron = "/^[a-zA-Z áéióúÁÉÍÓÚñÑüÜ]+$/";
+                $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
                 if (!preg_match($patron, $tmp_nombre_proveedor)) {
                     $err_nombre_proveedor = "El nombre solo puede tener letras y números";
                 } else {
@@ -92,8 +91,8 @@
         if ($tmp_contrasena_proveedor == "") {
             $err_contrasena_proveedor = "La contraseña es obligatoria";
         } else {
-            if (strlen($tmp_contrasena_proveedor) > 15 || strlen($tmp_contrasena_proveedor) < 8) {
-                $err_contrasena_proveedor = "La contraseña tiene que tener como minimo 8 y maximo 15 caracteres";
+            if (strlen($tmp_contrasena_proveedor) < 8) {
+                $err_contrasena_proveedor = "La contraseña tiene que tener como minimo 8 caracteres";
             } else {
                 $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
                 if (!preg_match($patron, $tmp_contrasena_proveedor)) {
@@ -105,7 +104,8 @@
         }
 
         if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
-            $sql = "INSERT INTO usuarios VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$foto_proveedor')";
+            $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, foto_proveedor) 
+                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$foto_proveedor')";
             $_conexion->query($sql);
             header("location: iniciar_sesion_proveedor.php");
             exit;
