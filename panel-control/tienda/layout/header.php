@@ -1,21 +1,12 @@
 <?php
     // Consulta SQL
     // session_start();
-    // $_SESSION["id_proveedor"] = 1;
-    // $id_proveedor = $_SESSION['id_proveedor'];
-
-    $id_proveedor = 2; // Cambia esto por el ID del proveedor que deseas consultar
+    $id_proveedor = $_SESSION['usuario'];
 
     $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
     $sql->bind_param("i", $id_proveedor);
     $sql->execute();
     $resultado = $sql->get_result();
-
-    while ($fila = $resultado->fetch_assoc()) {
-        $_SESSION['nombre_proveedor'] = $fila['nombre_proveedor'];
-        $_SESSION['foto_proveedor'] = $fila['foto_proveedor'];
-        $_SESSION['email_proveedor'] = $fila['email_proveedor'];
-    }
     
     define('IMG_URL','/TFG-SAMAS-home/panel-control/tienda/imagenes/');
     define('USUARIO','/TFG-SAMAS-home/panel-control/tienda/usuario/');
