@@ -184,6 +184,11 @@ body{
 }
 
 /**/
+h3{
+  color: rgb(255, 255, 255);
+  text-shadow: 2px 2px 4px rgb(0, 0, 0);
+}
+
 .index-section {
   background-image: url("../img/PortadaSamas.png");
   background-size: cover;
@@ -273,11 +278,18 @@ footer {
 .footer-title {
   font-size: large;
   color: var(--color3);
+  text-shadow: 2px 2px 3px rgb(2, 2, 2);
 }
 
 .card-img-top {
   height: 200px;
   object-fit: cover;
+}
+
+.card-btn {
+  display: flex;
+  justify-content: flex-end;
+  justify-content: right
 }
 
 /*Categorias*/
