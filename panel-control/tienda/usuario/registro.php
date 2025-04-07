@@ -18,13 +18,8 @@
         }
 
         .gradient-custom-2 {
-            /* fallback for old browsers */
             background: #fccb90;
-
-            /* Chrome 10-25, Safari 5.1-6 */
             background: -webkit-linear-gradient(to right,rgb(163, 144, 130),rgb(146, 116, 71),rgb(165, 125, 49),rgb(102, 67, 20));
-
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
             background: linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
 
             border: 1px solid #F7E5CB;
