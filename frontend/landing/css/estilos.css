@@ -286,12 +286,6 @@ footer {
   object-fit: cover;
 }
 
-.card-btn {
-  display: flex;
-  justify-content: flex-end;
-  justify-content: right
-}
-
 /*Categorias*/
 @import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
 
