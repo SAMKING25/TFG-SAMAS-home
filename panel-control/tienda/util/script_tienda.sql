@@ -12,24 +12,15 @@ SELECT * FROM usuarios;
 SELECT * FROM proveedores;
 SELECT * FROM productos;
 
-INSERT INTO categorias (categoria) VALUES ('Electrónica');
-
-INSERT INTO usuarios (email_usuario, nombre_usuario, contrasena_usuario, suscripcion, foto_usuario) VALUES
-    ('mva0025', 'Manuva', 'SAMAShome1234', 'Premium', 'usuario-estandar.png');
-
-INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, foto_proveedor) VALUES
-	('mueblesbuffalo@gmail.com', 'Muebles Buffalo', 'SAMAShome1234', 'usuario-estandar.png');
-    
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, largo, ancho, alto, id_proveedor, imagen) VALUES
-('Smartphone', 49.99, 'Electrónica', 10, 'Teléfono inteligente de última generación', 15, 7, 1, 1, 'sillon.jpg');
-
-DELETE FROM usuarios WHERE id_usuario = 1;
-
 INSERT INTO categorias (categoria) VALUES ('Sofás');
 INSERT INTO categorias (categoria) VALUES ('Sillas');
 INSERT INTO categorias (categoria) VALUES ('Mesas');
 INSERT INTO categorias (categoria) VALUES ('Colchones');
 INSERT INTO categorias (categoria) VALUES ('Armarios');
+
+
+DELETE FROM usuarios WHERE id_usuario = 1;
+
 
 CREATE TABLE categorias (
 	categoria VARCHAR(50) PRIMARY KEY
