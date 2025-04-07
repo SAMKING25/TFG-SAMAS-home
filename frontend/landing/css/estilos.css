@@ -24,6 +24,14 @@
   font-style: normal;
 }
 
+html{
+  font-family: "TrebuchetMSe" !important; 
+}
+
+body{
+  background-color: rgb(247, 229, 203);
+}
+
 /* Iniciamos estilos personalizados  */
 /* Definición Variables, definimos familia de fuente que voy a utilizar */
 :root {
@@ -32,7 +40,7 @@
   --mx-width-movil: 600px;
   --color-primary: #37bcf9;
   --color-secondary: #fff;
-  --color-backgroung: #ccc;
+  --color-background: #ccc;
   --color-bg: black;
   --color-text-white: white;
   --color-text-title: #00538c;
@@ -42,108 +50,38 @@
   --color-focus: #555;
   /*Colores propios*/
   --color1: #381d12;
+  --color1-2: #381d12;
   --color2: #5d3720;
   --color3: #8d5d33;
   --color4: #c8904a;
   --color5: #ffd368;
 }
 
-.container-hero {
-	background-color:#F9F5F0;
-  
-}
 
-.hero {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 2rem 0;
-}
-
-.customer-support {
-	display: flex;
-	align-items: center;
-	gap: 2rem;
-}
-
-.customer-support i {
-	font-size: 3.3rem;
-}
-
-.content-customer-support {
-	display: flex;
-	flex-direction: column;
-}
-
-.container-logo {
-	display: flex;
-	align-items: center;
-	gap: 0.5rem;
-}
-
-.container-logo i {
-	font-size: 3rem;
-}
-
-.container-logo h1 a {
-	text-decoration: none;
-	color: #000;
-	font-size: 3rem;
-	text-transform: uppercase;
-	letter-spacing: -1px;
-}
-
-.container-user {
-	display: flex;
-	gap: 1rem;
-	cursor: pointer;
-}
-
-.container-user .fa-user {
-	font-size: 3rem;
-	color: var(--primary-color);
-	padding-right: 2.5rem;
-	border-right: 1px solid #e2e2e2;
-}
-
-.container-user .fa-basket-shopping {
-	font-size: 3rem;
-	color: var(--primary-color);
-	padding-left: 1rem;
-}
-
-.content-shopping-cart {
-	display: flex;
-	flex-direction: column;
-}
 
 /* Estilos personalizados */
-.navbarr {
+.navbar {
   background-color: var(--color1);
   font-family: "TrebuchetMS";
 }
 
 .nav-img {
-  width: 100px;
-  height: 80px;
-  margin-top: -30px;
+  width: 200px;
+  height: 250px;
 }
 
 .navbar-brand {
   display: grid;
-  font-weight: bold;
-  margin-left: 10px;
-  font-size: 1.5rem;
   transition: all 200ms;
   transition: transform 0.3s ease;
-  transform-origin: left center;
+  transform-origin: center;
   text-shadow: 2px 2px 3px rgb(2, 2, 2);
   color: var(--color3);
 }
 
 
 .navbar-brand:hover {
-  transform: translateX(10px) scale(1.2);
+  transform: translateX(0px) scale(1.3);
   color: var(--color2);
 }
 
@@ -152,14 +90,9 @@
   grid-template-columns: 7fr 1fr;
 }
 
-.nav-foto {
-  width: 70px;
-  height: 70px;
-  margin-left: 10px;
-}
-
 .nav-link {
   /* position */
+  color: white !important;
   position: relative;
   line-height: 6rem;
   font-weight: 500;
@@ -171,6 +104,11 @@
 .nav-link:hover {
   color: var(--color3);
   transform: scale(1.1);
+}
+
+.separar{
+  display: grid;
+  grid-template-columns: 1fr 5fr;
 }
 
 .subraya {
@@ -198,23 +136,54 @@
   transform: scale(1.1);
 }
 
-.bar-bus {
+.bar-icons {
+  font-size: 20px;
+  margin-top: 5px;
+}
+
+.search-bar {
   width: 400px;
+  margin: auto auto;
 }
 
-.search-icon {
-  background-color: #d4bbb1;
-  font-family: "WebSymbolsRegular";
+.search-bar .input-group {
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-logo {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  margin-right: 90px;
-  margin-left: -70px;
-  margin-top: 10px;
+.search-bar .form-control {
+  border: none;
+  padding-left: 20px;
 }
 
+.search-bar .btn {
+  border: none;
+  padding: 10px 20px;
+}
+/*Iconos*/
+.icono-personalizado {
+  color: white;
+  font-size: 6rem; /* Opcional: ajustar tamaño */
+  margin-left: 10px;
+}
+
+/*Carrusel imagenes*/
+.carousel-control-prev-icon,
+    .carousel-control-next-icon {
+      background-color: black;
+}
+.small-image {
+  width: 350px !important;
+  height: 250px !important;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+}
+
+/**/
 .index-section {
   background-image: url("../img/PortadaSamas.png");
   background-size: cover;
@@ -225,17 +194,18 @@
   margin-bottom: 20px;
   /* Espacio entre la imagen y el contenido siguiente */
   width: 100%;
-  height: 72.5vh;
+  height: 86vh;
 }
 
 .section-banner {
   padding: 170px;
+  padding-top: 320px;
   color: var(--color3);
   font-weight: bold;
   font-family: "BebasNeue";
   text-shadow: 2px 2px 3px rgb(2, 2, 2);
   letter-spacing: 2px;
-  font-size: 20px;
+  font-size: 25px;
   width: 100%;
   height: 150px;
   text-align: center;
@@ -267,6 +237,7 @@ footer {
   color: #fff;
   padding: 20px 0;
   text-align: center;
+  font-family: "Arial";
 }
 
 .footer-link {
@@ -299,8 +270,6 @@ footer {
   }
 }
 
-
-
 .footer-title {
   font-size: large;
   color: var(--color3);
@@ -323,7 +292,7 @@ footer {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 80vh;
+  height: 45vh;
   border-radius: 50px;
   color: #fff;
   cursor: pointer;
