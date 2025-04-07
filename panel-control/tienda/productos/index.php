@@ -30,7 +30,7 @@
 
     session_start();
     if (!isset($_SESSION["usuario"])) { 
-        header("location: ../usuario/iniciar_sesion_proveedor.php");
+        header("location: ../../usuario/iniciar_sesion_proveedor.php");
         exit;
     }
     ?>
