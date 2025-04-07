@@ -31,7 +31,7 @@
 
             border: 1px solid #F7E5CB;
         }
-        .gradient-custom-2:hover {
+        .btn:hover {
             border: 1px solid black;
         }
 
@@ -52,24 +52,24 @@
 <body>
     <?php
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $usuario = depurar($_POST["usuario"]);
-            $contrasena = $_POST["contrasena"];
+            $email_usuario = depurar($_POST["email_usuario"]);
+            $contrasena_usuario = $_POST["contrasena_usuario"];
 
-            $sql="SELECT * FROM usuarios WHERE usuario ='$usuario'";
+            $sql="SELECT * FROM usuarios WHERE email_usuario ='$email_usuario'";
             $resultado=$_conexion -> query($sql);
 
             if($resultado -> num_rows == 0){
-                $err_usuario = "El usuario $usuario no existe";
+                $err_email_usuario = "El correo es incorrecto";
             }else{
                 $datos_usuario = $resultado -> fetch_assoc();
-                $acceso_concedido = password_verify($contrasena,$datos_usuario["contrasena"]);
+                $acceso_concedido = password_verify($contrasena_usuario,$datos_usuario["contrasena_usuario"]);
 
                 if($acceso_concedido){
                     session_start();
                     $_SESSION["usuario"] = $usuario;
                     header("location: ../index.php");
                 }else{
-                    $err_contrasena = "La contraseña no es correcta";
+                    $err_contrasena_usuario = "Contraseña incorrecta";
                 }
             }
         } 
@@ -89,27 +89,29 @@
                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
                         </div>
 
-                        <form>
-                        <div data-mdb-input-init class="form-outline mb-4">
-                            <label class="form-label" for="form2Example11">Email</label>
-                            <input type="email" id="form2Example11" class="form-control"
-                            placeholder="Inserte su correo electrónico" />
-                        </div>
+                        <form method="post" enctype="multipart/form-data">
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <label class="form-label" for="email_usuario">Email</label>
+                                <input type="email_usuario" id="email_usuario" name="email_usuario" class="form-control"
+                                placeholder="Inserte su correo electrónico" />
+                                <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                            </div>
 
-                        <div data-mdb-input-init class="form-outline mb-4">
-                            <label class="form-label" for="form2Example22">Contraseña</label>
-                            <input type="password" id="form2Example22" class="form-control" />
-                        </div>
+                            <div data-mdb-input-init class="form-outline mb-4">
+                                <label class="form-label" for="contrasena_usuario">Contraseña</label>
+                                <input type="password" id="contrasena_usuario" name="contrasena_usuario" class="form-control" />
+                                <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                            </div>
 
-                        <div class="pt-1 mb-5 pb-1">
-                            <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="button">Iniciar sesión</button>
-                        </div>
+                            <div class="pt-1 mb-5 pb-1">
+                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Iniciar sesión</button>
+                            </div>
 
-                        <div class="d-flex align-items-center justify-content-center pb-4">
-                            <p class="mb-0 me-2">Don't have an account?</p>
-                            <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger">Create new</button>
-                        </div>
-
+                            <div class="d-flex align-items-center justify-content-center pb-4">
+                                <p class="mb-0 me-2">No tienes cuenta?
+                                    <a style="text-decoration: none; color: black;" href="./registro.php"><u>Registrarse</u></a>
+                                </p>
+                            </div>
                         </form>
 
                     </div>
@@ -127,55 +129,6 @@
         </div>
     </section>
 
-
-
-    <!-- <section class="vh-100">
-    <div class="container-fluid h-custom">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-        <div class="col-md-9 col-lg-6 col-xl-5">
-            <img src="../imagenes/loguito1.png"
-            class="img-fluid" alt="Sample image">
-        </div>
-        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-            <form>
-            
-            <div data-mdb-input-init class="form-outline mb-4">
-                <input type="email" id="form3Example3" class="form-control form-control-lg"
-                placeholder="Introduce un email válido" />
-                <label class="form-label" for="form3Example3">Email</label>
-            </div>
-
-            
-            <div data-mdb-input-init class="form-outline mb-3">
-                <input type="password" id="form3Example4" class="form-control form-control-lg"
-                placeholder="Introduce la contraseña" />
-                <label class="form-label" for="form3Example4">Contraseña</label>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center">
-                
-                <div class="form-check mb-0">
-                <input class="form-check-input me-2" type="checkbox" value="" id="form2Example3" />
-                <label class="form-check-label" for="form2Example3">
-                    Recuérdame
-                </label>
-                </div>
-                <a href="#!" class="text-body">He olvidado mi contraseña</a>
-            </div>
-
-            <div class="text-center text-lg-start mt-4 pt-2">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg"
-                style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
-                <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
-                <p class="small fw-bold mt-2 pt-1 mb-0">¿No tienes cuenta? <a href="<?php echo USUARIO?>registro.php"
-                    class="link-danger">Registrarse</a></p>
-            </div>
-
-            </form>
-        </div>
-        </div>
-    </div> -->
-
     <!-- ANTIGUO: -->
     <!-- <div class="container">
         <h1>Iniciar sesion</h1>
@@ -183,12 +136,12 @@
             <div class="mb-3">
                 <label class="form-label">Usuario</label>
                 <input class="form-control" type="text" name="usuario">
-                <?php if(isset($err_usuario)) echo "<span class='error'>$err_usuario</span>"; ?>
+                <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
             </div>
             <div class="mb-3">
                 <label class="form-label">Contraseña</label>
-                <input class="form-control" type="password" name="contrasena">
-                <?php if(isset($err_contrasena)) echo "<span class='error'>$err_contrasena</span>"; ?>
+                <input class="form-control" type="password" name="contrasena_usuario">
+                <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
             </div>
             <div class="mb-3">
                 <input class="btn btn-primary" type="submit" value="Iniciar sesion">
