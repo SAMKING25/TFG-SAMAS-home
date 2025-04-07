@@ -23,10 +23,14 @@
         .error {
             color: red;
         }
+
+        body {
+            background-color: #F7E5CB;
+        }
     </style>
 </head>
 
-<body class="bg-light">
+<body>
     <?php
     include('../layout/header.php');
     include('../layout/sidebar.php');

@@ -13,7 +13,7 @@
 
 ?>
 
-<header class="p-3 text-white d-flex" style="background-color:rgb(96, 49, 30);">
+<header class="p-3 text-white d-flex" style="background-color:#381D12;">
     <div class="col-12 col-md-9 h4" style="padding-left: 280px;">
         Panel de control
     </div>  

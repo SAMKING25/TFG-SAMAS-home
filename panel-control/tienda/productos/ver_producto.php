@@ -8,6 +8,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        body {
+            background-color: #F7E5CB;
+        }
+        
         .btn-primary {
             background-color:rgb(163, 112, 48) !important;
             border:1px solid rgb(163, 112, 48) !important;
@@ -69,7 +73,7 @@
         <div class="row">
             <?php while ($fila = $resultado->fetch_assoc()) { ?>
                 <!-- Imagen del producto -->
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-4 bg-white">
                     <img src="../../imagenes/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
                 </div>
 
