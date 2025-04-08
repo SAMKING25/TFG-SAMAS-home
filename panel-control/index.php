@@ -11,11 +11,11 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    require('util/conexion.php');
+    require('../util/conexion.php');
 
     session_start();
     if (!isset($_SESSION["usuario"])) { 
-        header("location: ./usuario/iniciar_sesion.php");
+        header("location: ../login/usuario/iniciar_sesion.php");
         exit;
     }
     ?>
@@ -28,8 +28,8 @@
 
 <body>
     <?php
-    include('layout/header.php');
-    include('layout/sidebar.php');
+    include('./layout/header.php');
+    include('./layout/sidebar.php');
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_producto = $_POST["id_producto"];
@@ -52,7 +52,7 @@
                 <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4">
                     <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>" class="text-decoration-none">
                         <div class="card h-100 shadow-sm">
-                            <img src="imagenes/<?php echo $fila['imagen']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
+                            <img src="../img/productos/<?php echo $fila['imagen']; ?>" class="card-img-top" alt="<?php echo $fila['nombre']; ?>">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo $fila['nombre']; ?></h5>
                                 <p class="card-text"><?php echo $fila['descripcion']; ?></p>

@@ -24,11 +24,11 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    require('../util/conexion.php');
+    require('../../util/conexion.php');
 
     session_start();
     if (!isset($_SESSION["usuario"])) { 
-        header("location: ../../usuario/iniciar_sesion_proveedor.php");
+        header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
     
@@ -43,7 +43,7 @@
         $resultado = $sql->get_result();
 
         while ($fila = $resultado->fetch_assoc()) {
-            unlink("../../imagenes/".$fila['imagen']);
+            unlink("../../img/productos/".$fila['imagen']);
         }
         header("location: ../index.php");
     }
@@ -67,7 +67,7 @@
             <?php while ($fila = $resultado->fetch_assoc()) { ?>
                 <!-- Imagen del producto -->
                 <div class="col-md-6 mb-4 bg-white">
-                    <img src="../../imagenes/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
+                    <img src="../../img/productos/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
                 </div>
 
                 <!-- Detalles del producto -->
@@ -91,7 +91,7 @@
                     </div>
 
                     <form action="" method="post">
-                        <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn btn-primary btn-lg mb-3 me-2">
+                        <a href="./editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn btn-primary btn-lg mb-3 me-2">
                             <i class="bi bi-cart-plus"></i> Editar
                         </a>
                         <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i class="bi bi-trash3-fill"></i> Borrar</button>
