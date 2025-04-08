@@ -10,8 +10,8 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    require('../util/conexion.php');
-    require('../util/utilidades.php');
+    require('../../util/conexion.php');
+    require('../../util/funciones/utilidades.php');
     ?>
     <style>
         .error {
@@ -51,7 +51,7 @@
         $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
         $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
         $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
-        $foto_proveedor = "../imagenes/usuario-estandar.png";
+        $foto_proveedor = "../../img/usuario/estandar.png";
 
         if ($tmp_email_proveedor == "") {
             $err_email_proveedor = "El email es obligatorio";
@@ -122,7 +122,7 @@
                                 <div class="card-body p-md-5 mx-md-4">
 
                                     <div class="text-center">
-                                        <img src="../imagenes/loguito1-removebg-preview.png"
+                                        <img src="../../img/logo-marron-nobg.png"
                                             style="width: 185px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
                                     </div>
@@ -154,7 +154,7 @@
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">Ya tienes cuenta?
-                                                <a style="text-decoration: none; color: black;" href="./iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                                <a style="text-decoration: none; color: black;" href="../usuario/iniciar_sesion.php"><u>Iniciar sesión</u></a>
                                             </p>
                                         </div>
                                     </form>
@@ -173,31 +173,6 @@
             </div>
         </div>
     </section>
-
-    <!-- <div class="container">
-        <h1>Registro</h1>
-        <form class="col-6" action="" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label">Usuario</label>
-                <input class="form-control" type="text" name="email_proveedor">
-                <?php if (isset($err_email_proveedor)) echo "<span class='error'>$err_email_proveedor</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input class="form-control" type="password" name="contrasena_proveedor">
-                <?php if (isset($err_contrasena_proveedor)) echo "<span class='error'>$err_contrasena_proveedor</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <input class="btn btn-primary" type="submit" value="Registrarse">
-            </div>
-            <div class="mb-3">
-                <p>¿Ya tienes cuenta?</p>
-                <a class="btn btn-secondary" href="iniciar_sesion.php">Iniciar sesion</a>
-                <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
-            </div>
-        </form>
-        
-    </div> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 

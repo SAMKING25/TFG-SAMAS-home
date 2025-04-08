@@ -9,8 +9,8 @@
         error_reporting( E_ALL );
         ini_set("display_errors", 1 );    
 
-        require('../util/conexion.php');
-        require('../util/utilidades.php');
+        require('../../util/conexion.php');
+        require('../../util/funciones/utilidades.php');
     ?>
     <style>
         .error {
@@ -88,7 +88,7 @@
             if(isset($usuario) && isset($contrasena_cifrada)){
                 $sql = "INSERT INTO usuarios VALUES ('$usuario','$contrasena_cifrada')";
                 $_conexion -> query($sql);
-                header("location: iniciar_sesion.php");
+                header("location: ./iniciar_sesion.php");
                 exit;
             }
             
@@ -97,82 +97,54 @@
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-xl-10">
-                <div class="card rounded-3 text-black">
-                <div class="row g-0">
-                    <div class="col-lg-6">
-                    <div class="card-body p-md-5 mx-md-4">
+                <div class="col-xl-10">
+                    <div class="card rounded-3 text-black">
+                        <div class="row g-0">
+                            <div class="col-lg-6">
+                            <div class="card-body p-md-5 mx-md-4">
+                                <div class="text-center">
+                                <img src="../../img/logo-marron-nobg.png"
+                                    style="width: 185px;" alt="logo">
+                                <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
+                                </div>
+                                <form method="post" enctype="multipart/form-data">
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <label class="form-label" for="email_usuario">Email</label>
+                                        <input type="email_usuario" id="email_usuario" name="email_usuario" class="form-control"
+                                        placeholder="Inserte su correo electrónico" />
+                                        <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                                    </div>
 
-                        <div class="text-center">
-                        <img src="../imagenes/loguito1-removebg-preview.png"
-                            style="width: 185px;" alt="logo">
-                        <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
+                                    <div data-mdb-input-init class="form-outline mb-4">
+                                        <label class="form-label" for="contrasena_usuario">Contraseña</label>
+                                        <input type="password" id="contrasena_usuario" name="contrasena_usuario" class="form-control" />
+                                        <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                                    </div>
+
+                                    <div class="pt-1 mb-5 pb-1">
+                                        <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Registrarse</button>
+                                    </div>
+
+                                    <div class="d-flex align-items-center justify-content-center pb-4">
+                                        <p class="mb-0 me-2">Ya tienes cuenta?
+                                            <a style="text-decoration: none; color: black;" href="./iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-
-                        <form method="post" enctype="multipart/form-data">
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <label class="form-label" for="email_usuario">Email</label>
-                                <input type="email_usuario" id="email_usuario" name="email_usuario" class="form-control"
-                                placeholder="Inserte su correo electrónico" />
-                                <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                        <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                            <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                                <h4 class="mb-4">Mucho más que muebles</h4>
+                                <p class="small mb-0">Somos SAMAS home y operamos en toda la provincia de Málaga haciendo de tu reforma de casa algo más simple y fácil de lograr.</p>
                             </div>
-
-                            <div data-mdb-input-init class="form-outline mb-4">
-                                <label class="form-label" for="contrasena_usuario">Contraseña</label>
-                                <input type="password" id="contrasena_usuario" name="contrasena_usuario" class="form-control" />
-                                <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
-                            </div>
-
-                            <div class="pt-1 mb-5 pb-1">
-                                <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Registrarse</button>
-                            </div>
-
-                            <div class="d-flex align-items-center justify-content-center pb-4">
-                                <p class="mb-0 me-2">Ya tienes cuenta?
-                                    <a style="text-decoration: none; color: black;" href="./iniciar_sesion.php"><u>Iniciar sesión</u></a>
-                                </p>
-                            </div>
-                        </form>
-
-                    </div>
-                    </div>
-                    <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-                    <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                        <h4 class="mb-4">Mucho más que muebles</h4>
-                        <p class="small mb-0">Somos SAMAS home y operamos en toda la provincia de Málaga haciendo de tu reforma de casa algo más simple y fácil de lograr.</p>
-                    </div>
+                        </div>
+                        </div>
                     </div>
                 </div>
-                </div>
-            </div>
             </div>
         </div>
     </section>
-    
-    <!-- <div class="container">
-        <h1>Registro</h1>
-        <form class="col-6" action="" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label">Usuario</label>
-                <input class="form-control" type="text" name="usuario">
-                <?php if(isset($err_usuario)) echo "<span class='error'>$err_usuario</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input class="form-control" type="password" name="contrasena">
-                <?php if(isset($err_contrasena)) echo "<span class='error'>$err_contrasena</span>"; ?>
-            </div>
-            <div class="mb-3">
-                <input class="btn btn-primary" type="submit" value="Registrarse">
-            </div>
-            <div class="mb-3">
-                <p>¿Ya tienes cuenta?</p>
-                <a class="btn btn-secondary" href="iniciar_sesion.php">Iniciar sesion</a>
-                <a href="../index.php" class="btn btn-outline-success">Volver a inicio</a>
-            </div>
-        </form>
-        
-    </div> -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

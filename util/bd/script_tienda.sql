@@ -1,3 +1,5 @@
+-- Nombre hostinger: u929679314_samashome_db
+
 CREATE SCHEMA prueba_samas;
 
 USE prueba_samas;

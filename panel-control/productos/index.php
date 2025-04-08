@@ -26,11 +26,11 @@
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
-    require('../util/conexion.php');
+    require('../../util/conexion.php');
 
     session_start();
     if (!isset($_SESSION["usuario"])) { 
-        header("location: ../../usuario/iniciar_sesion_proveedor.php");
+        header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
     ?>
@@ -80,7 +80,7 @@
                 <button type="submit" class="btn btn-outline-primary">Buscar</button>
             </div>
             <div class="col-auto">
-                <a href="index.php" class="btn btn-outline-secondary">Ver todos</a>
+                <a href="./index.php" class="btn btn-outline-secondary">Ver todos</a>
             </div>
         </form>
 
@@ -94,7 +94,7 @@
                     <div class="col-12 col-md-6 col-xxl-4">
                         <div class="card h-100 shadow-sm">
                             <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>" class="text-decoration-none">
-                                <img src="../imagenes/<?php echo $fila["imagen"]; ?>" class="card-img-top" style="height: 260px; object-fit: cover;" alt="Imagen del producto">
+                                <img src="../../img/productos/<?php echo $fila["imagen"]; ?>" class="card-img-top" style="height: 260px; object-fit: cover;" alt="Imagen del producto">
                             </a>
                             <div class="card-body d-flex flex-column">
                                 <h5 class="card-title"><?php echo $fila["nombre"]; ?></h5>
