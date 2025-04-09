@@ -7,9 +7,9 @@
     $sql->execute();
     $resultado = $sql->get_result();
     
-    define('IMG_USUARIO','../../img/usuario');
-    define('USUARIO','../login/proveedores/');
-    define('FUNCIONES','../util/funciones/')
+    define('IMG_USUARIO','/img/usuario/');
+    define('USUARIO','/login/proveedores/');
+    define('FUNCIONES','/util/funciones/')
 
 ?>
 

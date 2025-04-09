@@ -103,7 +103,7 @@
                             <div class="col-lg-6">
                             <div class="card-body p-md-5 mx-md-4">
                                 <div class="text-center">
-                                <img src="../../img/logos/logo-marron-nobg.png"
+                                <img src="/img/logos/logo-marron-nobg.png"
                                     style="width: 185px;" alt="logo">
                                 <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
                                 </div>
