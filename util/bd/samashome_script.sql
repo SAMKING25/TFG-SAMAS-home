@@ -1,28 +1,8 @@
 -- Nombre hostinger: u929679314_samashome_db
 
-CREATE SCHEMA prueba_samas;
+CREATE SCHEMA u929679314_samashome_db;
 
-USE prueba_samas;
-
-DROP TABLE categorias;
-DROP TABLE usuarios;
-DROP TABLE proveedores;
-DROP TABLE productos;
-
-SELECT * FROM categorias;
-SELECT * FROM usuarios;
-SELECT * FROM proveedores;
-SELECT * FROM productos;
-
-INSERT INTO categorias (categoria) VALUES ('Sofás');
-INSERT INTO categorias (categoria) VALUES ('Sillas');
-INSERT INTO categorias (categoria) VALUES ('Mesas');
-INSERT INTO categorias (categoria) VALUES ('Colchones');
-INSERT INTO categorias (categoria) VALUES ('Armarios');
-
-
-DELETE FROM usuarios WHERE id_usuario = 1;
-
+USE u929679314_samashome_db;
 
 CREATE TABLE categorias (
 	categoria VARCHAR(50) PRIMARY KEY
@@ -60,3 +40,21 @@ CREATE TABLE productos (
     FOREIGN KEY (categoria) REFERENCES categorias(categoria),
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 );
+
+INSERT INTO categorias (categoria) VALUES ('Sofás');
+INSERT INTO categorias (categoria) VALUES ('Sillas');
+INSERT INTO categorias (categoria) VALUES ('Mesas');
+INSERT INTO categorias (categoria) VALUES ('Colchones');
+INSERT INTO categorias (categoria) VALUES ('Armarios');
+
+SELECT * FROM categorias;
+SELECT * FROM usuarios;
+SELECT * FROM proveedores;
+SELECT * FROM productos;
+
+DROP TABLE categorias;
+DROP TABLE usuarios;
+DROP TABLE proveedores;
+DROP TABLE productos;
+
+DELETE FROM usuarios WHERE id_usuario = 1;
