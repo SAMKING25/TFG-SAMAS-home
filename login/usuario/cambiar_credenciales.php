@@ -9,12 +9,12 @@
         error_reporting( E_ALL );
         ini_set("display_errors", 1 );    
 
-        require('../util/conexion.php');
-        require('../util/utilidades.php');
+        require('/util/conexion.php');
+        require('/util/utilidades.php');
 
         session_start();
         if (!isset($_SESSION["usuario"])) { 
-            header("location: ../usuario/iniciar_sesion.php");
+            header("location: /usuario/iniciar_sesion.php");
             exit;
         }
     ?>
@@ -72,7 +72,7 @@
             <div class="mb-3">
                 <input type="hidden" name="usuario" value="<?php echo $usuario ?>">
                 <input class="btn btn-primary" type="submit" value="Confirmar">
-                <a href="../index.php" class="btn btn-outline-secondary">Volver a inicio</a>
+                <a href="/index.php" class="btn btn-outline-secondary">Volver a inicio</a>
             </div>
         </form>
     </div>

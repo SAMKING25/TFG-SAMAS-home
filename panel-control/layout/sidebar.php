@@ -21,13 +21,13 @@
 <?php
 // Obtener la URL actual
     $current_url = $_SERVER['REQUEST_URI'];
-    define('BASE_URL','../panel-control/');
+    define('BASE_URL','/panel-control/');
 ?>
 
 <div class="d-flex">
     <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;">
-        <a href="<?php echo BASE_URL ?>index.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
-            <img src="../../img/logos/logo-negro-nobg.png" class="w-50" alt="SAMAS home">
+        <a href="/index.html" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+            <img src="/img/logos/logo-negro-nobg.png" class="w-50" alt="SAMAS home">
             <span class="fs-4">SAMAS home</span>
         </a>
         <hr>

@@ -67,7 +67,7 @@
             <?php while ($fila = $resultado->fetch_assoc()) { ?>
                 <!-- Imagen del producto -->
                 <div class="col-md-6 mb-4 bg-white">
-                    <img src="../../img/productos/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
+                    <img src="/img/productos/<?php echo $fila['imagen'] ?>" alt="Product" class="img-fluid rounded mb-3 product-image">
                 </div>
 
                 <!-- Detalles del producto -->

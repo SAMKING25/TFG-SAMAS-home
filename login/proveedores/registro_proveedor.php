@@ -51,7 +51,7 @@
         $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
         $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
         $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
-        $foto_proveedor = "../../img/usuario/estandar.png";
+        $foto_proveedor = "estandar.png";
 
         if ($tmp_email_proveedor == "") {
             $err_email_proveedor = "El email es obligatorio";
