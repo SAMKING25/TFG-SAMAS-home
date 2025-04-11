@@ -40,6 +40,12 @@ CREATE TABLE productos (
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 );
 
+CREATE TABLE carrito (
+    id_carrito INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id_producto INT,
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
+);
+
 INSERT INTO categorias (categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
 INSERT INTO categorias (categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
 INSERT INTO categorias (categoria,img_categoria) VALUES ('Mesas',"mesas.jpg");
