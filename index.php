@@ -196,96 +196,48 @@
 		<!-- Pedimos a la BD todas las categorias -->
 		<?php
 			$sql = "SELECT * FROM categorias";
-			$resultado = $_conexion->query($sql);
+			$categorias = $_conexion->query($sql);
     	?>
 		<!-- While de todas las categorias -->
 		<div class="container row mt-4">
 			<?php
-				while ($fila = $resultado->fetch_assoc()) { ?>
-					<div class="panel active" style="background-image: url('img/categorias/<?php echo $fila['img_categoria'] ?>">
-						<h3><?php echo $fila['categoria'] ?></h3>
+				while ($categoria = $categorias->fetch_assoc()) { ?>
+					<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>">
+						<h3><?php echo $categoria['categoria'] ?></h3>
 					</div>
 			<?php } ?>
 		</div>
 
+		<?php
+		    $limite = 8; // Número de productos a mostrar
+			$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
+			$productos = $_conexion->query($sql);
+    	?>
 		<!-- Productos -->
 		<div class="container py-5 mt-5">
 			<h2 class="text-center mb-4">Productos Nuevos</h2>
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-				<!-- Product 1 -->
-				<div class="col-12">
-					<div class="card h-100 shadow-sm">
-						<img src="./img/productos/cama.jpg" class="card-img-top" alt="Product 1" />
-						<div class="card-body">
-							<h5 class="card-title">Cama chill</h5>
-							<p class="card-text">
-								Una locura de cama.
-							</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="h5 mb-0">300.00€</span>
-								<button class="btn btn-outline-secondary">
-									<i class="bi bi-cart-plus"></i> Añadir al carrito
-								</button>
+				
+				<?php
+				while ($producto = $productos->fetch_assoc()) { ?>
+					<div class="col">
+						<div class="card h-100 shadow-sm">
+							<img src="./img/productos/<?php echo $producto['imagen'] ?>" class="card-img-top" alt="Producto <?php echo $productos->field_count ?>" />
+							<div class="card-body">
+								<h5 class="card-title"><?php echo $producto['nombre'] ?></h5>
+								<p class="card-text">
+									<?php echo $producto['descripcion'] ?>
+								</p>
+								<div class="d-flex justify-content-between align-items-center">
+									<span class="h5 mb-0"><?php echo $producto['precio'] ?>€</span>
+									<button class="btn btn-outline-secondary">
+										<i class="bi bi-cart-plus"></i> Añadir al carrito
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-
-				<!-- Product 2 -->
-				<div class="col">
-					<div class="card h-100 shadow-sm">
-						<img src="./img/productos/mesa.jpg" class="card-img-top" alt="Product 2" />
-						<div class="card-body">
-							<h5 class="card-title">Mesa de comedor</h5>
-							<p class="card-text">
-								Una mesa que no se rompe.
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="h5 mb-0">50€</span>
-								<button class="btn btn-outline-secondary">
-									<i class="bi bi-cart-plus"></i> Añadir al carrito
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Product 3 -->
-				<div class="col">
-					<div class="card h-100 shadow-sm">
-						<img src="./img/productos/mesas.jpg" class="card-img-top" alt="Product 3" />
-						<div class="card-body">
-							<h5 class="card-title">Sillón de dos plazas</h5>
-							<p class="card-text">
-								Un sillón muy cómodo y resistente.
-							</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="h5 mb-0">200€</span>
-								<button class="btn btn-outline-secondary">
-									<i class="bi bi-cart-plus"></i> Añadir al carrito
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Product 4 -->
-				<div class="col">
-					<div class="card h-100 shadow-sm">
-						<img src="./img/productos/mueble.jpeg" class="card-img-top" alt="Product 4" />
-						<div class="card-body">
-							<h5 class="card-title">Armario</h5>
-							<p class="card-text">
-								Un armario super organizado.
-							</p>
-							<div class="d-flex justify-content-between align-items-center">
-								<span class="h5 mb-0">150€</span>
-								<button class="btn btn-outline-secondary">
-									<i class="bi bi-cart-plus"></i> Añadir al carrito
-								</button>
-							</div>
-						</div>
-					</div>
-				</div>
+				<?php } ?>
 			</div>
 			<button type="button" class="banner-btn btn btn-dark mt-4">
 				Ver más productos
