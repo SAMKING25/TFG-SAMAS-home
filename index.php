@@ -190,8 +190,8 @@
 		</div>
 
 		<!-- Categorias -->
-		<div class="text-center">
-			<h2>Categorias</h2>
+		<div class="text-center mt-5">
+			<h2>Categorías</h2>
 		</div>
 		<!-- Pedimos a la BD todas las categorias -->
 		<?php
@@ -199,10 +199,10 @@
 			$resultado = $_conexion->query($sql);
     	?>
 		<!-- While de todas las categorias -->
-		<div class="container row mt-5">
+		<div class="container row mt-4">
 			<?php
 				while ($fila = $resultado->fetch_assoc()) { ?>
-					<div class="panel" style="background-image: url('img/categorias/<?php echo $fila['img_categoria'] ?>">
+					<div class="panel active" style="background-image: url('img/categorias/<?php echo $fila['img_categoria'] ?>">
 						<h3><?php echo $fila['categoria'] ?></h3>
 					</div>
 			<?php } ?>
@@ -345,8 +345,15 @@
 		const panels = document.querySelectorAll(".panel");
 
 		panels.forEach((panel) => {
-			panel.addEventListener("click", () => {
+			panel.addEventListener("mouseover", () => {
 				removeActiveClasses();
+				panel.classList.add("active");
+			});
+		});
+
+		panels.forEach((panel) => {
+			panel.addEventListener("mouseleave", () => {
+				addActiveClasses();
 				panel.classList.add("active");
 			});
 		});
@@ -354,6 +361,12 @@
 		function removeActiveClasses() {
 			panels.forEach((panel) => {
 				panel.classList.remove("active");
+			});
+		}
+
+		function addActiveClasses() {
+			panels.forEach((panel) => {
+				panel.classList.add("active");
 			});
 		}
 	</script>
