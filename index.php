@@ -209,7 +209,10 @@
 		</div>
 
 		<?php
-		    $limite = 8; // Número de productos a mostrar
+		    $limite = 4; // Número de productos a mostrar
+			if (isset($_POST['ver_mas'])) {
+				$limite += 4;
+			}
 			$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
 			$productos = $_conexion->query($sql);
     	?>
@@ -239,9 +242,11 @@
 					</div>
 				<?php } ?>
 			</div>
-			<button type="button" class="banner-btn btn btn-dark mt-4">
-				Ver más productos
-			</button>
+			<form method="post">
+				<button type="submit" name="ver_mas" class="banner-btn btn btn-dark mt-4">
+					Ver más productos
+				</button>
+			</form>
 		</div>
 	</div>
 

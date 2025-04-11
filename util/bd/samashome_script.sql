@@ -27,7 +27,7 @@ CREATE TABLE proveedores (
 CREATE TABLE productos (
 	id_producto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(50),
-    precio NUMERIC(4,2),
+    precio NUMERIC(6,2),
     categoria VARCHAR(30),
     stock INT DEFAULT 0,
     descripcion VARCHAR(255),
@@ -56,11 +56,13 @@ SELECT * FROM categorias;
 SELECT * FROM usuarios;
 SELECT * FROM proveedores;
 SELECT * FROM productos;
+SELECT * FROM carrito;
 
 DROP TABLE categorias;
 DROP TABLE usuarios;
 DROP TABLE proveedores;
 DROP TABLE productos;
+DROP TABLE carrito;
 
 DELETE FROM usuarios WHERE id_usuario = 1;
 DELETE FROM categorias WHERE categoria = "Sillas";
