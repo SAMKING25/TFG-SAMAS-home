@@ -13,6 +13,13 @@
 	<link rel="stylesheet" href="./css/landing.css" />
 	<!--search-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+	<!--conexion con BD-->
+	<?php
+		error_reporting(E_ALL);
+		ini_set("display_errors", 1);
+
+		require('util/conexion.php');
+    ?>
 </head>
 
 <body>
@@ -183,35 +190,20 @@
 		</div>
 
 		<!--Categorias-->
+		<div class="text-center">
+			<h2>Categorias</h2>
+		</div>
+		<?php
+			$sql = "SELECT * FROM categorias";
+			$resultado = $_conexion->query($sql);
+    	?>
 		<div class="container row mt-5">
-			<div class="text-center">
-				<h2>Categorias</h2>
-			</div>
-			<div class="panel active" style="
-            background-image: url('./img/productos/mesa.jpg');
-          ">
-				<h3>Mesas y sillas</h3>
-			</div>
-			<div class="panel" style="
-            background-image: url('./img/productos/armarios.webp');
-          ">
-				<h3>Armarios</h3>
-			</div>
-			<div class="panel" style="
-            background-image: url('./img/productos/cama.jpg');
-          ">
-				<h3>Camas y colchones</h3>
-			</div>
-			<div class="panel" style="
-            background-image: url('./img/productos/mueble.jpeg');
-          ">
-				<h3>Decoración</h3>
-			</div>
-			<div class="panel" style="
-            background-image: url('./img/productos/sofa.jpg');
-          ">
-				<h3>Sofás y sillones</h3>
-			</div>
+			<?php
+				while ($fila = $resultado->fetch_assoc()) { ?>
+					<div class="panel" style="background-image: url('img/categorias/<?php echo $fila['img_categoria'] ?>">
+						<h3><?php echo $fila['categoria'] ?></h3>
+					</div>
+			<?php } ?>
 		</div>
 
 		<!-- Productos -->
