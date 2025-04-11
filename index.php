@@ -100,7 +100,7 @@
 		</section>
 	</div>
 	<div class="container">
-		<!--Ofertas-->
+		<!-- Ofertas -->
 		<!-- Carrusel -->
 		<div class="container mt-5">
 			<h2 class="text-center mb-4">Últimas Ofertas</h2>
@@ -193,10 +193,12 @@
 		<div class="text-center">
 			<h2>Categorias</h2>
 		</div>
+		<!-- Pedimos a la BD todas las categorias -->
 		<?php
 			$sql = "SELECT * FROM categorias";
 			$resultado = $_conexion->query($sql);
     	?>
+		<!-- While de todas las categorias -->
 		<div class="container row mt-5">
 			<?php
 				while ($fila = $resultado->fetch_assoc()) { ?>
