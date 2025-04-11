@@ -1,11 +1,10 @@
--- Nombre hostinger: u929679314_samashome_db
-
 CREATE SCHEMA u929679314_samashome_db;
 
 USE u929679314_samashome_db;
 
 CREATE TABLE categorias (
-	categoria VARCHAR(50) PRIMARY KEY
+	categoria VARCHAR(50) PRIMARY KEY,
+    img_categoria VARCHAR(60)
 );
 
 CREATE TABLE usuarios (
@@ -41,11 +40,11 @@ CREATE TABLE productos (
     FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
 );
 
-INSERT INTO categorias (categoria) VALUES ('Sofás');
-INSERT INTO categorias (categoria) VALUES ('Sillas');
-INSERT INTO categorias (categoria) VALUES ('Mesas');
-INSERT INTO categorias (categoria) VALUES ('Colchones');
-INSERT INTO categorias (categoria) VALUES ('Armarios');
+INSERT INTO categorias (categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
+INSERT INTO categorias (categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
+INSERT INTO categorias (categoria,img_categoria) VALUES ('Mesas',"mesas.jpg");
+INSERT INTO categorias (categoria,img_categoria) VALUES ('Colchones',"colchones.jpg");
+INSERT INTO categorias (categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
 
 SELECT * FROM categorias;
 SELECT * FROM usuarios;
@@ -58,3 +57,4 @@ DROP TABLE proveedores;
 DROP TABLE productos;
 
 DELETE FROM usuarios WHERE id_usuario = 1;
+DELETE FROM categorias WHERE categoria = "Sillas";

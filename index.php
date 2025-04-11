@@ -189,7 +189,7 @@
 			</div>
 		</div>
 
-		<!--Categorias-->
+		<!-- Categorias -->
 		<div class="text-center">
 			<h2>Categorias</h2>
 		</div>
