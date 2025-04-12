@@ -15,11 +15,13 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 	<!--conexion con BD-->
 	<?php
-		error_reporting(E_ALL);
-		ini_set("display_errors", 1);
+	session_start();
 
-		require('util/conexion.php');
-    ?>
+	error_reporting(E_ALL);
+	ini_set("display_errors", 1);
+
+	require('util/conexion.php');
+	?>
 </head>
 
 <body>
@@ -93,9 +95,9 @@
 				<p class="banner-subtext">
 					Encuentra los mejores muebles para tu hogar
 				</p>
-				<button type="button" class="banner-btn btn btn-dark">
+				<a href="#productos" class="banner-btn btn btn-dark">
 					Ver Productos
-				</button>
+				</a>
 			</div>
 		</section>
 	</div>
@@ -195,32 +197,38 @@
 		</div>
 		<!-- Pedimos a la BD todas las categorias -->
 		<?php
-			$sql = "SELECT * FROM categorias";
-			$categorias = $_conexion->query($sql);
-    	?>
+		$sql = "SELECT * FROM categorias";
+		$categorias = $_conexion->query($sql);
+		?>
 		<!-- While de todas las categorias -->
 		<div class="container row mt-4">
 			<?php
-				while ($categoria = $categorias->fetch_assoc()) { ?>
-					<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>">
-						<h3><?php echo $categoria['categoria'] ?></h3>
-					</div>
+			while ($categoria = $categorias->fetch_assoc()) { ?>
+				<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>')">
+					<h3><?php echo $categoria['categoria'] ?></h3>
+				</div>
 			<?php } ?>
 		</div>
 
 		<?php
-		    $limite = 4; // Número de productos a mostrar
-			if (isset($_POST['ver_mas'])) {
+			$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 4;
+
+			if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
 				$limite += 4;
 			}
+
+			if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
+				$limite = max(4, $limite - 4); // Para que no baje de 4
+			}
+
 			$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
 			$productos = $_conexion->query($sql);
-    	?>
+		?>
 		<!-- Productos -->
 		<div class="container py-5 mt-5">
-			<h2 class="text-center mb-4">Productos Nuevos</h2>
+			<h2 id="productos" class="text-center mb-4">Productos Nuevos</h2>
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-				
+
 				<?php
 				while ($producto = $productos->fetch_assoc()) { ?>
 					<div class="col">
@@ -242,10 +250,15 @@
 					</div>
 				<?php } ?>
 			</div>
-			<form method="post">
-				<button type="submit" name="ver_mas" class="banner-btn btn btn-dark mt-4">
-					Ver más productos
-				</button>
+			<!-- Botón "Ver más productos" (añade 4 productos mas a la vista) -->
+			<form method="post" action="#productos">
+				<input type="hidden" name="limite" value="<?php echo $limite; ?>">
+				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
+				
+				<!-- Botón "Ver menos productos" (quita 4 productos de la vista) -->
+				<?php if ($limite > 4): ?>
+					<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
+				<?php endif; ?>
 			</form>
 		</div>
 	</div>
@@ -285,9 +298,9 @@
 					<h6 class="footer-title text-uppercase font-weight-bold mb-4">
 						Contacto
 					</h6>
-					<p><i class="fas fa-home mr-3" style="margin-right: 5px;"></i>Málaga, Andalucía, España</p>
-					<p><i class="fas fa-envelope mr-3" style="margin-right: 5px;"></i>samashome@gmail.com</p>
-					<p><i class="fas fa-phone mr-3" style="margin-right: 5px;"></i>+34 645 867 244</p>
+					<p><i class="fas fa-home me-2"></i>Málaga, Andalucía, España</p>
+					<p><i class="fas fa-envelope me-2"></i>samashome@gmail.com</p>
+					<p><i class="fas fa-phone me-2"></i>+34 645 867 244</p>
 				</div>
 			</div>
 			<div class="footer-copyright text-center font-weight-bold py-3">
