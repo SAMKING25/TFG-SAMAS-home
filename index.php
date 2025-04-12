@@ -95,9 +95,9 @@
 				<p class="banner-subtext">
 					Encuentra los mejores muebles para tu hogar
 				</p>
-				<button type="button" class="banner-btn btn btn-dark">
+				<a href="#productos" class="banner-btn btn btn-dark">
 					Ver Productos
-				</button>
+				</a>
 			</div>
 		</section>
 	</div>
@@ -254,7 +254,8 @@
 			<form method="post" action="#productos">
 				<input type="hidden" name="limite" value="<?php echo $limite; ?>">
 				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
-
+				
+				<!-- Botón "Ver menos productos" (quita 4 productos de la vista) -->
 				<?php if ($limite > 4): ?>
 					<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
 				<?php endif; ?>
