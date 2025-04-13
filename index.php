@@ -15,12 +15,12 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 	<!--conexion con BD-->
 	<?php
-	session_start();
-
 	error_reporting(E_ALL);
 	ini_set("display_errors", 1);
 
 	require('util/conexion.php');
+
+	session_start();
 	?>
 </head>
 
@@ -77,9 +77,22 @@
 						<a href="#" class="nav-link">
 							<i class="bi bi-cart2 icono-personalizado"></i>
 						</a>
-						<a href="./panel-control/index.php" class="nav-link">
-							<i class="bi bi-person-circle icono-personalizado"></i>
-						</a>
+						<div class="dropdown">
+							<a class="dropdown-toggle text-light text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="bi bi-person-circle icono-personalizado"></i>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end">
+								<?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])){ ?>
+									<li><a class="dropdown-item" href="perfil.php">Mi Perfil</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion.php">Cambiar cuenta</a></li>
+									<li><hr class="dropdown-divider"></li>
+									<li><a class="dropdown-item" href="./util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
+								<?php } else{ ?>
+									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion.php">Iniciar Sesión</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/registro.php">Registrarse</a></li>
+								<?php }; ?>
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -211,18 +224,18 @@
 		</div>
 
 		<?php
-			$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 4;
+		$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 4;
 
-			if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
-				$limite += 4;
-			}
+		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
+			$limite += 4;
+		}
 
-			if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
-				$limite = max(4, $limite - 4); // Para que no baje de 4
-			}
+		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
+			$limite = max(4, $limite - 4); // Para que no baje de 4
+		}
 
-			$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
-			$productos = $_conexion->query($sql);
+		$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
+		$productos = $_conexion->query($sql);
 		?>
 		<!-- Productos -->
 		<div class="container py-5 mt-5">
@@ -254,7 +267,7 @@
 			<form method="post" action="#productos">
 				<input type="hidden" name="limite" value="<?php echo $limite; ?>">
 				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
-				
+
 				<!-- Botón "Ver menos productos" (quita 4 productos de la vista) -->
 				<?php if ($limite > 4): ?>
 					<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
