@@ -22,7 +22,10 @@
 
 	session_start();
 
-	$id_usuario = $_SESSION['usuario'];
+	if (isset($_SESSION['usuario'])) {
+		$id_usuario = $_SESSION['usuario'];
+	}
+	
 
     $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
     $sql->bind_param("i", $id_usuario);
