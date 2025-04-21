@@ -21,6 +21,17 @@
 	require('util/conexion.php');
 
 	session_start();
+
+	$id_usuario = $_SESSION['usuario'];
+
+    $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
+    $sql->bind_param("i", $id_usuario);
+    $sql->execute();
+    $resultado = $sql->get_result();
+    
+    define('IMG_USUARIO','/img/usuario/');
+    define('USUARIO','/login/');
+    define('FUNCIONES','/util/funciones/')
 	?>
 </head>
 
@@ -79,17 +90,21 @@
 						</a>
 						<div class="dropdown">
 							<a class="dropdown-toggle text-light text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<i class="bi bi-person-circle icono-personalizado"></i>
+								<!-- <i class="bi bi-person-circle icono-personalizado"></i> -->
+								<?php while ($fila = $resultado->fetch_assoc()) { ?>
+									<img src="<?php echo IMG_USUARIO.$fila['foto_usuario']?>" alt="" width="32" height="32" class="rounded-circle me-2">
+									<strong><?php echo $fila['nombre_usuario']?></strong>
+								<?php } ?>
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end">
 								<?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])){ ?>
-									<li><a class="dropdown-item" href="perfil.php">Mi Perfil</a></li>
-									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion.php">Cambiar cuenta</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/cambiar_credenciales_usuario.php">Mi Perfil</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion_usuario.php">Cambiar cuenta</a></li>
 									<li><hr class="dropdown-divider"></li>
 									<li><a class="dropdown-item" href="./util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
 								<?php } else{ ?>
-									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion.php">Iniciar Sesión</a></li>
-									<li><a class="dropdown-item" href="./login/usuario/registro.php">Registrarse</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/iniciar_sesion_usuario.php">Iniciar Sesión</a></li>
+									<li><a class="dropdown-item" href="./login/usuario/registro_usuario.php">Registrarse</a></li>
 								<?php }; ?>
 							</ul>
 						</div>

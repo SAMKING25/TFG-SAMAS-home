@@ -104,7 +104,7 @@
 
                             <div class="d-flex align-items-center justify-content-center pb-4">
                                 <p class="mb-0 me-2">¿Eres un usuario normal?
-                                    <a style="text-decoration: none; color: black;" href="../usuario/iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                    <a style="text-decoration: none; color: black;" href="../usuario/iniciar_sesion_usuario.php"><u>Iniciar sesión</u></a>
                                 </p>
                             </div>
 

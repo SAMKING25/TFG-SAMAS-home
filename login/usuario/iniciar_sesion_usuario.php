@@ -59,8 +59,8 @@
 
                 if($acceso_concedido){
                     session_start();
-                    $_SESSION["usuario"] = $usuario;
-                    header("location: ../../panel-control/index.php");
+                    $_SESSION["usuario"] = $datos_usuario["id_usuario"];
+                    header("location: ../../../index.php");
                 }else{
                     $err_contrasena_usuario = "Contraseña incorrecta";
                 }
@@ -102,12 +102,12 @@
 
                             <div class="d-flex align-items-center justify-content-center pb-4">
                                 <p class="mb-0 me-2">¿Eres una empresa?
-                                    <a style="text-decoration: none; color: black;" href="../proveedores/iniciar_sesion_proveedor.php"><u>Iniciar sesión</u></a>
+                                    <a style="text-decoration: none; color: black;" href="../proveedor/iniciar_sesion_proveedor.php"><u>Iniciar sesión</u></a>
                                 </p>
                             </div>
                             <div class="d-flex align-items-center justify-content-center pb-4">
                                 <p class="mb-0 me-2">¿No tienes cuenta?
-                                    <a style="text-decoration: none; color: black;" href="./registro.php"><u>Registrarse</u></a>
+                                    <a style="text-decoration: none; color: black;" href="./registro_usuario.php"><u>Registrarse</u></a>
                                 </p>
                             </div>
                         </form>
