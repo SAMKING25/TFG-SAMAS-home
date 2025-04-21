@@ -45,50 +45,67 @@
 <body>
     <?php
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $tmp_usuario = depurar($_POST["usuario"]);
-            $tmp_contrasena = $_POST["contrasena"];
+            $tmp_email_usuario = depurar($_POST["email_usuario"]);
+            $tmp_nombre_usuario = depurar($_POST["nombre_usuario"]);
+            $tmp_contrasena_usuario = $_POST["contrasena_usuario"];
+            $foto_usuario = "estandar.png";
+            $suscripcion = "Gratuita";
 
-            if($tmp_usuario == ""){
-                $err_usuario = "El usuario es obligatorio";
+            if ($tmp_email_usuario == "") {
+                $err_email_usuario = "El email es obligatorio";
             } else {
-                $sql="SELECT * FROM usuarios WHERE usuario ='$tmp_usuario'";
-                $resultado = $_conexion -> query($sql);
-
-                if($resultado -> num_rows == 1){
-                    $err_usuario = "El usuario $tmp_usuario ya existe";
+                $sql = "SELECT * FROM usuarios WHERE email_usuario ='$tmp_email_usuario'";
+                $resultado = $_conexion->query($sql);
+                
+                if ($resultado->num_rows == 1) {
+                    $err_email_usuario = "El email $tmp_email_usuario ya existe";
                 } else {
-                    if(strlen($tmp_usuario) > 15 || strlen($tmp_usuario) < 3){
-                        $err_usuario = "El usuario no puede tener mas de 15 caracteres o menos de 3";
+                    if (filter_var($tmp_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
+                        $err_email_usuario = "El email no es válido";
                     } else {
-                        $patron = "/^[0-9a-zA-ZáéíóúÁÉÍÓÚ]+$/";
-                        if(!preg_match($patron, $tmp_usuario)){
-                            $err_usuario = "El usuario solo puede tener letras y números";
-                        } else {
-                            $usuario = $tmp_usuario;
-                        }
+                        $email_usuario = $tmp_email_usuario;
                     }
                 }
             }
 
-            if($tmp_contrasena == ""){
-                $err_contrasena = "La contraseña es obligatoria";
+            if ($tmp_nombre_usuario == "") {
+                $err_nombre_usuario = "El nombre es obligatorio";
             } else {
-                if(strlen($tmp_contrasena) > 15 || strlen($tmp_contrasena) < 8){
-                    $err_contrasena = "La contraseña tiene que tener como minimo 8 y maximo 15 caracteres";
+                $sql = "SELECT * FROM usuarios WHERE nombre_usuario ='$tmp_nombre_usuario'";
+                $resultado = $_conexion->query($sql);
+    
+                if ($resultado->num_rows == 1) {
+                    $err_nombre_usuario = "El nombre $tmp_nombre_usuario ya existe";
                 } else {
-                    $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
-                    if(!preg_match($patron, $tmp_contrasena)){
-                        $err_contrasena = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
+                    $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
+                    if (!preg_match($patron, $tmp_nombre_usuario)) {
+                        $err_nombre_usuario = "El nombre solo puede tener letras y números";
                     } else {
-                        $contrasena_cifrada = password_hash($tmp_contrasena,PASSWORD_DEFAULT);
-                    }                    
+                        $nombre_usuario = $tmp_nombre_usuario;
+                    }
                 }
             }
 
-            if(isset($usuario) && isset($contrasena_cifrada)){
-                $sql = "INSERT INTO usuarios VALUES ('$usuario','$contrasena_cifrada')";
-                $_conexion -> query($sql);
-                header("location: ./iniciar_sesion.php");
+            if ($tmp_contrasena_usuario == "") {
+                $err_contrasena_usuario = "La contraseña es obligatoria";
+            } else {
+                if (strlen($tmp_contrasena_usuario) < 8) {
+                    $err_contrasena_usuario = "La contraseña tiene que tener como minimo 8 caracteres";
+                } else {
+                    $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
+                    if (!preg_match($patron, $tmp_contrasena_usuario)) {
+                        $err_contrasena_usuario = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
+                    } else {
+                        $contrasena_usuario_cifrada = password_hash($tmp_contrasena_usuario, PASSWORD_DEFAULT);
+                    }
+                }
+            }
+
+            if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
+                $sql = "INSERT INTO usuarios (email_usuario, nombre_usuario, contrasena_usuario, suscripcion, foto_usuario) 
+                        VALUES ('$email_usuario','$nombre_usuario','$contrasena_usuario_cifrada','$suscripcion','$foto_usuario')";
+                $_conexion->query($sql);
+                header("location: iniciar_sesion_usuario.php");
                 exit;
             }
             
@@ -109,6 +126,13 @@
                                 </div>
                                 <form method="post" enctype="multipart/form-data">
                                     <div data-mdb-input-init class="form-outline mb-4">
+                                        <label class="form-label" for="nombre_usuario">Nombre</label>
+                                        <input type="text" id="nombre_usuario" name="nombre_usuario" class="form-control"
+                                            placeholder="Inserte su nombre" />
+                                        <?php if (isset($err_nombre_usuario)) echo "<span class='error'>$err_nombre_usuario</span>"; ?>
+                                    </div>
+                                
+                                    <div data-mdb-input-init class="form-outline mb-4">
                                         <label class="form-label" for="email_usuario">Email</label>
                                         <input type="email_usuario" id="email_usuario" name="email_usuario" class="form-control"
                                         placeholder="Inserte su correo electrónico" />
@@ -127,7 +151,7 @@
 
                                     <div class="d-flex align-items-center justify-content-center pb-4">
                                         <p class="mb-0 me-2">Ya tienes cuenta?
-                                            <a style="text-decoration: none; color: black;" href="./iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                            <a style="text-decoration: none; color: black;" href="./iniciar_sesion_usuario.php"><u>Iniciar sesión</u></a>
                                         </p>
                                     </div>
                                 </form>

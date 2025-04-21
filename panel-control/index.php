@@ -15,7 +15,7 @@
 
     session_start();
     if (!isset($_SESSION["usuario"])) { 
-        header("location: ../login/usuario/iniciar_sesion.php");
+        header("location: ../login/usuario/iniciar_sesion_usuario.php");
         exit;
     }
     ?>

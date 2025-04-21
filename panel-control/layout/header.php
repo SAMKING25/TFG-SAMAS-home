@@ -8,7 +8,7 @@
     $resultado = $sql->get_result();
     
     define('IMG_USUARIO','/img/usuario/');
-    define('USUARIO','/login/proveedores/');
+    define('USUARIO','/login/');
     define('FUNCIONES','/util/funciones/')
 
 ?>
@@ -25,8 +25,8 @@
         <?php } ?>
       </a>
       <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-        <li><a class="dropdown-item" href="<?php echo USUARIO?>cambiar_credenciales_proveedores.php">Perfil</a></li>
-        <li><a class="dropdown-item" href="<?php echo USUARIO?>iniciar_sesion_proveedor.php">Cambiar de cuenta</a></li>
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>proveedor/cambiar_credenciales_proveedores.php">Perfil</a></li>
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>proveedor/iniciar_sesion_proveedor.php">Cambiar de cuenta</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="<?php echo FUNCIONES?>cerrar_sesion.php">Salir</a></li>
       </ul>
