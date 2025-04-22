@@ -235,11 +235,13 @@
 		<!-- While de todas las categorias -->
 		<div class="container row mt-4">
 			<?php
-			while ($categoria = $categorias->fetch_assoc()) { ?>
-				<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>')">
-					<h3><?php echo $categoria['categoria'] ?></h3>
-				</div>
-			<?php } ?>
+			// if (isset($_SESSION['usuario'])) {
+				while ($categoria = $categorias->fetch_assoc()) { ?>
+					<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
+						<h3><?php echo $categoria['categoria'] ?></h3>
+					</div>
+				<?php } ?>
+			<?php //} ?>
 		</div>
 
 		<?php
