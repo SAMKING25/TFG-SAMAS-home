@@ -150,6 +150,7 @@
 
                                         <div class="pt-1 mb-5 pb-1">
                                             <button data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Registrarse</button>
+                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">

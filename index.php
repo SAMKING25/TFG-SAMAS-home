@@ -25,7 +25,6 @@
 	if (isset($_SESSION['usuario'])) {
 		$id_usuario = $_SESSION['usuario'];
 	}
-	
 
     $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
     $sql->bind_param("i", $id_usuario);
@@ -93,7 +92,9 @@
 						</a>
 						<div class="dropdown">
 							<a class="dropdown-toggle text-light text-decoration-none" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-								<!-- <i class="bi bi-person-circle icono-personalizado"></i> -->
+								<?php if (!isset($_SESSION['usuario'])) { ?>
+									<i class="bi bi-person-circle icono-personalizado"></i>
+								<?php } ?>
 								<?php while ($fila = $resultado->fetch_assoc()) { ?>
 									<img src="<?php echo IMG_USUARIO.$fila['foto_usuario']?>" alt="" width="32" height="32" class="rounded-circle me-2">
 									<strong><?php echo $fila['nombre_usuario']?></strong>
@@ -234,11 +235,13 @@
 		<!-- While de todas las categorias -->
 		<div class="container row mt-4">
 			<?php
-			while ($categoria = $categorias->fetch_assoc()) { ?>
-				<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>')">
-					<h3><?php echo $categoria['categoria'] ?></h3>
-				</div>
-			<?php } ?>
+			// if (isset($_SESSION['usuario'])) {
+				while ($categoria = $categorias->fetch_assoc()) { ?>
+					<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
+						<h3><?php echo $categoria['categoria'] ?></h3>
+					</div>
+				<?php } ?>
+			<?php //} ?>
 		</div>
 
 		<?php
