@@ -60,7 +60,16 @@
                 if($acceso_concedido){
                     session_start();
                     $_SESSION["usuario"] = $datos_usuario["id_usuario"];
-                    header("location: ../../../index.php");
+
+                    // Redirige a donde quería ir el usuario
+                    if (isset($_SESSION['redirect_after_login'])) {
+                        $redirect_url = $_SESSION['redirect_after_login'];
+                        unset($_SESSION['redirect_after_login']);
+                        header("Location: $redirect_url");
+                    } else {
+                        header("Location: /index.php"); // Si no había una página previa, va al inicio
+                    }
+                    exit();
                 }else{
                     $err_contrasena_usuario = "Contraseña incorrecta";
                 }
