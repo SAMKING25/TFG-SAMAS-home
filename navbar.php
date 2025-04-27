@@ -36,7 +36,7 @@ define('FUNCIONES', '/util/funciones/');
                             <a class="nav-link" href="/plano">Plano</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Suscripción</a>
+                            <a class="nav-link" href="/suscripcion">Suscripción</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="#">Contacto</a>
