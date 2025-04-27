@@ -7,12 +7,11 @@ if (isset($_SESSION['usuario'])) {
 $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
 $sql->bind_param("i", $id_usuario);
 $sql->execute();
-$resultado = $sql->get_result();
+$resultado_usuario = $sql->get_result();
 
 define('IMG_USUARIO', '/img/usuario/');
 define('FUNCIONES', '/util/funciones/');
 ?>
-
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
@@ -71,7 +70,7 @@ define('FUNCIONES', '/util/funciones/');
                             <?php if (!isset($_SESSION['usuario'])) { ?>
                                 <i class="bi bi-person-circle icono-personalizado"></i>
                             <?php } ?>
-                            <?php while ($fila = $resultado->fetch_assoc()) { ?>
+                            <?php while ($fila = $resultado_usuario->fetch_assoc()) { ?>
                                 <img src="<?php echo IMG_USUARIO . $fila['foto_usuario'] ?>" alt="" width="32" height="32" class="rounded-circle me-2">
                                 <strong><?php echo $fila['nombre_usuario'] ?></strong>
                             <?php } ?>
