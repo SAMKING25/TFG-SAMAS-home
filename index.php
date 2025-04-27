@@ -20,7 +20,7 @@
 
 	require('util/conexion.php');
 
-	session_start();  
+	session_start();
 	?>
 </head>
 
@@ -45,89 +45,42 @@
 		<!-- Carrusel -->
 		<div class="container mt-5">
 			<h2 class="text-center mb-4">Últimas Ofertas</h2>
-			<!-- Carrusel -->
-			<div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-				<!-- Contenido del Carrusel -->
+			<?php
+			$sql = "SELECT p.*, o.porcentaje
+        		FROM productos p
+        		INNER JOIN ofertas o ON p.id_oferta = o.id_oferta";
+			$resultado = $_conexion->query($sql);
+			?>
+			<div id="carruselOfertas" class="carousel slide" data-bs-ride="carousel">
 				<div class="carousel-inner">
-					<!-- Slide 1 -->
-					<div class="carousel-item active">
-						<div class="row text-center">
-							<div class="col-md-4">
-								<img src="./img/productos/cama.jpg" class="img-fluid mb-2 small-image" alt="Producto 1" />
-								<p>
-									<span>Canapé y colchón</span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">325€</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">275€</span>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<img src="./img/productos/sofa.jpg" class="img-fluid mb-2 small-image" alt="Producto 2" />
-								<p>
-									<span>Sillón de dos plazas</span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">375€</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">300€</span>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<img src="./img/productos/mueble.jpeg" class="img-fluid mb-2 small-image" alt="Producto 3" />
-								<p>
-									<span>Armario con tres puertas</span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">315€</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">280€</span>
-								</p>
+					<?php
+					$primero = true;
+					while ($producto = $resultado->fetch_assoc()) { ?>
+						<div class="carousel-item <?php if ($primero) {
+														echo 'active';
+														$primero = false;
+													} ?>">
+							<img src="img/productos/<?php echo $producto['imagen']; ?>" class="d-block w-100" alt="<?php echo $producto['nombre']; ?>">
+							<div class="carousel-caption d-none d-md-block">
+								<h5><?php echo $producto['nombre']; ?></h5>
+								<p>¡<?php echo $producto['porcentaje']; ?>% de descuento!</p>
+								<p>Precio: <?php echo $producto['precio']; ?> €</p>
 							</div>
 						</div>
-					</div>
-
-					<!-- Slide 2 -->
-					<div class="carousel-item">
-						<div class="row text-center">
-							<div class="col-md-4">
-								<img src="./img/productos/mesas.jpg" class="img-fluid mb-2 small-image" alt="Producto 5" />
-								<p>
-									<span>Mesa y sillas para comedor</span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">200 €</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">150,00 €</span>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<img src="./img/productos/mueble.jpeg" class="img-fluid mb-2 small-image" alt="Producto 6" />
-								<p>
-									<span>Mueble para televisión</span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">125 €</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">99,50 €</span>
-								</p>
-							</div>
-							<div class="col-md-4">
-								<img src="./img/productos/armarios.webp" class="img-fluid mb-2 small-image" alt="Producto 7" />
-								<p>
-									<span>Escritorio y silla de oficina </span>
-									<br>
-									<span style="text-decoration: line-through; color: grey;">250€</span>
-									<span style="font-size: larger; font-weight: bold; color: #004085;">150€</span>
-								</p>
-							</div>
-						</div>
-					</div>
+					<?php } ?>
 				</div>
 
-				<!-- Controles -->
-				<button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
-					data-bs-slide="prev">
-					<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<!-- Controles de anterior / siguiente -->
+				<button class="carousel-control-prev" type="button" data-bs-target="#carruselOfertas" data-bs-slide="prev">
+					<span class="carousel-control-prev-icon"></span>
 					<span class="visually-hidden">Anterior</span>
 				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
-					data-bs-slide="next">
-					<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<button class="carousel-control-next" type="button" data-bs-target="#carruselOfertas" data-bs-slide="next">
+					<span class="carousel-control-next-icon"></span>
 					<span class="visually-hidden">Siguiente</span>
 				</button>
 			</div>
+
 		</div>
 
 		<!-- Categorias -->
@@ -143,12 +96,13 @@
 		<div class="container row mt-4">
 			<?php
 			// if (isset($_SESSION['usuario'])) {
-				while ($categoria = $categorias->fetch_assoc()) { ?>
-					<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
-						<h3><?php echo $categoria['categoria'] ?></h3>
-					</div>
-				<?php } ?>
-			<?php //} ?>
+			while ($categoria = $categorias->fetch_assoc()) { ?>
+				<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
+					<h3><?php echo $categoria['categoria'] ?></h3>
+				</div>
+			<?php } ?>
+			<?php //} 
+			?>
 		</div>
 
 		<?php

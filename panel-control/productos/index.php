@@ -8,18 +8,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        
         body {
             background-color: #F7E5CB;
         }
+
         .btn-outline-primary {
-            color:rgb(163, 112, 48) !important;
-            border:1px solid rgb(163, 112, 48) !important;
+            color: rgb(163, 112, 48) !important;
+            border: 1px solid rgb(163, 112, 48) !important;
         }
+
         .btn-outline-primary:hover {
             background-color: rgb(163, 112, 48);
             color: white !important;
-            border:1px solid white !important;
+            border: 1px solid white !important;
         }
     </style>
     <?php
@@ -29,7 +30,7 @@
     require('../../util/conexion.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) { 
+    if (!isset($_SESSION["usuario"])) {
         header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
@@ -64,7 +65,7 @@
 
 
     // Consulta SQL
-    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['usuario'] . "' $filtro"; ;
+    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['usuario'] . "' $filtro";;
     $resultado = $_conexion->query($sql);
     ?>
 
@@ -105,6 +106,7 @@
                                     <li><strong>Categoría:</strong> <?php echo $fila["categoria"]; ?></li>
                                     <li><strong>Stock:</strong> <?php echo $fila["stock"]; ?></li>
                                     <li><strong>Medidas:</strong> <?php echo $fila["largo"] . "cm × " . $fila["ancho"] . "cm × " . $fila["alto"] . "cm"; ?></li>
+                                    <li><strong>Oferta:</strong> <?php echo $fila["id_oferta"] ?></li>
                                 </ul>
                                 <div class="mt-auto d-flex justify-content-between">
                                     <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn btn-outline-primary ">Editar</a>

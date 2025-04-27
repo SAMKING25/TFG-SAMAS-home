@@ -14,7 +14,7 @@
     require('../../util/funciones/utilidades.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) { 
+    if (!isset($_SESSION["usuario"])) {
         header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
@@ -45,6 +45,7 @@
         $tmp_largo = depurar($_POST["largo"]);
         $tmp_ancho = depurar($_POST["ancho"]);
         $tmp_alto = depurar($_POST["alto"]);
+        $oferta = $_POST["oferta"];
         $id_proveedor = $_SESSION["usuario"];
 
         $nombre_imagen = $_FILES["imagen"]["name"];
@@ -182,8 +183,8 @@
 
         if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
             // Inserta un nuevo producto
-            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto, id_proveedor)
-            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto, $id_proveedor)";
+            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto, id_proveedor, id_oferta)
+            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto, $id_proveedor, $oferta)";
             $_conexion->query($sql);
 
             header("location: ./index.php");
@@ -198,6 +199,15 @@
     while ($fila = $resultado->fetch_assoc()) {
         array_push($categorias, $fila["categoria"]);
     }
+
+    $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
+    $resultado = $_conexion->query($sql);
+    $ofertas = [];
+
+    while ($fila = $resultado->fetch_assoc()) {
+        $ofertas[] = $fila;  // Guarda todo el array con id_oferta y nombre
+    }
+
 
     ?>
     <div class="container py-5">
@@ -269,6 +279,22 @@
                                 <label class="form-label">Imagen</label>
                                 <input class="form-control" type="file" name="imagen">
                                 <?php if (isset($err_imagen)) echo "<span class='error'>$err_imagen</span>"; ?>
+                            </div>
+
+                            <div class="mb-4 mt-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Oferta</label>
+                                    <select class="form-select" name="oferta">
+                                        <option selected value="null">No tiene oferta</option>
+                                        <?php
+                                        foreach ($ofertas as $oferta) { ?>
+                                            <option value="<?php echo $oferta['id_oferta']; ?>">
+                                                <?php echo $oferta['nombre']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
+                                </div>
                             </div>
 
                             <div class="d-flex justify-content-between">
