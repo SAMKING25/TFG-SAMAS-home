@@ -47,30 +47,44 @@
 			<h2 class="text-center mb-4">Últimas Ofertas</h2>
 			<?php
 			$sql = "SELECT p.*, o.porcentaje
-        		FROM productos p
-        		INNER JOIN ofertas o ON p.id_oferta = o.id_oferta";
+            FROM productos p
+            INNER JOIN ofertas o ON p.id_oferta = o.id_oferta";
 			$resultado = $_conexion->query($sql);
 			?>
 			<div id="carruselOfertas" class="carousel slide" data-bs-ride="carousel">
-				<div class="carousel-inner">
+				<div class="carousel-inner carrusel-inner">
 					<?php
 					$primero = true;
-					while ($producto = $resultado->fetch_assoc()) { ?>
+					while ($producto = $resultado->fetch_assoc()) {
+						$precio_original = $producto['precio'];
+						$porcentaje_descuento = $producto['porcentaje'];
+						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
+					?>
 						<div class="carousel-item <?php if ($primero) {
 														echo 'active';
 														$primero = false;
 													} ?>">
-							<img src="img/productos/<?php echo $producto['imagen']; ?>" class="d-block w-100" alt="<?php echo $producto['nombre']; ?>">
-							<div class="carousel-caption d-none d-md-block">
-								<h5><?php echo $producto['nombre']; ?></h5>
-								<p>¡<?php echo $producto['porcentaje']; ?>% de descuento!</p>
-								<p>Precio: <?php echo $producto['precio']; ?> €</p>
+							<img src="img/productos/<?php echo $producto['imagen']; ?>"
+								class="d-block w-100"
+								alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+								style="object-fit: cover; height: 100%; width: 100%;">
+							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+								<h5 class="fs-2"><?php echo htmlspecialchars($producto['nombre']); ?></h5>
+								<p class="fs-5">¡<?php echo $producto['porcentaje']; ?>% de descuento!</p>
+								<p class="fs-6">
+									<span style="text-decoration:line-through; color:grey;">
+										<?php echo number_format($precio_original, 2); ?> €
+									</span>
+								</p>
+								<p class="fs-1 fw-bold">
+									<?php echo number_format($precio_final, 2); ?> €
+								</p>
 							</div>
 						</div>
 					<?php } ?>
 				</div>
 
-				<!-- Controles de anterior / siguiente -->
+				<!-- Controles -->
 				<button class="carousel-control-prev" type="button" data-bs-target="#carruselOfertas" data-bs-slide="prev">
 					<span class="carousel-control-prev-icon"></span>
 					<span class="visually-hidden">Anterior</span>
@@ -80,8 +94,38 @@
 					<span class="visually-hidden">Siguiente</span>
 				</button>
 			</div>
-
 		</div>
+
+		<!-- Estilos exclusivos para el carrusel -->
+		<style>
+			/* Aseguramos que solo el carrusel tenga altura y formato adecuado */
+			#carruselOfertas .carousel-inner {
+				height: 500px;
+				/* Fijamos la altura del carrusel */
+			}
+
+			#carruselOfertas .carousel-item {
+				height: 100%;
+			}
+
+			#carruselOfertas img {
+				object-fit: cover;
+				height: 100%;
+				width: 100%;
+			}
+
+			/* Estilo específico para la descripción del carrusel */
+			#carruselOfertas .carousel-caption {
+				bottom: 20px;
+				/* Ajustamos la posición de la descripción */
+				padding: 10px;
+				background-color: rgba(0, 0, 0, 0.5);
+				/* Fondo oscuro y semitransparente */
+				border-radius: 8px;
+			}
+		</style>
+
+
 
 		<!-- Categorias -->
 		<div class="text-center mt-5">
