@@ -25,7 +25,7 @@
         <?php } ?>
       </a>
       <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-        <li><a class="dropdown-item" href="<?php echo USUARIO?>proveedor/cambiar_credenciales_proveedores.php">Perfil</a></li>
+        <li><a class="dropdown-item" href="<?php echo USUARIO?>proveedor/cambiar_credenciales_proveedor.php">Perfil</a></li>
         <li><a class="dropdown-item" href="<?php echo USUARIO?>proveedor/iniciar_sesion_proveedor.php">Cambiar de cuenta</a></li>
         <li><hr class="dropdown-divider"></li>
         <li><a class="dropdown-item" href="<?php echo FUNCIONES?>cerrar_sesion.php">Salir</a></li>
