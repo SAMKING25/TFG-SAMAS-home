@@ -120,11 +120,10 @@
                         <div class="row g-0">
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
-
                                     <div class="text-center">
                                         <img src="../../img/logos/logo-marron-nobg.png"
                                             style="width: 185px;" alt="logo">
-                                        <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
+                                        <h4 class="mt-1 mb-5 pb-1">SAMAS home Enterprise</h4>
                                     </div>
 
                                     <form method="post" enctype="multipart/form-data">
@@ -155,7 +154,7 @@
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">Ya tienes cuenta?
-                                                <a style="text-decoration: none; color: black;" href="../usuario/iniciar_sesion.php"><u>Iniciar sesión</u></a>
+                                                <a style="text-decoration: none; color: black;" href="./iniciar_sesion_proveedor.php"><u>Iniciar sesión</u></a>
                                             </p>
                                         </div>
                                     </form>
@@ -175,6 +174,74 @@
         </div>
     </section>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const nombreInput = document.getElementById('nombre_proveedor');
+            const emailInput = document.getElementById('email_proveedor');
+            const contrasenaInput = document.getElementById('contrasena_proveedor');
+
+            form.addEventListener('submit', function (e) {
+                let tieneErrores = false;
+
+                limpiarErrores();
+
+                // Nombre
+                const nombreValor = nombreInput.value.trim();
+                const nombrePatron = /^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/;
+                if (nombreValor === '') {
+                    mostrarError(nombreInput, 'El nombre es obligatorio.');
+                    tieneErrores = true;
+                } else if (!nombrePatron.test(nombreValor)) {
+                    mostrarError(nombreInput, 'El nombre solo puede contener letras, números y espacios.');
+                    tieneErrores = true;
+                }
+
+                // Email
+                const emailValor = emailInput.value.trim();
+                const emailPatron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailValor === '') {
+                    mostrarError(emailInput, 'El email es obligatorio.');
+                    tieneErrores = true;
+                } else if (!emailPatron.test(emailValor)) {
+                    mostrarError(emailInput, 'El formato del email no es válido.');
+                    tieneErrores = true;
+                }
+
+                // Contraseña
+                const contrasenaValor = contrasenaInput.value;
+                const contrasenaPatron = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                if (contrasenaValor === '') {
+                    mostrarError(contrasenaInput, 'La contraseña es obligatoria.');
+                    tieneErrores = true;
+                } else if (contrasenaValor.length < 8) {
+                    mostrarError(contrasenaInput, 'La contraseña debe tener al menos 8 caracteres.');
+                    tieneErrores = true;
+                } else if (!contrasenaPatron.test(contrasenaValor)) {
+                    mostrarError(contrasenaInput, 'Debe tener mayúsculas, minúsculas, números y puede incluir caracteres especiales.');
+                    tieneErrores = true;
+                }
+
+                if (tieneErrores) {
+                    e.preventDefault();
+                }
+            });
+
+            function mostrarError(input, mensaje) {
+                const errorSpan = document.createElement('span');
+                errorSpan.classList.add('error');
+                errorSpan.textContent = mensaje;
+                input.parentElement.appendChild(errorSpan);
+            }
+
+            function limpiarErrores() {
+                const errores = document.querySelectorAll('.error');
+                errores.forEach(function(error) {
+                    error.remove();
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
