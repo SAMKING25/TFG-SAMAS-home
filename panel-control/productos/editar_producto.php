@@ -15,7 +15,7 @@
     require('../../util/funciones/utilidades.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) { 
+    if (!isset($_SESSION["usuario"])) {
         header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
@@ -36,7 +36,7 @@
     include('../layout/header.php');
     include('../layout/sidebar.php');
 
-    define('PRODUCTOS','/panel-control/productos/');
+    define('PRODUCTOS', '/panel-control/productos/');
 
     $id_producto = $_GET["id_producto"];
     $sql = "SELECT * FROM productos WHERE id_producto = '$id_producto'";
@@ -59,6 +59,14 @@
 
     while ($fila = $resultado->fetch_assoc()) {
         array_push($categorias, $fila["categoria"]);
+    }
+
+    $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
+    $resultado = $_conexion->query($sql);
+    $ofertas = [];
+
+    while ($fila = $resultado->fetch_assoc()) {
+        $ofertas[] = $fila;  // Guarda todo el array con id_oferta y nombre
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -276,10 +284,26 @@
                                 <?php if (isset($err_imagen)) echo "<span class='error'>$err_imagen</span>"; ?>
                             </div>
 
+                            <div class="mb-4 mt-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Oferta</label>
+                                    <select class="form-select" name="oferta">
+                                        <option selected value="null">No tiene oferta</option>
+                                        <?php
+                                        foreach ($ofertas as $oferta) { ?>
+                                            <option value="<?php echo $oferta['id_oferta']; ?>">
+                                                <?php echo $oferta['nombre']; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                    <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
+                                </div>
+                            </div>
+
                             <div class="d-flex justify-content-between">
                                 <input type="hidden" name="id_producto" value="<?php echo $id_producto ?>">
                                 <a href="./index.php" class="btn btn-outline-secondary">Cancelar</a>
-                                    <button type="submit" class="btn btn-success">Confirmar cambio</button>
+                                <button type="submit" class="btn btn-success">Confirmar cambio</button>
                             </div>
                         </form>
                     </div>

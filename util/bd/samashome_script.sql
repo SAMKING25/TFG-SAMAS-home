@@ -24,6 +24,12 @@ CREATE TABLE proveedores (
     foto_proveedor VARCHAR(60)
 );
 
+CREATE TABLE ofertas(
+    id_oferta INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    nombre VARCHAR(255),
+    porcentaje INT
+);
+
 CREATE TABLE productos (
 	id_producto INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     nombre VARCHAR(50),
@@ -36,8 +42,10 @@ CREATE TABLE productos (
     alto INT,
     id_proveedor INT,
     imagen VARCHAR(60),
+    id_oferta INT,
     FOREIGN KEY (categoria) REFERENCES categorias(categoria),
-    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor)
+    FOREIGN KEY (id_proveedor) REFERENCES proveedores(id_proveedor),
+    FOREIGN KEY (id_oferta) REFERENCES ofertas(id_oferta)
 );
 
 CREATE TABLE carrito (
@@ -56,13 +64,11 @@ SELECT * FROM categorias;
 SELECT * FROM usuarios;
 SELECT * FROM proveedores;
 SELECT * FROM productos;
-SELECT * FROM carrito;
 
 DROP TABLE categorias;
 DROP TABLE usuarios;
 DROP TABLE proveedores;
 DROP TABLE productos;
-DROP TABLE carrito;
 
 DELETE FROM usuarios WHERE id_usuario = 1;
 DELETE FROM categorias WHERE categoria = "Sillas";

@@ -11,11 +11,12 @@
         body {
             background-color: #F7E5CB;
         }
-        
+
         .btn-primary {
-            background-color:rgb(163, 112, 48) !important;
-            border:1px solid rgb(163, 112, 48) !important;
+            background-color: rgb(163, 112, 48) !important;
+            border: 1px solid rgb(163, 112, 48) !important;
         }
+
         .btn-primary:hover {
             background-color: rgb(126, 88, 41) !important;
         }
@@ -27,11 +28,11 @@
     require('../../util/conexion.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) { 
+    if (!isset($_SESSION["usuario"])) {
         header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
         exit;
     }
-    
+
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_producto = $_POST["id_producto"];
         //  borrar el producto
@@ -43,7 +44,7 @@
         $resultado = $sql->get_result();
 
         while ($fila = $resultado->fetch_assoc()) {
-            unlink("../../img/productos/".$fila['imagen']);
+            unlink("../../img/productos/" . $fila['imagen']);
         }
         header("location: ../index.php");
     }
@@ -90,8 +91,31 @@
                         <p id="dimensions"><?php echo $fila['largo'] ?>cm x <?php echo $fila['ancho'] ?>cm x <?php echo $fila['alto'] ?>cm</p>
                     </div>
 
+                    <div class="mb-4">
+                        <label for="dimensions" class="form-label">Oferta:</label>
+                        <?php
+                        // Suponiendo que ya tienes $fila['id_oferta'] disponible
+                        $idOferta = $fila['id_oferta'];
+
+                        if ($idOferta !== null) {
+                            $sql = "SELECT nombre FROM ofertas WHERE id_oferta = $idOferta";
+                            $resultado = $_conexion->query($sql);
+
+                            if ($resultado && $resultado->num_rows > 0) {
+                                $oferta = $resultado->fetch_assoc();
+                                $nombreOferta = $oferta['nombre'];
+                            } else {
+                                $nombreOferta = "No encontrado";
+                            }
+                        } else {
+                            $nombreOferta = "Sin oferta";
+                        }
+                        ?>
+                        <p id="dimensions"><?php echo $nombreOferta; ?></p>
+                    </div>
+
                     <form action="" method="post">
-                        <a href="./editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn btn-primary btn-lg mb-3 me-2">
+                        <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn btn-primary btn-lg mb-3 me-2">
                             <i class="bi bi-cart-plus"></i> Editar
                         </a>
                         <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i class="bi bi-trash3-fill"></i> Borrar</button>
