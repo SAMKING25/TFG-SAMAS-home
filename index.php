@@ -234,7 +234,7 @@
 					<p><a href="#" class="footer-link">Plano</a></p>
 					<p><a href="#" class="footer-link">Suscripción</a></p>
 					<p><a href="#" class="footer-link">Contacto</a></p>
-					<p><a href="./util/archivos/politica-cookies.pdf" id="politica-cookies" class="footer-link">Política de cookies</a></p>
+					<p><a href="./util/archivos/politica-cookies.pdf" target="_blank" id="politica-cookies" class="footer-link">Política de cookies</a></p>
 				</div>
 				<div class="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">
 					<h6 class="footer-title text-uppercase font-weight-bold mb-4">
