@@ -122,6 +122,11 @@
                     scaleX: escala,
                     scaleY: escala,
                     hasControls: true,
+                    lockScalingX: true,
+                    lockScalingY: true, 
+                    lockSkewingX: true, 
+                    lockSkewingY: true, 
+                    lockScalingFlip: true, 
                     lockRotation: false,
                 });
                 canvas.add(img);
