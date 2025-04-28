@@ -16,19 +16,21 @@
 @font-face {
   font-family: "WebSymbolsRegular";
   src: url("../fonts/websymbols-regular-webfont.eot");
-  src: url("../fonts/websymbols-regular-webfont.eot?#iefix") format("embedded-opentype"),
+  src: url("../fonts/websymbols-regular-webfont.eot?#iefix")
+      format("embedded-opentype"),
     url("../fonts/websymbols-regular-webfont.woff") format("woff"),
     url("../fonts/websymbols-regular-webfont.ttf") format("truetype"),
-    url("../fonts/websymbols-regular-webfont.svg#WebSymbolsRegular") format("svg");
+    url("../fonts/websymbols-regular-webfont.svg#WebSymbolsRegular")
+      format("svg");
   font-weight: normal;
   font-style: normal;
 }
 
-html{
-  font-family: "TrebuchetMSe" !important; 
+html {
+  font-family: "TrebuchetMSe" !important;
 }
 
-body{
+body {
   background-color: rgb(247, 229, 203);
 }
 
@@ -57,8 +59,6 @@ body{
   --color5: #ffd368;
 }
 
-
-
 /* Estilos personalizados */
 .navbar {
   background-color: var(--color1);
@@ -78,7 +78,6 @@ body{
   text-shadow: 2px 2px 3px rgb(2, 2, 2);
   color: var(--color3);
 }
-
 
 .navbar-brand:hover {
   transform: translateX(0px) scale(1.3);
@@ -106,7 +105,7 @@ body{
   transform: scale(1.1);
 }
 
-.separar{
+.separar {
   display: grid;
   grid-template-columns: 1fr 5fr;
 }
@@ -170,8 +169,8 @@ body{
 
 /*Carrusel imagenes*/
 .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-      background-color: black;
+.carousel-control-next-icon {
+  background-color: black;
 }
 .small-image {
   width: 350px !important;
@@ -184,7 +183,7 @@ body{
 }
 
 /**/
-h3{
+h3 {
   color: rgb(255, 255, 255);
   text-shadow: 2px 2px 4px rgb(0, 0, 0);
 }
@@ -223,7 +222,6 @@ h3{
 .banner-btn {
   background-color: #33210f;
 }
-
 
 .bi {
   font-size: 20px;
@@ -290,11 +288,11 @@ footer {
 .card-btn {
   display: flex;
   justify-content: flex-end;
-  justify-content: right
+  justify-content: right;
 }
 
 /*Categorias*/
-@import url('https://fonts.googleapis.com/css?family=Muli&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Muli&display=swap");
 
 .containerr {
   display: flex;

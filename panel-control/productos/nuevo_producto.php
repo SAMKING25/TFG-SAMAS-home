@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuevo producto</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php
     error_reporting(E_ALL);
@@ -237,9 +238,9 @@
                                         <option selected disabled hidden>--- Elige una categoria ---</option>
                                         <?php
                                         foreach ($categorias as $categoria) { ?>
-                                            <option value="<?php echo $categoria ?>">
-                                                <?php echo $categoria ?>
-                                            </option>
+                                        <option value="<?php echo $categoria ?>">
+                                            <?php echo $categoria ?>
+                                        </option>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_categoria)) echo "<span class='error'>$err_categoria</span>"; ?>
@@ -288,9 +289,9 @@
                                         <option selected value="null">No tiene oferta</option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
-                                            <option value="<?php echo $oferta['id_oferta']; ?>">
-                                                <?php echo $oferta['nombre']; ?>
-                                            </option>
+                                        <option value="<?php echo $oferta['id_oferta']; ?>">
+                                            <?php echo $oferta['nombre']; ?>
+                                        </option>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
@@ -308,7 +309,9 @@
         </div>
     </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

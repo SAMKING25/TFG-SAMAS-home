@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,48 +16,48 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-    body {
-        background-color: #f8f9fa;
-    }
+        body {
+            background-color: #f8f9fa;
+        }
 
-    .pricing-card {
-        border: none;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-    }
+        .pricing-card {
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+        }
 
-    .pricing-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-    }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
 
-    .pricing-header {
-        border-radius: 15px 15px 0 0;
-        padding: 2rem;
-    }
+        .pricing-header {
+            border-radius: 15px 15px 0 0;
+            padding: 2rem;
+        }
 
-    .pricing-features {
-        padding: 2rem;
-    }
+        .pricing-features {
+            padding: 2rem;
+        }
 
-    .btn-custom {
-        border-radius: 50px;
-        padding: 0.75rem 2rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        transition: all 0.3s ease;
-    }
+        .btn-custom {
+            border-radius: 50px;
+            padding: 0.75rem 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
 
-    .btn-custom:hover {
-        transform: scale(1.05);
-    }
+        .btn-custom:hover {
+            transform: scale(1.05);
+        }
 
-    .feature-icon {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-    }
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
     </style>
     <?php
         error_reporting(E_ALL);
@@ -67,6 +68,7 @@
         session_start();
     ?>
 </head>
+
 <body>
     <?php
     include('../navbar.php');
@@ -211,4 +213,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -77,10 +77,14 @@
             <h5>Productos</h5>
             <div id="productos" class="list-group">
                 <?php foreach ($productos as $producto): ?>
-                    <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;" onclick="agregarProducto('../img/productos/<?php echo $producto['imagen']; ?>')">
-                        <img src="../img/productos/<?php echo $producto['imagen']; ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
-                        <span><?php echo htmlspecialchars($producto['nombre']); ?></span>
-                    </div>
+                <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
+                    onclick="agregarProducto('../img/productos/<?php echo $producto['imagen']; ?>')">
+                    <img src="../img/productos/<?php echo $producto['imagen']; ?>"
+                        alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
+                    <span>
+                        <?php echo htmlspecialchars($producto['nombre']); ?>
+                    </span>
+                </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -88,15 +92,18 @@
         <!-- Contenedor del canvas -->
         <div id="canvas-container" class="p-3">
             <div class="d-flex justify-content-between mb-3">
-                <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()" style="width: 60px; height: 60px;">
+                <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
+                    style="width: 60px; height: 60px;">
                     <i class="bi bi-square" style="font-size: 24px;"></i>
                 </button>
 
                 <div class="d-flex text-end me-2">
-                    <button id="save-design" class="btn btn-success rounded-circle shadow me-2" onclick="guardarCanvas()" style="width: 60px; height: 60px;">
+                    <button id="save-design" class="btn btn-success rounded-circle shadow me-2"
+                        onclick="guardarCanvas()" style="width: 60px; height: 60px;">
                         <i class="bi bi-save" style="font-size: 24px;"></i>
                     </button>
-                    <button id="delete-button" class="btn btn-danger rounded-circle shadow" onclick="borrarObjeto()" style="width: 60px; height: 60px;">
+                    <button id="delete-button" class="btn btn-danger rounded-circle shadow" onclick="borrarObjeto()"
+                        style="width: 60px; height: 60px;">
                         <i class="bi bi-trash" style="font-size: 24px;"></i>
                     </button>
                 </div>
@@ -122,7 +129,7 @@
 
         function agregarProducto(imagenURL) {
             console.log(imagenURL);
-            fabric.Image.fromURL(imagenURL, function(img) {
+            fabric.Image.fromURL(imagenURL, function (img) {
                 const escala = 0.5;
 
                 img.set({
@@ -218,7 +225,7 @@
             canvas.renderAll();
         }
 
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Delete' || event.key === 'Backspace') {
                 borrarObjeto();
             }

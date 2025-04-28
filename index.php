@@ -60,36 +60,41 @@
 						$porcentaje_descuento = $producto['porcentaje'];
 						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
 					?>
-						<div class="carousel-item <?php if ($primero) {
+					<div class="carousel-item <?php if ($primero) {
 														echo 'active';
 														$primero = false;
 													} ?>">
-							<img src="img/productos/<?php echo $producto['imagen']; ?>"
-								class="d-block w-100"
-								alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
-								style="object-fit: cover; height: 100%; width: 100%;">
-							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-								<h5 class="fs-2"><?php echo htmlspecialchars($producto['nombre']); ?></h5>
-								<p class="fs-5">¡<?php echo $producto['porcentaje']; ?>% de descuento!</p>
-								<p class="fs-6">
-									<span style="text-decoration:line-through; color:grey;">
-										<?php echo number_format($precio_original, 2); ?> €
-									</span>
-								</p>
-								<p class="fs-1 fw-bold">
-									<?php echo number_format($precio_final, 2); ?> €
-								</p>
-							</div>
+						<img src="img/productos/<?php echo $producto['imagen']; ?>" class="d-block w-100"
+							alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+							style="object-fit: cover; height: 100%; width: 100%;">
+						<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
+							<h5 class="fs-2">
+								<?php echo htmlspecialchars($producto['nombre']); ?>
+							</h5>
+							<p class="fs-5">¡
+								<?php echo $producto['porcentaje']; ?>% de descuento!
+							</p>
+							<p class="fs-6">
+								<span style="text-decoration:line-through; color:grey;">
+									<?php echo number_format($precio_original, 2); ?> €
+								</span>
+							</p>
+							<p class="fs-1 fw-bold">
+								<?php echo number_format($precio_final, 2); ?> €
+							</p>
 						</div>
+					</div>
 					<?php } ?>
 				</div>
 
 				<!-- Controles -->
-				<button class="carousel-control-prev" type="button" data-bs-target="#carruselOfertas" data-bs-slide="prev">
+				<button class="carousel-control-prev" type="button" data-bs-target="#carruselOfertas"
+					data-bs-slide="prev">
 					<span class="carousel-control-prev-icon"></span>
 					<span class="visually-hidden">Anterior</span>
 				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carruselOfertas" data-bs-slide="next">
+				<button class="carousel-control-next" type="button" data-bs-target="#carruselOfertas"
+					data-bs-slide="next">
 					<span class="carousel-control-next-icon"></span>
 					<span class="visually-hidden">Siguiente</span>
 				</button>
@@ -141,9 +146,12 @@
 			<?php
 			// if (isset($_SESSION['usuario'])) {
 			while ($categoria = $categorias->fetch_assoc()) { ?>
-				<div class="panel active" style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
-					<h3><?php echo $categoria['categoria'] ?></h3>
-				</div>
+			<div class="panel active"
+				style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
+				<h3>
+					<?php echo $categoria['categoria'] ?>
+				</h3>
+			</div>
 			<?php } ?>
 			<?php //} 
 			?>
@@ -170,23 +178,28 @@
 
 				<?php
 				while ($producto = $productos->fetch_assoc()) { ?>
-					<div class="col">
-						<div class="card h-100 shadow-sm">
-							<img src="./img/productos/<?php echo $producto['imagen'] ?>" class="card-img-top" alt="Producto <?php echo $productos->field_count ?>" />
-							<div class="card-body">
-								<h5 class="card-title"><?php echo $producto['nombre'] ?></h5>
-								<p class="card-text">
-									<?php echo $producto['descripcion'] ?>
-								</p>
-								<div class="d-flex justify-content-between align-items-center">
-									<span class="h5 mb-0"><?php echo $producto['precio'] ?>€</span>
-									<button class="btn btn-outline-secondary">
-										<i class="bi bi-cart-plus"></i> Añadir al carrito
-									</button>
-								</div>
+				<div class="col">
+					<div class="card h-100 shadow-sm">
+						<img src="./img/productos/<?php echo $producto['imagen'] ?>" class="card-img-top"
+							alt="Producto <?php echo $productos->field_count ?>" />
+						<div class="card-body">
+							<h5 class="card-title">
+								<?php echo $producto['nombre'] ?>
+							</h5>
+							<p class="card-text">
+								<?php echo $producto['descripcion'] ?>
+							</p>
+							<div class="d-flex justify-content-between align-items-center">
+								<span class="h5 mb-0">
+									<?php echo $producto['precio'] ?>€
+								</span>
+								<button class="btn btn-outline-secondary">
+									<i class="bi bi-cart-plus"></i> Añadir al carrito
+								</button>
 							</div>
 						</div>
 					</div>
+				</div>
 				<?php } ?>
 			</div>
 			<!-- Botón "Ver más productos" (añade 4 productos mas a la vista) -->
@@ -196,7 +209,7 @@
 
 				<!-- Botón "Ver menos productos" (quita 4 productos de la vista) -->
 				<?php if ($limite > 4): ?>
-					<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
+				<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
 				<?php endif; ?>
 			</form>
 		</div>
@@ -232,7 +245,8 @@
 					<p><a href="#" class="footer-link">Plano</a></p>
 					<p><a href="#" class="footer-link">Suscripción</a></p>
 					<p><a href="#" class="footer-link">Contacto</a></p>
-					<p><a href="./util/archivos/politica-cookies.pdf" target="_blank" id="politica-cookies" class="footer-link">Política de cookies</a></p>
+					<p><a href="./util/archivos/politica-cookies.pdf" target="_blank" id="politica-cookies"
+							class="footer-link">Política de cookies</a></p>
 				</div>
 				<div class="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">
 					<h6 class="footer-title text-uppercase font-weight-bold mb-4">
