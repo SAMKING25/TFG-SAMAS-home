@@ -87,10 +87,19 @@
 
         <!-- Contenedor del canvas -->
         <div id="canvas-container" class="p-3">
-            <div class="text-end mb-3">
-                <button id="delete-button" class="btn btn-danger rounded-circle shadow" onclick="borrarObjeto()" style=" width: 60px; height: 60px;">
-                    <i class="bi bi-trash" style="font-size: 24px;"></i>
+            <div class="d-flex justify-content-between mb-3">
+                <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()" style="width: 60px; height: 60px;">
+                    <i class="bi bi-square" style="font-size: 24px;"></i>
                 </button>
+
+                <div class="d-flex text-end me-2">
+                    <button id="save-design" class="btn btn-success rounded-circle shadow me-2" onclick="guardarCanvas()" style="width: 60px; height: 60px;">
+                        <i class="bi bi-save" style="font-size: 24px;"></i>
+                    </button>
+                    <button id="delete-button" class="btn btn-danger rounded-circle shadow" onclick="borrarObjeto()" style="width: 60px; height: 60px;">
+                        <i class="bi bi-trash" style="font-size: 24px;"></i>
+                    </button>
+                </div>
             </div>
             <canvas id="canvas"></canvas>
         </div>
@@ -123,10 +132,10 @@
                     scaleY: escala,
                     hasControls: true,
                     lockScalingX: true,
-                    lockScalingY: true, 
-                    lockSkewingX: true, 
-                    lockSkewingY: true, 
-                    lockScalingFlip: true, 
+                    lockScalingY: true,
+                    lockSkewingX: true,
+                    lockSkewingY: true,
+                    lockScalingFlip: true,
                     lockRotation: false,
                 });
                 canvas.add(img);
@@ -145,6 +154,69 @@
                 alert('No hay ningún objeto seleccionado.');
             }
         };
+
+        function agregarPared() {
+            const factorConversion = 100; // 100px = 1 metro
+
+            const pared = new fabric.Rect({
+                left: 0,
+                top: 0,
+                fill: '#403f3f',
+                width: 200,
+                height: 22,
+                selectable: false,
+                originX: 'center',
+                originY: 'center',
+            });
+
+            const textoMedida = new fabric.Text('2.00 m', {
+                fontSize: 26,
+                fill: '#000',
+                backgroundColor: 'white',
+                padding: 4,
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                evented: false,
+            });
+
+            const grupo = new fabric.Group([pared, textoMedida], {
+                left: 100,
+                top: 100,
+                selectable: true,
+                lockScalingY: true,
+                hasControls: true,
+            });
+
+            canvas.add(grupo);
+            canvas.setActiveObject(grupo);
+
+            // Función para actualizar la medida de la pared
+            function actualizarMedida() {
+                const anchoReal = pared.width * grupo.scaleX;
+                const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
+                textoMedida.text = metrosActualizados;
+
+                // Mantener el texto sin escalar
+                textoMedida.scaleX = 1 / grupo.scaleX;
+                textoMedida.scaleY = 1 / grupo.scaleY;
+
+                // Posicionar el texto encima de la pared
+                textoMedida.top = pared.top - pared.height / 2 - 20; // 20px encima
+                textoMedida.left = pared.left;
+
+                canvas.requestRenderAll();
+            }
+
+            // Escuchar eventos para actualizar la medida
+            grupo.on('scaling', actualizarMedida);
+            grupo.on('modified', actualizarMedida);
+            grupo.on('rotating', actualizarMedida);
+
+            // Actualizar medida al principio
+            actualizarMedida();
+            canvas.renderAll();
+        }
 
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Delete' || event.key === 'Backspace') {
