@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tabla Productos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body {
@@ -90,46 +91,67 @@
         </div>
 
         <?php if ($resultado->num_rows > 0): ?>
-            <div class="row g-3">
-                <?php while ($fila = $resultado->fetch_assoc()): ?>
-                    <div class="col-12 col-md-6 col-xxl-4">
-                        <div class="card h-100 shadow-sm">
-                            <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>" class="text-decoration-none">
-                                <img src="../../img/productos/<?php echo $fila["imagen"]; ?>" class="card-img-top" style="height: 260px; object-fit: cover;" alt="Imagen del producto">
-                            </a>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title"><?php echo $fila["nombre"]; ?></h5>
-                                <p class="card-text text-muted"><?php echo $fila["descripcion"]; ?></p>
-                                <ul class="list-unstyled mb-3">
-                                    <li><strong>Id:</strong> <?php echo $fila["id_producto"]; ?></li>
-                                    <li><strong>Precio:</strong> <?php echo $fila["precio"]; ?>€</li>
-                                    <li><strong>Categoría:</strong> <?php echo $fila["categoria"]; ?></li>
-                                    <li><strong>Stock:</strong> <?php echo $fila["stock"]; ?></li>
-                                    <li><strong>Medidas:</strong> <?php echo $fila["largo"] . "cm × " . $fila["ancho"] . "cm × " . $fila["alto"] . "cm"; ?></li>
-                                    <li><strong>Oferta:</strong> <?php echo $fila["id_oferta"] ?></li>
-                                </ul>
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn btn-outline-primary ">Editar</a>
-                                    <form method="POST" class="d-inline">
-                                        <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
-                                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
-                                    </form>
-                                </div>
-                            </div>
+        <div class="row g-3">
+            <?php while ($fila = $resultado->fetch_assoc()): ?>
+            <div class="col-12 col-md-6 col-xxl-4">
+                <div class="card h-100 shadow-sm">
+                    <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
+                        class="text-decoration-none">
+                        <img src="../../img/productos/<?php echo $fila[" imagen"]; ?>" class="card-img-top"
+                        style="height: 260px; object-fit: cover;" alt="Imagen del producto">
+                    </a>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">
+                            <?php echo $fila["nombre"]; ?>
+                        </h5>
+                        <p class="card-text text-muted">
+                            <?php echo $fila["descripcion"]; ?>
+                        </p>
+                        <ul class="list-unstyled mb-3">
+                            <li><strong>Id:</strong>
+                                <?php echo $fila["id_producto"]; ?>
+                            </li>
+                            <li><strong>Precio:</strong>
+                                <?php echo $fila["precio"]; ?>€
+                            </li>
+                            <li><strong>Categoría:</strong>
+                                <?php echo $fila["categoria"]; ?>
+                            </li>
+                            <li><strong>Stock:</strong>
+                                <?php echo $fila["stock"]; ?>
+                            </li>
+                            <li><strong>Medidas:</strong>
+                                <?php echo $fila["largo"] . "cm × " . $fila["ancho"] . "cm × " . $fila["alto"] . "cm"; ?>
+                            </li>
+                            <li><strong>Oferta:</strong>
+                                <?php echo $fila["id_oferta"] ?>
+                            </li>
+                        </ul>
+                        <div class="mt-auto d-flex justify-content-between">
+                            <a href="editar_producto.php?id_producto=<?php echo $fila[" id_producto"]; ?>" class="btn
+                                btn-outline-primary ">Editar</a>
+                            <form method="POST" class="d-inline">
+                                <input type="hidden" name="id_producto" value="<?php echo $fila[" id_producto"]; ?>">
+                                <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                            </form>
                         </div>
                     </div>
-                <?php endwhile; ?>
+                </div>
             </div>
+            <?php endwhile; ?>
+        </div>
         <?php else: ?>
-            <div class="alert alert-warning text-center" role="alert">
-                No se encontraron productos con ese criterio.
-            </div>
+        <div class="alert alert-warning text-center" role="alert">
+            No se encontraron productos con ese criterio.
+        </div>
         <?php endif; ?>
     </div>
 
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>

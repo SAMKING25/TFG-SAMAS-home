@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Editar categoria</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php
     error_reporting(E_ALL);
@@ -220,28 +221,32 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" name="nuevo_nombre" value="<?php echo $nombre_actual ?>">
+                                <input class="form-control" type="text" name="nuevo_nombre"
+                                    value="<?php echo $nombre_actual ?>">
                                 <?php if (isset($err_nombre)) echo "<span class='error'>$err_nombre</span>"; ?>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Precio</label>
-                                    <input class="form-control" type="text" name="nuevo_precio" value="<?php echo $precio_actual ?>">
+                                    <input class="form-control" type="text" name="nuevo_precio"
+                                        value="<?php echo $precio_actual ?>">
                                     <?php if (isset($err_precio)) echo "<span class='error'>$err_precio</span>"; ?>
                                 </div>
 
                                 <div class="col-md-6">
                                     <label class="form-label">Categorias</label>
                                     <select class="form-select" name="nueva_categoria">
-                                        <option value="<?php echo $categoria_actual ?>" selected><?php echo $categoria_actual ?></option>
+                                        <option value="<?php echo $categoria_actual ?>" selected>
+                                            <?php echo $categoria_actual ?>
+                                        </option>
                                         <?php
                                         foreach ($categorias as $categoria) { ?>
-                                            <?php if ($categoria != $categoria_actual) { ?>
-                                                <option value="<?php echo $categoria ?>">
-                                                    <?php echo $categoria; ?>
-                                                </option>
-                                            <?php } ?>
+                                        <?php if ($categoria != $categoria_actual) { ?>
+                                        <option value="<?php echo $categoria ?>">
+                                            <?php echo $categoria; ?>
+                                        </option>
+                                        <?php } ?>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_categoria)) echo "<span class='error'>$err_categoria</span>"; ?>
@@ -250,30 +255,35 @@
 
                             <div class="mt-3 mb-3">
                                 <label class="form-label">Stock</label>
-                                <input class="form-control" type="text" name="nuevo_stock" value="<?php echo $stock_actual ?>">
+                                <input class="form-control" type="text" name="nuevo_stock"
+                                    value="<?php echo $stock_actual ?>">
                                 <?php if (isset($err_stock)) echo "<span class='error'>$err_stock</span>"; ?>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Descripcion</label>
-                                <textarea class="form-control" name="nueva_descripcion"><?php echo $descripcion_actual ?></textarea>
+                                <textarea class="form-control"
+                                    name="nueva_descripcion"><?php echo $descripcion_actual ?></textarea>
                                 <?php if (isset($err_descripcion)) echo "<span class='error'>$err_descripcion</span>"; ?>
                             </div>
 
                             <div class="row g-3">
                                 <div class="col-md-4">
                                     <label class="form-label">Largo (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="largo" value="<?php echo $largo_actual ?>">
+                                    <input class="form-control" type="number" min="0" name="largo"
+                                        value="<?php echo $largo_actual ?>">
                                     <?php if (isset($err_largo)) echo "<span class='error'>$err_largo</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Ancho (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="ancho" value="<?php echo $ancho_actual ?>">
+                                    <input class="form-control" type="number" min="0" name="ancho"
+                                        value="<?php echo $ancho_actual ?>">
                                     <?php if (isset($err_ancho)) echo "<span class='error'>$err_ancho</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Alto (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="alto" value="<?php echo $alto_actual ?>">
+                                    <input class="form-control" type="number" min="0" name="alto"
+                                        value="<?php echo $alto_actual ?>">
                                     <?php if (isset($err_alto)) echo "<span class='error'>$err_alto</span>"; ?>
                                 </div>
                             </div>
@@ -291,9 +301,9 @@
                                         <option selected value="null">No tiene oferta</option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
-                                            <option value="<?php echo $oferta['id_oferta']; ?>">
-                                                <?php echo $oferta['nombre']; ?>
-                                            </option>
+                                        <option value="<?php echo $oferta['id_oferta']; ?>">
+                                            <?php echo $oferta['nombre']; ?>
+                                        </option>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
@@ -311,7 +321,9 @@
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
