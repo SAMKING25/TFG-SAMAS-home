@@ -97,7 +97,7 @@
                 <div class="card h-100 shadow-sm">
                     <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
                         class="text-decoration-none">
-                        <img src="../../img/productos/<?php echo $fila[" imagen"]; ?>" class="card-img-top"
+                        <img src="../../img/productos/<?php echo $fila["imagen"]; ?>" class="card-img-top"
                         style="height: 260px; object-fit: cover;" alt="Imagen del producto">
                     </a>
                     <div class="card-body d-flex flex-column">
@@ -128,10 +128,10 @@
                             </li>
                         </ul>
                         <div class="mt-auto d-flex justify-content-between">
-                            <a href="editar_producto.php?id_producto=<?php echo $fila[" id_producto"]; ?>" class="btn
+                            <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
                                 btn-outline-primary ">Editar</a>
                             <form method="POST" class="d-inline">
-                                <input type="hidden" name="id_producto" value="<?php echo $fila[" id_producto"]; ?>">
+                                <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
                                 <button type="submit" class="btn btn-outline-danger">Borrar</button>
                             </form>
                         </div>

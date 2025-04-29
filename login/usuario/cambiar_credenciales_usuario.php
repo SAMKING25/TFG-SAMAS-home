@@ -1,241 +1,306 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cambiar credenciales</title>
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-    crossorigin="anonymous"
-  />
-  <?php
-      error_reporting( E_ALL );
-      ini_set("display_errors", 1 );    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <?php
+        error_reporting( E_ALL );
+        ini_set("display_errors", 1 );    
 
-      require('../../util/conexion.php');
-      require('../../util/funciones/utilidades.php');
+        require('../../util/conexion.php');
+        require('../../util/funciones/utilidades.php');
 
-      define('IMG_USUARIO','/img/usuario/');
+        define('IMG_USUARIO','/img/usuario/');
 
-      session_start();
-      if (!isset($_SESSION["usuario"])) { 
-          header("location: ../usuario/iniciar_sesion.php");
-          exit;
-      }
+        session_start();
+        if (!isset($_SESSION["usuario"])) { 
+            header("location: ../login/usuario/iniciar_sesion_usuario.php");
+            exit;
+        }
 
-      $id_usuario = $_SESSION['usuario'];
+        $id_usuario = $_SESSION['usuario'];
 
-      $sql = $_conexion->
-  prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
-  $sql->bind_param("i", $id_usuario); $sql->execute(); $resultado =
-  $sql->get_result(); ?>
-  <style>
-    .error {
-      color: red;
-    }
+        $sql = $_conexion-> prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
+        $sql->bind_param("i", $id_usuario);
+        $sql->execute();
+        $datos_actuales = $sql->get_result();
 
-    body {
-      margin-top: 20px;
-      background: #f5f5f5;
-    }
-    /**
-      * Panels
-      */
-    /*** General styles ***/
-    .panel {
-      box-shadow: none;
-    }
-    .panel-heading {
-      border-bottom: 0;
-    }
-    .panel-title {
-      font-size: 17px;
-    }
-    .panel-title > small {
-      font-size: 0.75em;
-      color: #999999;
-    }
-    .panel-body *:first-child {
-      margin-top: 0;
-    }
-    .panel-footer {
-      border-top: 0;
-    }
+        while ($fila = $datos_actuales->fetch_assoc()) {
+            $email_usuario_actual = $fila['email_usuario'];
+            $nombre_usuario_actual = $fila['nombre_usuario'];
+            $contrasena_usuario_cifrada_actual = $fila['contrasena_usuario'];
+            $foto_usuario_actual = $fila['foto_usuario'];
+        } 
+    ?>
+    <style>
+        .error {
+            color: red;
+        }
 
-    .panel-default > .panel-heading {
-      color: #333333;
-      background-color: transparent;
-      border-color: rgba(0, 0, 0, 0.07);
-    }
+        .gradient-custom-2 {
+            background: #fccb90;
+            background: -webkit-linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
+            background: linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
 
-    form label {
-      color: #999999;
-      font-weight: 400;
-    }
+            border: 1px solid #F7E5CB;
+        }
 
-    .form-horizontal .form-group {
-      margin-left: -15px;
-      margin-right: -15px;
-    }
-    @media (min-width: 768px) {
-      .form-horizontal .control-label {
-        text-align: right;
-        margin-bottom: 0;
-        padding-top: 7px;
-      }
-    }
+        .btn:hover {
+            border: 1px solid black;
+        }
 
-    .profile__contact-info-icon {
-      float: left;
-      font-size: 18px;
-      color: #999999;
-    }
-    .profile__contact-info-body {
-      overflow: hidden;
-      padding-left: 20px;
-      color: #999999;
-    }
-    .profile-avatar {
-      width: 200px;
-      position: relative;
-      margin: 0px auto;
-      margin-top: 196px;
-      border: 4px solid #f3f3f3;
-    }
-  </style>
+        @media (min-width: 768px) {
+            .gradient-form {
+                height: 100vh !important;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .gradient-custom-2 {
+                border-top-right-radius: .3rem;
+                border-bottom-right-radius: .3rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  <link
-    href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"
-    rel="stylesheet"
-  />
-  <div class="container bootstrap snippets bootdeys">
-    <div class="row">
-      <div class="col-xs-12 col-sm-9">
-        <form class="form-horizontal">
-          <div class="panel panel-default">
-            <div class="panel-body text-center">
-              <?php while ($fila = $resultado->fetch_assoc()) { ?>
-              <img
-                src="<?php echo IMG_USUARIO.$fila['foto_usuario']?>"
-                alt="Foto de perfil"
-                width="32"
-                height="190"
-                class="rounded-circle profile-avatar"
-              />
-              <?php } ?>
+    <?php
+    if($_SERVER["REQUEST_METHOD"] == "POST"){
+            $nuevo_email_usuario = depurar($_POST["email_usuario"]);
+            $nuevo_nombre_usuario = depurar($_POST["nombre_usuario"]);
+            $nueva_contrasena_usuario = $_POST["contrasena_usuario"];
+            $nueva_foto_usuario = "estandar.png";
+            $nueva_suscripcion = "Gratuita";
+
+            $nuevo_nombre_imagen = $_FILES["nueva_foto_usuario"]["name"];
+            $ubicacion_temporal = $_FILES["nueva_foto_usuario"]["tmp_name"];
+            $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
+
+            if ($nuevo_email_usuario == "") {
+                $err_email_usuario = "El email es obligatorio";
+            } else {
+                $sql = "SELECT * FROM usuarios WHERE email_usuario ='$nuevo_email_usuario'";
+                $resultado = $_conexion->query($sql);
+                
+                if ($resultado->num_rows == 1) {
+                    $err_email_usuario = "El email $nuevo_email_usuario ya existe";
+                } else {
+                    if (filter_var($nuevo_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
+                        $err_email_usuario = "El email no es válido";
+                    } else {
+                        $email_usuario_actual = $nuevo_email_usuario;
+                    }
+                }
+            }
+
+            if ($nuevo_nombre_usuario == "") {
+                $err_nombre_usuario = "El nombre es obligatorio";
+            } else {
+                $sql = "SELECT * FROM usuarios WHERE nombre_usuario ='$nuevo_nombre_usuario'";
+                $resultado = $_conexion->query($sql);
+    
+                if ($resultado->num_rows == 1) {
+                    $err_nombre_usuario = "El nombre $nuevo_nombre_usuario ya existe";
+                } else {
+                    $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
+                    if (!preg_match($patron, $nuevo_nombre_usuario)) {
+                        $err_nombre_usuario = "El nombre solo puede tener letras y números";
+                    } else {
+                        $nombre_usuario_actual = $nuevo_nombre_usuario;
+                    }
+                }
+            }
+
+            if ($nueva_contrasena_usuario == "") {
+                $err_contrasena_usuario = "La contraseña es obligatoria";
+            } else {
+                if (strlen($nueva_contrasena_usuario) < 8) {
+                    $err_contrasena_usuario = "La contraseña tiene que tener como minimo 8 caracteres";
+                } else {
+                    $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
+                    if (!preg_match($patron, $nueva_contrasena_usuario)) {
+                        $err_contrasena_usuario = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
+                    } else {
+                        $contrasena_usuario_cifrada_actual = password_hash($nueva_contrasena_usuario, PASSWORD_DEFAULT);
+                    }
+                }
+            }
+
+            
+
+            if ($nuevo_nombre_imagen == "") {
+                $err_foto_usuario = "La imagen es obligatoria";
+            } else {
+                if (strlen($nuevo_nombre_imagen) > 60) {
+                    $err_foto_usuario = "La ruta de la imagen no puede tener mas de 60 caracteres";
+                } else {
+                    move_uploaded_file($ubicacion_temporal, $ubicacion_final);
+                    $foto_usuario_actual = $nuevo_nombre_imagen;
+                    $sql = "UPDATE usuarios SET foto_usuario = $foto_usuario_actual WHERE id_usuario = $id_usuario";
+                    $_conexion->query($sql);
+                }
+            }
+        } 
+    ?>
+    <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-xl-10">
+                    <div class="card rounded-3 text-black">
+                        <div class="row g-0">
+                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
+                                    <h2 class="mb-4">Ajustes</h2>
+                                    <p class="small mb-0">Datos personales</p>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card-body p-md-5 mx-md-4">
+                                    <?php while ($fila = $datos_actuales->fetch_assoc()) { ?>
+                                    <form method="post" enctype="multipart/form-data">
+                                        <div class="text-center">
+                                            <!-- VOY POR AQUÍ, NO CONSIGO QUE SALGAN LOS DATOS ANTIGUOS POR DEFECTO -->
+                                            <img src="<?php echo IMG_USUARIO.$fila["foto_usuario"] ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
+                                            <input type="file" disabled hidden name="nueva_foto_usuario" id="nueva_foto_usuario" class="form-control mb-4" accept="image/*"/>
+                                        </div>
+                                    
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <label class="form-label" for="nuevo_nombre_usuario">Nombre</label>
+                                            <input type="text" disabled id="nuevo_nombre_usuario" name="nuevo_nombre_usuario" value="<?php echo $fila['nombre_usuario']?>"
+                                                class="form-control" placeholder="Inserte su nombre" />
+                                            <?php if (isset($err_nombre_usuario)) echo "<span class='error'>$err_nombre_usuario</span>"; ?>
+                                        </div>
+
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <label class="form-label" for="nuevo_email_usuario">Email</label>
+                                            <input type="email" disabled id="nuevo_email_usuario" name="nuevo_email_usuario" value="<?php echo $fila['email_usuario']?>"
+                                                class="form-control" placeholder="Inserte su correo electrónico" />
+                                            <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                                        </div>
+
+                                        <div data-mdb-input-init class="form-outline mb-4">
+                                            <label class="form-label" for="nueva_contrasena_usuario">Contraseña</label>
+                                            <input type="password" disabled id="nueva_contrasena_usuario" name="nueva_contrasena_usuario"
+                                                class="form-control"/>
+                                            <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                                        </div>
+                                        
+                                        <div class="pt-1 mb-5 pb-1">
+                                            <button data-mdb-button-init data-mdb-ripple-init
+                                                class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                type="button" id="cambiar_datos">Cambiar datos</button>
+                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                                class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
+                                        </div>
+                                    </form>
+                                    <?php } ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+        </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        let modo_edicion = false;
 
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <div class="form-group">
-                <label class="col-sm-2 control-label">Nuevo email</label>
-                <div class="col-sm-10">
-                  <input type="email" class="form-control" />
-                </div>
-              </div>
-            </div>
-          </div>
+        // Validación de errores
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const nombreInput = document.getElementById('nuevo_nombre_usuario');
+            const emailInput = document.getElementById('nuevo_email_usuario');
+            const contrasenaInput = document.getElementById('nueva_contrasena_usuario');
 
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h4 class="panel-title">Security</h4>
-            </div>
-            <div class="panel-body">
-              <div class="form-group">
-                <label class="col-sm-2 control-label">Current password</label>
-                <div class="col-sm-10">
-                  <input type="password" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group">
-                <label class="col-sm-2 control-label">New password</label>
-                <div class="col-sm-10">
-                  <input type="password" class="form-control" />
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-10 col-sm-offset-2">
-                  <div class="checkbox">
-                    <input type="checkbox" id="checkbox_1" />
-                    <label for="checkbox_1">Make this account public</label>
-                  </div>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-10 col-sm-offset-2">
-                  <button type="submit" class="btn btn-primary">
-                    Submit
-                  </button>
-                  <button type="reset" class="btn btn-default">Cancel</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+            const botonCambiar = document.getElementById('cambiar_datos');
 
-  <!-- <div class="container">
-      <h1>Cambiar credenciales</h1>
-      <?php
-      $usuario = $_GET["usuario"];
-      $sql = "SELECT * FROM usuarios WHERE usuario = '$usuario'";
-      $resultado = $_conexion -> query($sql);
-      
-      while($fila = $resultado -> fetch_assoc()) {
-          $contrasena = $fila["contrasena"];
-      }
+            form.addEventListener('submit', function (e) {
+                let tieneErrores = false;
 
-      if($_SERVER["REQUEST_METHOD"] == "POST") {
-          $nueva_contrasena = $_POST["nueva_contrasena"];
+                limpiarErrores();
 
-          if($nueva_contrasena == ""){
-              $err_contrasena = "La contraseña es obligatoria";
-          } else {
-              if(strlen($nueva_contrasena) > 15 || strlen($nueva_contrasena) < 8){
-                  $err_contrasena = "La contraseña tiene que tener como minimo 8 y maximo 15 caracteres";
-              } else {
-                  $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
-                  if(!preg_match($patron, $nueva_contrasena)){
-                      $err_contrasena = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
-                  } else {
-                      $contrasena_cifrada = password_hash($nueva_contrasena,PASSWORD_DEFAULT);
-                      // Modifica la contraseña
-                      $sql = "UPDATE usuarios SET contrasena = '$contrasena_cifrada' WHERE usuario = '$usuario'";
-                      $_conexion -> query($sql);
-                  }                    
-              }
-          }
-          
-      }
-      ?>
-      <form class="col-6" action="" method="post" enctype="multipart/form-data">
-          <div class="mb-3">
-              <label class="form-label">Usuario</label>
-              <input class="form-control" type="text" name="usuario" value="<?php echo $usuario ?>" disabled>
-          </div>
-          <div class="mb-3">
-              <label class="form-label">Contraseña</label>
-              <input class="form-control" type="password" name="nueva_contrasena">
-              <?php if(isset($err_contrasena)) echo "<span class='error'>$err_contrasena</span>"; ?>
-          </div>
-          <div class="mb-3">
-              <input type="hidden" name="usuario" value="<?php echo $usuario ?>">
-              <input class="btn btn-primary" type="submit" value="Confirmar">
-              <a href="../index.php" class="btn btn-outline-secondary">Volver a inicio</a>
-          </div>
-      </form>
-  </div> -->
+                // Nombre
+                const nombreValor = nombreInput.value.trim();
+                const nombrePatron = /^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/;
+                if (nombreValor === '') {
+                    mostrarError(nombreInput, 'El nombre es obligatorio.');
+                    tieneErrores = true;
+                } else if (!nombrePatron.test(nombreValor)) {
+                    mostrarError(nombreInput, 'El nombre solo puede contener letras, números y espacios.');
+                    tieneErrores = true;
+                }
 
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-    crossorigin="anonymous"
-  ></script>
+                // Email
+                const emailValor = emailInput.value.trim();
+                const emailPatron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailValor === '') {
+                    mostrarError(emailInput, 'El email es obligatorio.');
+                    tieneErrores = true;
+                } else if (!emailPatron.test(emailValor)) {
+                    mostrarError(emailInput, 'El formato del email no es válido.');
+                    tieneErrores = true;
+                }
+
+                // Contraseña
+                const contrasenaValor = contrasenaInput.value;
+                const contrasenaPatron = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+                if (contrasenaValor === '') {
+                    mostrarError(contrasenaInput, 'La contraseña es obligatoria.');
+                    tieneErrores = true;
+                } else if (contrasenaValor.length < 8) {
+                    mostrarError(contrasenaInput, 'La contraseña debe tener al menos 8 caracteres.');
+                    tieneErrores = true;
+                } else if (!contrasenaPatron.test(contrasenaValor)) {
+                    mostrarError(contrasenaInput, 'Debe tener mayúsculas, minúsculas, números y puede incluir caracteres especiales.');
+                    tieneErrores = true;
+                }
+
+                if (tieneErrores) {
+                    e.preventDefault();
+                }
+            });
+
+            function mostrarError(input, mensaje) {
+                const errorSpan = document.createElement('span');
+                errorSpan.classList.add('error');
+                errorSpan.textContent = mensaje;
+                input.parentElement.appendChild(errorSpan);
+            }
+
+            function limpiarErrores() {
+                const errores = document.querySelectorAll('.error');
+                errores.forEach(function (error) {
+                    error.remove();
+                });
+            }
+
+            // "Cambiar datos" ==> "Aplicar cambios"
+            botonCambiar.addEventListener('click', function (event) {
+                if (!modo_edicion) {
+                    event.preventDefault();
+
+                    botonCambiar.textContent = "Aplicar cambios";
+                    modo_edicion = true;
+
+                    form.querySelectorAll('input').forEach(input => {
+                        input.disabled = false;
+                    });
+
+                    const inputFile = document.getElementById('foto_usuario_actual');
+                    inputFile.hidden = false;
+                } else {
+                    form.requestSubmit();
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>

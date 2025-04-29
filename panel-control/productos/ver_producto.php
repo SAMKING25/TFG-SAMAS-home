@@ -132,13 +132,13 @@
                 </div>
 
                 <form action="" method="post">
-                    <a href="../editar_producto.php?id_producto=<?php echo $fila[" id_producto"] ?>" class="btn
+                    <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn
                         btn-primary btn-lg mb-3 me-2">
                         <i class="bi bi-cart-plus"></i> Editar
                     </a>
                     <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i
                             class="bi bi-trash3-fill"></i> Borrar</button>
-                    <input type="hidden" name="id_producto" value="<?php echo $fila[" id_producto"] ?>">
+                    <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"] ?>">
                 </form>
             </div>
             <?php } ?>
