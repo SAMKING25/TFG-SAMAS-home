@@ -218,7 +218,7 @@
                     <div class="card-body p-5">
                         <h2 class="mb-4 text-center">Agregar Nuevo Producto</h2>
 
-                        <form action="" method="post" enctype="multipart/form-data">
+                        <form method="post" enctype="multipart/form-data">
 
                             <div class="mb-3">
                                 <label class="form-label">Nombre</label>
