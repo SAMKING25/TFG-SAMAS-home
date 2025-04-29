@@ -16,8 +16,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.2.4/fabric.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: "TrebuchetMS";
+            src: url("/fonts/TrebuchetMS.ttf");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        html {
+            font-family: "TrebuchetMS";
+        }
+
         body {
-            background-color: #f8f9fa;
+            background-color: rgb(247, 229, 203);
         }
 
         .pricing-card {
@@ -36,6 +47,18 @@
             padding: 2rem;
         }
 
+        .pricing-header.basic {
+            background-color: rgba(163, 144, 130);
+        }
+
+        .pricing-header.premium {
+            background-color: rgba(146, 116, 71);
+        }
+
+        .pricing-header.vip {
+            background-color: rgba(165, 125, 49);
+        }
+
         .pricing-features {
             padding: 2rem;
         }
@@ -51,6 +74,14 @@
 
         .btn-custom:hover {
             transform: scale(1.05);
+        }
+
+        .btn.premium {
+            background-color: rgba(146, 116, 71, 0.7);
+        }
+
+        .btn.vip {
+            background-color: rgba(165, 125, 49, 0.7);
         }
 
         .feature-icon {
@@ -74,15 +105,15 @@
     include('../navbar.php');
     ?>
     <div class="container py-5">
-        <h2 class="text-center mb-5">Choose Your Perfect Plan</h2>
+        <h2 class="text-center mb-5">¡Escoge el plan perfecto para tí!</h2>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <!-- Basic Plan -->
             <div class="col">
                 <div class="card h-100 pricing-card">
-                    <div class="pricing-header bg-primary text-white text-center">
-                        <h3 class="mb-0">Basic</h3>
-                        <div class="display-4 fw-bold my-3">$9.99</div>
-                        <p class="mb-0">per month</p>
+                    <div class="pricing-header basic text-white text-center">
+                        <h3 class="mb-0">Básica</h3>
+                        <div class="display-4 fw-bold my-3">0€</div>
+                        <p class="mb-0">cada mes</p>
                     </div>
                     <div class="card-body pricing-features">
                         <ul class="list-unstyled">
@@ -93,7 +124,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                10 GB Storage
+                                1 uso del plano por trimestre
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20"
@@ -102,20 +133,11 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                2 Users
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Email Support
+                                Acceso a ofertas genéricas
                             </li>
                         </ul>
                         <div class="text-center mt-4">
-                            <a href="#" class="btn btn-outline-primary btn-custom">Get Started</a>
+                            <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
                         </div>
                     </div>
                 </div>
@@ -124,10 +146,10 @@
             <!-- Pro Plan -->
             <div class="col">
                 <div class="card h-100 pricing-card">
-                    <div class="pricing-header bg-success text-white text-center">
-                        <h3 class="mb-0">Pro</h3>
-                        <div class="display-4 fw-bold my-3">$19.99</div>
-                        <p class="mb-0">per month</p>
+                    <div class="pricing-header premium text-white text-center">
+                        <h3 class="mb-0">Premium</h3>
+                        <div class="display-4 fw-bold my-3">10€</div>
+                        <p class="mb-0">cada mes</p>
                     </div>
                     <div class="card-body pricing-features">
                         <ul class="list-unstyled">
@@ -138,7 +160,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                50 GB Storage
+                                5 usos del plano por trimestre
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
@@ -147,7 +169,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                5 Users
+                                Acceso a ofertas mayores
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
@@ -156,11 +178,11 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                Priority Support
+                                Acceso a descuentos exclusivos
                             </li>
                         </ul>
                         <div class="text-center mt-4">
-                            <a href="#" class="btn btn-success btn-custom">Get Started</a>
+                            <a href="/pasarela-pago/index.php" class="btn premium btn-custom">Adquirir</a>
                         </div>
                     </div>
                 </div>
@@ -169,10 +191,10 @@
             <!-- Enterprise Plan -->
             <div class="col">
                 <div class="card h-100 pricing-card">
-                    <div class="pricing-header bg-dark text-white text-center">
-                        <h3 class="mb-0">Enterprise</h3>
-                        <div class="display-4 fw-bold my-3">$49.99</div>
-                        <p class="mb-0">per month</p>
+                    <div class="pricing-header vip text-white text-center">
+                        <h3 class="mb-0">VIP</h3>
+                        <div class="display-4 fw-bold my-3">25€</div>
+                        <p class="mb-0">cada mes</p>
                     </div>
                     <div class="card-body pricing-features">
                         <ul class="list-unstyled">
@@ -183,7 +205,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                Unlimited Storage
+                                Uso infinito del plano
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
@@ -192,7 +214,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                Unlimited Users
+                                Mayores ofertas exclusivas
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
@@ -201,11 +223,20 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                24/7 Dedicated Support
+                                Mayores descuentos exclusivos
+                            </li>
+                            <li class="mb-3">
+                                <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd"
+                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                        clip-rule="evenodd"></path>
+                                </svg>
+                                Prioridad a la hora de atenderte
                             </li>
                         </ul>
                         <div class="text-center mt-4">
-                            <a href="#" class="btn btn-dark btn-custom">Get Started</a>
+                            <a href="/pasarela-pago/index.php" class="btn vip btn-custom">Adquirir</a>
                         </div>
                     </div>
                 </div>
