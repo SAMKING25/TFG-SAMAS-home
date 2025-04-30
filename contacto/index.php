@@ -220,11 +220,12 @@
               <div class="col-md-7">
                 <div class="contact-form">
                   <h2 class="mb-4">Envíanos un mensaje</h2>
-                  <form>
+                  <form action="datos.php" method="post">
                     <div class="row">
                       <div class="col-md-6 mb-3">
                         <label class="form-label">Nombre</label>
                         <input
+                          name="nombre"
                           type="text"
                           class="form-control"
                           placeholder="Nombre"
@@ -233,6 +234,7 @@
                       <div class="col-md-6 mb-3">
                         <label class="form-label">Apellido</label>
                         <input
+                          name="apellido"
                           type="text"
                           class="form-control"
                           placeholder="Apellido"
@@ -243,6 +245,7 @@
                     <div class="mb-3">
                       <label class="form-label">Correo electrónico</label>
                       <input
+                        name="correo"
                         type="email"
                         class="form-control"
                         placeholder="nombre@ejemplo.com"
@@ -252,6 +255,7 @@
                     <div class="mb-3">
                       <label class="form-label">Asunto</label>
                       <input
+                        name="asunto"
                         type="text"
                         class="form-control"
                         placeholder="¿Cómo podemos ayudarte?"
@@ -261,6 +265,7 @@
                     <div class="mb-4">
                       <label class="form-label">Mensaje</label>
                       <textarea
+                        name="mensaje"
                         class="form-control"
                         rows="5"
                         placeholder="Tu mensaje aquí..."
@@ -268,7 +273,7 @@
                     </div>
 
                     <button type="submit" class="btn btn-submit text-white">
-                      Enviar mensaje
+                      Enviar
                     </button>
                   </form>
                 </div>
