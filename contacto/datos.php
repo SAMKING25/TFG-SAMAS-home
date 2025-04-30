@@ -21,5 +21,4 @@ if($enviar){
     echo "<script> alert('Tu mensaje no fue enviado.') <script>";
 }
 
-} 
 ?>
