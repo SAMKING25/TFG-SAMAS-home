@@ -77,14 +77,14 @@
             <h5>Productos</h5>
             <div id="productos" class="list-group">
                 <?php foreach ($productos as $producto): ?>
-                <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
-                    onclick="agregarProducto('../img/productos/<?php echo $producto['imagen']; ?>')">
-                    <img src="../img/productos/<?php echo $producto['imagen']; ?>"
-                        alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
-                    <span>
-                        <?php echo htmlspecialchars($producto['nombre']); ?>
-                    </span>
-                </div>
+                    <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
+                        onclick="agregarProducto('../img/productos/<?php echo $producto['imagen']; ?>')">
+                        <img src="../img/productos/<?php echo $producto['imagen']; ?>"
+                            alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
+                        <span>
+                            <?php echo htmlspecialchars($producto['nombre']); ?>
+                        </span>
+                    </div>
                 <?php endforeach; ?>
             </div>
         </div>
@@ -92,10 +92,18 @@
         <!-- Contenedor del canvas -->
         <div id="canvas-container" class="p-3">
             <div class="d-flex justify-content-between mb-3">
-                <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
-                    style="width: 60px; height: 60px;">
-                    <i class="bi bi-square" style="font-size: 24px;"></i>
-                </button>
+                <div class="d-flex text-start me-2">
+                    <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
+                        style="width: 60px; height: 60px;">
+                        <i class="bi bi-square" style="font-size: 24px;"></i>
+                    </button>
+                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2" onclick="agregarPuerta()"
+                        style="width: 60px; height: 60px;">
+                        <i class="bi bi-door-open" style="font-size: 24px;"></i>
+                    </button>
+                </div>
+
+
 
                 <div class="d-flex text-end me-2">
                     <button id="save-design" class="btn btn-success rounded-circle shadow me-2"
@@ -129,7 +137,7 @@
 
         function agregarProducto(imagenURL) {
             console.log(imagenURL);
-            fabric.Image.fromURL(imagenURL, function (img) {
+            fabric.Image.fromURL(imagenURL, function(img) {
                 const escala = 0.5;
 
                 img.set({
@@ -225,7 +233,65 @@
             canvas.renderAll();
         }
 
-        document.addEventListener('keydown', function (event) {
+        function agregarPuerta() {
+            const factorConversion = 100; // 100px = 1 metro
+
+            const puerta = new fabric.Rect({
+                left: 0,
+                top: 0,
+                fill: '#8b5a2b', // color marrón para distinguir
+                width: 90,
+                height: 22,
+                selectable: false,
+                originX: 'center',
+                originY: 'center',
+            });
+
+            const textoMedida = new fabric.Text('0.90 m', {
+                fontSize: 20,
+                fill: '#000',
+                backgroundColor: 'white',
+                padding: 4,
+                originX: 'center',
+                originY: 'center',
+                selectable: false,
+                evented: false,
+            });
+
+            const grupo = new fabric.Group([puerta, textoMedida], {
+                left: 150,
+                top: 150,
+                selectable: true,
+                lockScalingY: true,
+                hasControls: true,
+            });
+
+            canvas.add(grupo);
+            canvas.setActiveObject(grupo);
+
+            function actualizarMedida() {
+                const anchoReal = puerta.width * grupo.scaleX;
+                const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
+                textoMedida.text = metrosActualizados;
+
+                textoMedida.scaleX = 1 / grupo.scaleX;
+                textoMedida.scaleY = 1 / grupo.scaleY;
+
+                textoMedida.top = puerta.top - puerta.height / 2 - 20;
+                textoMedida.left = puerta.left;
+
+                canvas.requestRenderAll();
+            }
+
+            grupo.on('scaling', actualizarMedida);
+            grupo.on('modified', actualizarMedida);
+            grupo.on('rotating', actualizarMedida);
+
+            actualizarMedida();
+            canvas.renderAll();
+        }
+
+        document.addEventListener('keydown', function(event) {
             if (event.key === 'Delete' || event.key === 'Backspace') {
                 borrarObjeto();
             }
