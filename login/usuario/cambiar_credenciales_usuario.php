@@ -70,9 +70,9 @@
 <body>
     <?php
     if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $nuevo_email_usuario = depurar($_POST["email_usuario"]);
-            $nuevo_nombre_usuario = depurar($_POST["nombre_usuario"]);
-            $nueva_contrasena_usuario = $_POST["contrasena_usuario"];
+            $nuevo_email_usuario = depurar($_POST["nuevo_email_usuario"]);
+            $nuevo_nombre_usuario = depurar($_POST["nuevo_nombre_usuario"]);
+            $nueva_contrasena_usuario = $_POST["nueva_contrasena_usuario"];
             $nueva_foto_usuario = "estandar.png";
             $nueva_suscripcion = "Gratuita";
 
@@ -84,16 +84,13 @@
                 $err_email_usuario = "El email es obligatorio";
             } else {
                 $sql = "SELECT * FROM usuarios WHERE email_usuario ='$nuevo_email_usuario'";
-                $resultado = $_conexion->query($sql);
-                
-                if ($resultado->num_rows == 1) {
-                    $err_email_usuario = "El email $nuevo_email_usuario ya existe";
+                $resultado = $_conexion->query($sql);                
+                if (filter_var($nuevo_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
+                    $err_email_usuario = "El email no es válido";
                 } else {
-                    if (filter_var($nuevo_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
-                        $err_email_usuario = "El email no es válido";
-                    } else {
-                        $email_usuario_actual = $nuevo_email_usuario;
-                    }
+                    $email_usuario_actual = $nuevo_email_usuario;
+                    $sql = "UPDATE usuarios SET email_usuario = '$email_usuario_actual' WHERE id_usuario = $id_usuario";
+                    $_conexion->query($sql);
                 }
             }
 
@@ -102,16 +99,13 @@
             } else {
                 $sql = "SELECT * FROM usuarios WHERE nombre_usuario ='$nuevo_nombre_usuario'";
                 $resultado = $_conexion->query($sql);
-    
-                if ($resultado->num_rows == 1) {
-                    $err_nombre_usuario = "El nombre $nuevo_nombre_usuario ya existe";
+                $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
+                if (!preg_match($patron, $nuevo_nombre_usuario)) {
+                    $err_nombre_usuario = "El nombre solo puede tener letras y números";
                 } else {
-                    $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
-                    if (!preg_match($patron, $nuevo_nombre_usuario)) {
-                        $err_nombre_usuario = "El nombre solo puede tener letras y números";
-                    } else {
-                        $nombre_usuario_actual = $nuevo_nombre_usuario;
-                    }
+                    $nombre_usuario_actual = $nuevo_nombre_usuario;
+                    $sql = "UPDATE usuarios SET nombre_usuario = '$nombre_usuario_actual' WHERE id_usuario = $id_usuario";
+                    $_conexion->query($sql);
                 }
             }
 
@@ -126,11 +120,11 @@
                         $err_contrasena_usuario = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
                     } else {
                         $contrasena_usuario_cifrada_actual = password_hash($nueva_contrasena_usuario, PASSWORD_DEFAULT);
+                        $sql = "UPDATE usuarios SET contrasena_usuario = '$contrasena_usuario_cifrada_actual' WHERE id_usuario = $id_usuario";
+                        $_conexion->query($sql);
                     }
                 }
             }
-
-            
 
             if ($nuevo_nombre_imagen == "") {
                 $err_foto_usuario = "La imagen es obligatoria";
@@ -140,7 +134,7 @@
                 } else {
                     move_uploaded_file($ubicacion_temporal, $ubicacion_final);
                     $foto_usuario_actual = $nuevo_nombre_imagen;
-                    $sql = "UPDATE usuarios SET foto_usuario = $foto_usuario_actual WHERE id_usuario = $id_usuario";
+                    $sql = "UPDATE usuarios SET foto_usuario = '$foto_usuario_actual' WHERE id_usuario = $id_usuario";
                     $_conexion->query($sql);
                 }
             }
@@ -160,24 +154,22 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
-                                    <?php while ($fila = $datos_actuales->fetch_assoc()) { ?>
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
-                                            <!-- VOY POR AQUÍ, NO CONSIGO QUE SALGAN LOS DATOS ANTIGUOS POR DEFECTO -->
-                                            <img src="<?php echo IMG_USUARIO.$fila["foto_usuario"] ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
+                                            <img src="<?php echo IMG_USUARIO.$foto_usuario_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
                                             <input type="file" disabled hidden name="nueva_foto_usuario" id="nueva_foto_usuario" class="form-control mb-4" accept="image/*"/>
                                         </div>
                                     
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nuevo_nombre_usuario">Nombre</label>
-                                            <input type="text" disabled id="nuevo_nombre_usuario" name="nuevo_nombre_usuario" value="<?php echo $fila['nombre_usuario']?>"
+                                            <input type="text" disabled id="nuevo_nombre_usuario" name="nuevo_nombre_usuario" value="<?php echo $nombre_usuario_actual?>"
                                                 class="form-control" placeholder="Inserte su nombre" />
                                             <?php if (isset($err_nombre_usuario)) echo "<span class='error'>$err_nombre_usuario</span>"; ?>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nuevo_email_usuario">Email</label>
-                                            <input type="email" disabled id="nuevo_email_usuario" name="nuevo_email_usuario" value="<?php echo $fila['email_usuario']?>"
+                                            <input type="email" disabled id="nuevo_email_usuario" name="nuevo_email_usuario" value="<?php echo $email_usuario_actual?>"
                                                 class="form-control" placeholder="Inserte su correo electrónico" />
                                             <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
                                         </div>
@@ -197,7 +189,6 @@
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
                                     </form>
-                                    <?php } ?>
                                 </div>
                             </div>
                         </div>
@@ -293,7 +284,7 @@
                         input.disabled = false;
                     });
 
-                    const inputFile = document.getElementById('foto_usuario_actual');
+                    const inputFile = document.getElementById('nueva_foto_usuario');
                     inputFile.hidden = false;
                 } else {
                     form.requestSubmit();
