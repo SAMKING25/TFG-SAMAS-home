@@ -7,12 +7,12 @@ $correo = $_POST["correo"];
 $asunto = $_POST["asunto"];
 $mensaje = $_POST["mensaje"];
 
-$header = "Enviado desde el formulario de contacto"
+$header = "Enviado desde el formulario de contacto";
 $mensajeCompleto =  "Nombre  : " . $nombre .
                     "\n" . "Apellidos  : " . $apellido .
                     "\n" . "Correo  : " . $correo .
                     "\n" . "Asunto  : " . $asunto .
-                    "\n" . "Mensaje  : " . $mensaje .;
+                    "\n" . "Mensaje  : " . $mensaje ;
                     
 $enviar = mail($destino, $asunto, $mensajeCompleto, $header);
 if($enviar){
