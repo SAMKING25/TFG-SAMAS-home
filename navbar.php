@@ -52,7 +52,7 @@ define('FUNCIONES', '/util/funciones/');
 
                 <!-- Icons & Search (Right) -->
                 <div class="col-md-4 d-flex justify-content-end align-items-center">
-                    <div class="search-bar me-2">
+                    <div class="search-bar me-3">
                         <!-- Added me-2 for a little spacing -->
                         <div class="input-group">
                             <input type="text" class="form-control form-control-sm" placeholder="Buscar..."
@@ -62,7 +62,7 @@ define('FUNCIONES', '/util/funciones/');
                             </button>
                         </div>
                     </div>
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link me-3">
                         <i class="bi bi-cart2 icono-personalizado"></i>
                     </a>
                     <div class="dropdown">
