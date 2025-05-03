@@ -15,6 +15,8 @@
     require('../../util/conexion.php');
     require('../../util/funciones/utilidades.php');
 
+    define('IMG_PRODUCTOS', '/img/productos/');
+
     session_start();
     if (!isset($_SESSION["usuario"])) {
         header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
@@ -52,6 +54,7 @@
         $largo_actual = $datos_actuales["largo"];
         $ancho_actual = $datos_actuales["ancho"];
         $alto_actual = $datos_actuales["alto"];
+        $imagen_actual = $datos_actuales["imagen"];
     }
 
     $sql = "SELECT * FROM categorias ORDER BY categoria";
@@ -73,13 +76,19 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nuevo_nombre = depurar($_POST["nuevo_nombre"]);
         $nuevo_precio = depurar($_POST["nuevo_precio"]);
-        if (isset($_POST["nueva_categoria"])) $nueva_categoria = depurar($_POST["nueva_categoria"]);
-        else $nueva_categoria = "";
+        if (isset($_POST["nueva_categoria"]))
+            $nueva_categoria = depurar($_POST["nueva_categoria"]);
+        else
+            $nueva_categoria = "";
         $nuevo_stock = depurar($_POST["nuevo_stock"]);
         $nueva_descripcion = depurar($_POST["nueva_descripcion"]);
         $nuevo_largo = depurar($_POST["largo"]);
         $nuevo_ancho = depurar($_POST["ancho"]);
         $nuevo_alto = depurar($_POST["alto"]);
+
+        $nuevo_nombre_imagen = $_FILES["imagen"]["name"];
+        $ubicacion_temporal = $_FILES["imagen"]["tmp_name"];
+        $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
 
         if ($nuevo_nombre == '') {
             $err_nombre = "El nombre es obligatorio";
@@ -207,6 +216,19 @@
                 }
             }
         }
+
+        if ($nuevo_nombre_imagen == "") {
+            $err_foto_proveedor = "La imagen es obligatoria";
+        } else {
+            if (strlen($nuevo_nombre_imagen) > 60) {
+                $err_foto_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
+            } else {
+                move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
+                $imagen_actual = $nuevo_nombre_imagen;
+                $sql = "UPDATE productos SET imagen = '$imagen_actual' WHERE id_producto = $id_producto";
+                $_conexion->query($sql);
+            }
+        }
     }
 
     ?>
@@ -215,23 +237,26 @@
             <div class="col-lg-8">
                 <div class="card shadow rounded-4">
                     <div class="card-body p-5">
-                        <h2 class="mb-4 text-center">Editar Producto</h2>
-
                         <form action="" method="post" enctype="multipart/form-data">
 
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" name="nuevo_nombre"
-                                    value="<?php echo $nombre_actual ?>">
-                                <?php if (isset($err_nombre)) echo "<span class='error'>$err_nombre</span>"; ?>
+                            <!-- class="card-img-top"
+                        style="height: 260px; object-fit: cover;" -->
+
+                            <div class="text-center mb-3">
+                                <img src="<?php echo IMG_PRODUCTOS . $imagen_actual ?>"
+                                    style="height: 260px; width: 60%; object-fit: cover;" alt="logo"
+                                    class="card-img-top img-fluid" />
+                                <input type="file" disabled hidden name="nueva_imagen" id="nueva_imagen"
+                                    class="form-control mb-4" accept="image/*" />
                             </div>
 
-                            <div class="row g-3">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Precio</label>
-                                    <input class="form-control" type="text" name="nuevo_precio"
-                                        value="<?php echo $precio_actual ?>">
-                                    <?php if (isset($err_precio)) echo "<span class='error'>$err_precio</span>"; ?>
+                                    <label class="form-label">Nombre</label>
+                                    <input class="form-control" type="text" name="nuevo_nombre"
+                                        value="<?php echo $nombre_actual ?>">
+                                    <?php if (isset($err_nombre))
+                                        echo "<span class='error'>$err_nombre</span>"; ?>
                                 </div>
 
                                 <div class="col-md-6">
@@ -242,71 +267,87 @@
                                         </option>
                                         <?php
                                         foreach ($categorias as $categoria) { ?>
-                                        <?php if ($categoria != $categoria_actual) { ?>
-                                        <option value="<?php echo $categoria ?>">
-                                            <?php echo $categoria; ?>
-                                        </option>
-                                        <?php } ?>
+                                            <?php if ($categoria != $categoria_actual) { ?>
+                                                <option value="<?php echo $categoria ?>">
+                                                    <?php echo $categoria; ?>
+                                                </option>
+                                            <?php } ?>
                                         <?php } ?>
                                     </select>
-                                    <?php if (isset($err_categoria)) echo "<span class='error'>$err_categoria</span>"; ?>
+                                    <?php if (isset($err_categoria))
+                                        echo "<span class='error'>$err_categoria</span>"; ?>
                                 </div>
                             </div>
 
-                            <div class="mt-3 mb-3">
-                                <label class="form-label">Stock</label>
-                                <input class="form-control" type="text" name="nuevo_stock"
-                                    value="<?php echo $stock_actual ?>">
-                                <?php if (isset($err_stock)) echo "<span class='error'>$err_stock</span>"; ?>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Precio</label>
+                                    <input class="form-control" type="text" name="nuevo_precio"
+                                        value="<?php echo $precio_actual ?>">
+                                    <?php if (isset($err_precio))
+                                        echo "<span class='error'>$err_precio</span>"; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Stock</label>
+                                    <input class="form-control" type="text" name="nuevo_stock"
+                                        value="<?php echo $stock_actual ?>">
+                                    <?php if (isset($err_stock))
+                                        echo "<span class='error'>$err_stock</span>"; ?>
+                                </div>
+                            </div>
+
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Largo (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="largo"
+                                        value="<?php echo $largo_actual ?>">
+                                    <?php if (isset($err_largo))
+                                        echo "<span class='error'>$err_largo</span>"; ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ancho (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="ancho"
+                                        value="<?php echo $ancho_actual ?>">
+                                    <?php if (isset($err_ancho))
+                                        echo "<span class='error'>$err_ancho</span>"; ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Alto (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="alto"
+                                        value="<?php echo $alto_actual ?>">
+                                    <?php if (isset($err_alto))
+                                        echo "<span class='error'>$err_alto</span>"; ?>
+                                </div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Descripcion</label>
                                 <textarea class="form-control"
                                     name="nueva_descripcion"><?php echo $descripcion_actual ?></textarea>
-                                <?php if (isset($err_descripcion)) echo "<span class='error'>$err_descripcion</span>"; ?>
+                                <?php if (isset($err_descripcion))
+                                    echo "<span class='error'>$err_descripcion</span>"; ?>
                             </div>
 
-                            <div class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Largo (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="largo"
-                                        value="<?php echo $largo_actual ?>">
-                                    <?php if (isset($err_largo)) echo "<span class='error'>$err_largo</span>"; ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Ancho (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="ancho"
-                                        value="<?php echo $ancho_actual ?>">
-                                    <?php if (isset($err_ancho)) echo "<span class='error'>$err_ancho</span>"; ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Alto (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="alto"
-                                        value="<?php echo $alto_actual ?>">
-                                    <?php if (isset($err_alto)) echo "<span class='error'>$err_alto</span>"; ?>
-                                </div>
-                            </div>
-
-                            <div class="mb-4 mt-4">
-                                <label class="form-label">Imagen</label>
-                                <input class="form-control" type="file" name="imagen">
-                                <?php if (isset($err_imagen)) echo "<span class='error'>$err_imagen</span>"; ?>
-                            </div>
-
-                            <div class="mb-4 mt-4">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Oferta</label>
                                     <select class="form-select" name="oferta">
                                         <option selected value="null">No tiene oferta</option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
-                                        <option value="<?php echo $oferta['id_oferta']; ?>">
-                                            <?php echo $oferta['nombre']; ?>
-                                        </option>
+                                            <option value="<?php echo $oferta['id_oferta']; ?>">
+                                                <?php echo $oferta['nombre']; ?>
+                                            </option>
                                         <?php } ?>
                                     </select>
-                                    <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
+                                    <?php if (isset($err_oferta))
+                                        echo "<span class='error'>$err_oferta</span>"; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Imagen</label>
+                                    <input class="form-control" type="file" name="imagen">
+                                    <?php if (isset($err_imagen))
+                                        echo "<span class='error'>$err_imagen</span>"; ?>
                                 </div>
                             </div>
 

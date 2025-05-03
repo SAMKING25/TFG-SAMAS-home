@@ -131,7 +131,7 @@
                 if (strlen($nuevo_nombre_imagen) > 60) {
                     $err_foto_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
                 } else {
-                    move_uploaded_file($ubicacion_temporal, $ubicacion_final);
+                    move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
                     $foto_proveedor_actual = $nuevo_nombre_imagen;
                     $sql = "UPDATE proveedores SET foto_proveedor = '$foto_proveedor_actual' WHERE id_proveedor = $id_proveedor";
                     $_conexion->query($sql);
