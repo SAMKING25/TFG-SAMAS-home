@@ -290,18 +290,15 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
 		const panels = document.querySelectorAll(".panel");
+		let hoverTimeout;
 
 		panels.forEach((panel) => {
-			panel.addEventListener("mouseover", () => {
-				removeActiveClasses();
-				panel.classList.add("active");
-			});
-		});
-
-		panels.forEach((panel) => {
-			panel.addEventListener("mouseleave", () => {
-				addActiveClasses();
-				panel.classList.add("active");
+			panel.addEventListener("mouseenter", () => {
+				clearTimeout(hoverTimeout);
+				hoverTimeout = setTimeout(() => {
+					removeActiveClasses();
+					panel.classList.add("active");
+				}, 200);
 			});
 		});
 
@@ -310,13 +307,9 @@
 				panel.classList.remove("active");
 			});
 		}
-
-		function addActiveClasses() {
-			panels.forEach((panel) => {
-				panel.classList.add("active");
-			});
-		}
 	</script>
+	</div>
+
 </body>
 
 </html>
