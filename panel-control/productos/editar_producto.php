@@ -353,7 +353,7 @@
 
                             <div class="d-flex justify-content-between">
                                 <input type="hidden" name="id_producto" value="<?php echo $id_producto ?>">
-                                <a href="./index.php" class="btn btn-outline-secondary">Cancelar</a>
+                                <a href="./index.php" class="btn btn-outline-secondary">Salir</a>
                                 <button type="submit" class="btn btn-success">Confirmar cambio</button>
                             </div>
                         </form>
