@@ -173,7 +173,7 @@
                       />
                     </a>
                   </div>
-                  <h2 class="mb-4">Ponte en contacto</h2>
+                  <h3 class="mb-4">Ponte en contacto</h3>
                   <p class="mb-4">
                     Nos encantaría saber de ti. Por favor, completa el
                     formulario o contáctanos usando la información de abajo.
@@ -185,7 +185,7 @@
                     </div>
                     <div>
                       <h6 class="mb-0">Teléfono</h6>
-                      <p class="mb-0">+1 (555) 123-4567</p>
+                      <p class="mb-0">+34 .../../../..</p>
                     </div>
                   </div>
 
@@ -195,7 +195,7 @@
                     </div>
                     <div>
                       <h6 class="mb-0">Correo electrónico</h6>
-                      <p class="mb-0">contacto@company.com</p>
+                      <p class="mb-0">samashome1@gmail.com</p>
                     </div>
                   </div>
 
@@ -220,7 +220,7 @@
               <div class="col-md-7">
                 <div class="contact-form">
                   <h2 class="mb-4">Envíanos un mensaje</h2>
-                  <form action="datos.php" method="post">
+                  <form action="datos.php" method="post" enctype="multipart/form-data">
                     <div class="row">
                       <div class="col-md-6 mb-3">
                         <label class="form-label">Nombre</label>
@@ -243,13 +243,9 @@
                     </div>
 
                     <div class="mb-3">
-                      <label class="form-label">Correo electrónico</label>
-                      <input
-                        name="correo"
-                        type="email"
-                        class="form-control"
-                        placeholder="nombre@ejemplo.com"
-                      />
+                    <label class="form-label" for="email">Email</label>
+                      <input type="email" id="email" name="email"class="form-control" placeholder="Inserte su correo electrónico" />
+                      <?php if(isset($err_email)) echo "<span class='error'>$err_email</span>"; ?>
                     </div>
 
                     <div class="mb-3">
@@ -284,5 +280,66 @@
       </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.querySelector('form');
+            const emailInput = document.getElementById('email');
+
+            // Para mostrar errores
+            const emailError = document.createElement('span');
+            emailError.classList.add('error');
+            emailInput.parentNode.appendChild(emailError);
+
+            form.addEventListener('submit', function (event) {
+                let valid = true;
+
+                emailError.textContent = '';
+
+                // Email
+                const emailValue = emailInput.value.trim();
+                if (emailValue === '') {
+                    emailError.textContent = 'El email es obligatorio.';
+                    valid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                    emailError.textContent = 'El email no es válido.';
+                    valid = false;
+                }
+                if (!valid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          const emailInput = document.getElementById('email_proveedor');
+
+           // Para mostrar errores
+           const emailError = document.createElement('span');
+            emailError.classList.add('error');
+            emailInput.parentNode.appendChild(emailError);
+
+            form.addEventListener('submit', function (event) {
+                let valid = true;
+
+                emailError.textContent = '';
+
+                // Email
+                const emailValue = emailInput.value.trim();
+                if (emailValue === '') {
+                    emailError.textContent = 'El email es obligatorio.';
+                    valid = false;
+                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
+                    emailError.textContent = 'El email no es válido.';
+                    valid = false;
+                }
+              });
+            });
+    </script>
   </body>
 </html>
