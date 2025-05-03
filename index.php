@@ -59,12 +59,12 @@
 						$precio_original = $producto['precio'];
 						$porcentaje_descuento = $producto['porcentaje'];
 						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
-					?>
+						?>
 						<div class="carousel-item <?php if ($primero) {
-														echo 'active';
-														$primero = false;
-													} ?>">
-							<img src="img/productos/<?php echo $producto['imagen']; ?>" class="d-block w-100"
+							echo 'active';
+							$primero = false;
+						} ?>">
+							<img src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
 								alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
 								style="object-fit: cover; height: 100%; width: 100%;">
 							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
@@ -271,10 +271,7 @@
 			},
 		}
 	</script>
-	<script
-		src="https://udify.app/embed.min.js"
-		id="B4keNRHr22WXJT38"
-		defer>
+	<script src="https://udify.app/embed.min.js" id="B4keNRHr22WXJT38" defer>
 	</script>
 	<style>
 		#dify-chatbot-bubble-button {

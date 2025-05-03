@@ -51,18 +51,16 @@
         $categoria_actual = $datos_actuales["categoria"];
         $stock_actual = $datos_actuales["stock"];
         $descripcion_actual = $datos_actuales["descripcion"];
-        $largo_actual = $datos_actuales["largo"];
-        $ancho_actual = $datos_actuales["ancho"];
-        $alto_actual = $datos_actuales["alto"];
-        $imagen_actual = $datos_actuales["imagen"];
+        $medidas = json_decode($datos_actuales["medidas"], true);
+        $img_actual = $datos_actuales["img_producto"];
     }
 
-    $sql = "SELECT * FROM categorias ORDER BY categoria";
+    $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
     $resultado = $_conexion->query($sql);
     $categorias = [];
 
     while ($fila = $resultado->fetch_assoc()) {
-        array_push($categorias, $fila["categoria"]);
+        array_push($categorias, $fila["nombre_categoria"]);
     }
 
     $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
@@ -86,8 +84,8 @@
         $nuevo_ancho = depurar($_POST["ancho"]);
         $nuevo_alto = depurar($_POST["alto"]);
 
-        $nuevo_nombre_imagen = $_FILES["imagen"]["name"];
-        $ubicacion_temporal = $_FILES["imagen"]["tmp_name"];
+        $nuevo_nombre_imagen = $_FILES["img_producto"]["name"];
+        $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
         $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
 
         if ($nuevo_nombre == '') {
@@ -175,11 +173,9 @@
             if (!filter_var($nuevo_largo, FILTER_VALIDATE_INT)) {
                 $err_largo = "El largo tiene que ser un numero entero en centimetros";
             } else {
-                if ($largo_actual < 0 || $nuevo_largo > 2147483647) {
+                if ($nuevo_largo < 0 || $nuevo_largo > 2147483647) {
                     $nuevo_largo = "El largo tiene que ser como maximo 2147483647";
                 } else {
-                    $sql = "UPDATE productos SET largo = $nuevo_largo WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
                     $largo_actual = $nuevo_largo;
                 }
             }
@@ -194,8 +190,6 @@
                 if ($nuevo_ancho < 0 || $nuevo_ancho > 2147483647) {
                     $err_ancho = "El ancho tiene que ser como maximo 2147483647";
                 } else {
-                    $sql = "UPDATE productos SET ancho = $nuevo_ancho WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
                     $ancho_actual = $nuevo_ancho;
                 }
             }
@@ -210,22 +204,26 @@
                 if ($nuevo_alto < 0 || $nuevo_alto > 2147483647) {
                     $err_alto = "El alto tiene que ser como maximo 2147483647";
                 } else {
-                    $sql = "UPDATE productos SET alto = $nuevo_alto WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
                     $alto_actual = $nuevo_alto;
                 }
             }
         }
 
+        if (isset($largo_actual) && isset($ancho_actual) && isset($alto_actual)) {
+            $medidas = array('largo' => intval($largo_actual),'ancho' => intval($ancho_actual),'alto' => intval($alto_actual));
+            $sql = "UPDATE productos SET medidas = '" . json_encode($medidas) . "' WHERE id_producto = '$id_producto'";
+            $_conexion->query($sql);
+        }
+
         if ($nuevo_nombre_imagen == "") {
-            $err_foto_proveedor = "La imagen es obligatoria";
+            $err_foto_proveedor = "La img es obligatoria";
         } else {
             if (strlen($nuevo_nombre_imagen) > 60) {
-                $err_foto_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
+                $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
             } else {
                 move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
-                $imagen_actual = $nuevo_nombre_imagen;
-                $sql = "UPDATE productos SET imagen = '$imagen_actual' WHERE id_producto = $id_producto";
+                $img_actual = $nuevo_nombre_imagen;
+                $sql = "UPDATE productos SET img_producto = '$img_actual' WHERE id_producto = $id_producto";
                 $_conexion->query($sql);
             }
         }
@@ -238,12 +236,8 @@
                 <div class="card shadow rounded-4">
                     <div class="card-body p-5">
                         <form action="" method="post" enctype="multipart/form-data">
-
-                            <!-- class="card-img-top"
-                        style="height: 260px; object-fit: cover;" -->
-
                             <div class="text-center mb-3">
-                                <img src="<?php echo IMG_PRODUCTOS . $imagen_actual ?>"
+                                <img src="<?php echo IMG_PRODUCTOS . $img_actual ?>"
                                     style="height: 260px; width: 60%; object-fit: cover;" alt="logo"
                                     class="card-img-top img-fluid" />
                                 <input type="file" disabled hidden name="nueva_imagen" id="nueva_imagen"
@@ -300,21 +294,21 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Largo (cm)</label>
                                     <input class="form-control" type="number" min="0" name="largo"
-                                        value="<?php echo $largo_actual ?>">
+                                        value="<?php echo $medidas['largo'] ?>">
                                     <?php if (isset($err_largo))
                                         echo "<span class='error'>$err_largo</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Ancho (cm)</label>
                                     <input class="form-control" type="number" min="0" name="ancho"
-                                        value="<?php echo $ancho_actual ?>">
+                                        value="<?php echo $medidas['ancho'] ?>">
                                     <?php if (isset($err_ancho))
                                         echo "<span class='error'>$err_ancho</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Alto (cm)</label>
                                     <input class="form-control" type="number" min="0" name="alto"
-                                        value="<?php echo $alto_actual ?>">
+                                        value="<?php echo $medidas['alto'] ?>">
                                     <?php if (isset($err_alto))
                                         echo "<span class='error'>$err_alto</span>"; ?>
                                 </div>
@@ -345,7 +339,8 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Imagen</label>
-                                    <input class="form-control" type="file" name="imagen">
+                                    <input class="form-control" type="file" name="img_producto" id="img_producto"
+                                        accept="image/*" />
                                     <?php if (isset($err_imagen))
                                         echo "<span class='error'>$err_imagen</span>"; ?>
                                 </div>

@@ -45,7 +45,7 @@
         $resultado = $sql->get_result();
 
         while ($fila = $resultado->fetch_assoc()) {
-            unlink("../../img/productos/" . $fila['imagen']);
+            unlink("../../img/productos/" . $fila['img_producto']);
         }
         header("location: ../index.php");
     }
@@ -69,7 +69,7 @@
             <?php while ($fila = $resultado->fetch_assoc()) { ?>
             <!-- Imagen del producto -->
             <div class="col-md-6 mb-4 bg-white">
-                <img src="/img/productos/<?php echo $fila['imagen'] ?>" alt="Product"
+                <img src="/img/productos/<?php echo $fila['img_producto'] ?>" alt="Product"
                     class="img-fluid rounded mb-3 product-image">
             </div>
 
@@ -100,9 +100,10 @@
                 <div class="mb-4">
                     <label for="dimensions" class="form-label">Dimensiones (largo,ancho,alto):</label>
                     <p id="dimensions">
-                        <?php echo $fila['largo'] ?>cm x
-                        <?php echo $fila['ancho'] ?>cm x
-                        <?php echo $fila['alto'] ?>cm
+                        <?php $medidas = json_decode($fila["medidas"], true); ?>    
+                        <?php echo $medidas['largo'] ?>cm x
+                        <?php echo $medidas['ancho'] ?>cm x
+                        <?php echo $medidas['alto'] ?>cm
                     </p>
                 </div>
 
@@ -134,7 +135,7 @@
                 <form action="" method="post">
                     <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn
                         btn-primary btn-lg mb-3 me-2">
-                        <i class="bi bi-cart-plus"></i> Editar
+                        <i class=""></i> Editar
                     </a>
                     <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i
                             class="bi bi-trash3-fill"></i> Borrar</button>
