@@ -54,7 +54,7 @@
                 <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
                     class="text-decoration-none">
                     <div class="card h-100 shadow-sm">
-                        <img src="../img/productos/<?php echo $fila['imagen']; ?>" class="card-img-top"
+                        <img src="../img/productos/<?php echo $fila['img_producto']; ?>" class="card-img-top"
                             alt="<?php echo $fila['nombre']; ?>">
                         <div class="card-body">
                             <h5 class="card-title">

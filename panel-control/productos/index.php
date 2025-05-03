@@ -93,11 +93,14 @@
         <?php if ($resultado->num_rows > 0): ?>
         <div class="row g-3">
             <?php while ($fila = $resultado->fetch_assoc()): ?>
+            <?php 
+            $medidas = json_decode($fila["medidas"], true)
+            ?>
             <div class="col-12 col-md-6 col-xxl-4">
                 <div class="card h-100 shadow-sm">
                     <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
                         class="text-decoration-none">
-                        <img src="../../img/productos/<?php echo $fila["imagen"]; ?>" class="card-img-top"
+                        <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
                         style="height: 260px; object-fit: cover;" alt="Imagen del producto">
                     </a>
                     <div class="card-body d-flex flex-column">
@@ -121,7 +124,7 @@
                                 <?php echo $fila["stock"]; ?>
                             </li>
                             <li><strong>Medidas:</strong>
-                                <?php echo $fila["largo"] . "cm × " . $fila["ancho"] . "cm × " . $fila["alto"] . "cm"; ?>
+                                <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
                             </li>
                             <li><strong>Oferta:</strong>
                                 <?php echo $fila["id_oferta"] ?>

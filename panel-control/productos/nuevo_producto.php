@@ -52,8 +52,8 @@
         $oferta = $_POST["oferta"];
         $id_proveedor = $_SESSION["usuario"];
 
-        $nombre_imagen = $_FILES["imagen"]["name"];
-        $ubicacion_temporal = $_FILES["imagen"]["tmp_name"];
+        $nombre_imagen = $_FILES["img_producto"]["name"];
+        $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
         $ubicacion_final = "../../img/productos/$nombre_imagen";
 
         if ($tmp_nombre == '') {
@@ -92,12 +92,12 @@
             if (strlen($tmp_categoria) > 30) {
                 $err_categoria = "La categoria no puede tener mas de 30 caracteres";
             } else {
-                $sql = "SELECT * FROM categorias ORDER BY categoria";
+                $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
                 $resultado = $_conexion->query($sql);
                 $categorias = [];
 
                 while ($fila = $resultado->fetch_assoc()) {
-                    array_push($categorias, $fila["categoria"]);
+                    array_push($categorias, $fila["nombre_categoria"]);
                 }
 
                 if (!in_array($tmp_categoria, $categorias)) {
@@ -181,14 +181,14 @@
                 $err_imagen = "La ruta de la imagen no puede tener mas de 60 caracteres";
             } else {
                 move_uploaded_file($ubicacion_temporal, $ubicacion_final);
-                $imagen = $nombre_imagen;
+                $img_producto = $nombre_imagen;
             }
         }
 
-        if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
+        if (isset($nombre) && isset($precio) && isset($categoria) && isset($img_producto) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
             // Inserta un nuevo producto
-            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, medidas, id_proveedor, id_oferta)
-            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
+            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, img_producto, descripcion, medidas, id_proveedor, id_oferta)
+            VALUES ('$nombre', $precio, '$categoria', $stock, '$img_producto', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
             $_conexion->query($sql);
 
             header("location: ./index.php");
@@ -196,12 +196,12 @@
         }
     }
 
-    $sql = "SELECT * FROM categorias ORDER BY categoria";
+    $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
     $resultado = $_conexion->query($sql);
     $categorias = [];
 
     while ($fila = $resultado->fetch_assoc()) {
-        array_push($categorias, $fila["categoria"]);
+        array_push($categorias, $fila["nombre_categoria"]);
     }
 
     $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
@@ -305,7 +305,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label">Imagen</label>
-                                    <input class="form-control" type="file" name="imagen">
+                                    <input class="form-control" type="file" name="img_producto">
                                     <?php if (isset($err_imagen))
                                         echo "<span class='error'>$err_imagen</span>"; ?>
                                 </div>

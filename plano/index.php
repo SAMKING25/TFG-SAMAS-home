@@ -69,7 +69,7 @@
     <?php
     include('../navbar.php');
 
-    $query = $_conexion->query('SELECT id_producto, nombre, imagen, categoria FROM productos');
+    $query = $_conexion->query('SELECT id_producto, nombre, img_producto, categoria FROM productos');
     $productos = $query->fetch_all(MYSQLI_ASSOC);
 
     ?>
@@ -82,7 +82,7 @@
                 <?php foreach ($productos as $producto): ?>
                     <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
                         onclick="agregarProducto('../../img/plano/<?php echo $producto['categoria']; ?>.png')">
-                        <img src="../img/productos/<?php echo $producto['imagen']; ?>"
+                        <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
                             alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
                         <span>
                             <?php echo htmlspecialchars($producto['nombre']); ?>

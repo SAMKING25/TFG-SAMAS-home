@@ -21,7 +21,7 @@
     <a href="#" class=" align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
       <?php while ($fila = $resultado->fetch_assoc()) { ?>
-      <img src="<?php echo IMG_USUARIO.$fila['foto_proveedor']?>" alt="" width="32" height="32"
+      <img src="<?php echo IMG_USUARIO.$fila['img_proveedor']?>" alt="" width="32" height="32"
         class="rounded-circle me-2">
       <strong>
         <?php echo $fila['nombre_proveedor']?>
