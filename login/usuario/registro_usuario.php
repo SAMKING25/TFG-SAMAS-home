@@ -52,8 +52,8 @@
             $tmp_email_usuario = depurar($_POST["email_usuario"]);
             $tmp_nombre_usuario = depurar($_POST["nombre_usuario"]);
             $tmp_contrasena_usuario = $_POST["contrasena_usuario"];
-            $foto_usuario = "estandar.png";
-            $suscripcion = "Gratuita";
+            $img_usuario = "estandar.png";
+            $suscripcion = 1; //Suscripción básica por defecto
 
             if ($tmp_email_usuario == "") {
                 $err_email_usuario = "El email es obligatorio";
@@ -106,8 +106,8 @@
             }
 
             if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
-                $sql = "INSERT INTO usuarios (email_usuario, nombre_usuario, contrasena_usuario, suscripcion, foto_usuario) 
-                        VALUES ('$email_usuario','$nombre_usuario','$contrasena_usuario_cifrada','$suscripcion','$foto_usuario')";
+                $sql = "INSERT INTO usuarios (email_usuario, nombre_usuario, contrasena_usuario, id_suscripcion, img_usuario) 
+                        VALUES ('$email_usuario','$nombre_usuario','$contrasena_usuario_cifrada','$suscripcion','$img_usuario')";
                 $_conexion->query($sql);
                 header("location: iniciar_sesion_usuario.php");
                 exit;

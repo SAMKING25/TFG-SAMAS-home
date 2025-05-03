@@ -88,6 +88,10 @@ INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"mesas.j
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Colchones',"colchones.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
 
+INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Básica", 0, 1);
+INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Premium", 10, 4);
+INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("VIP", 25, -1); -- (-1 = Va a ser nuestro infinito)
+
 SELECT * FROM detalle_pedidos;
 SELECT * FROM pedidos;
 SELECT * FROM carrito;
