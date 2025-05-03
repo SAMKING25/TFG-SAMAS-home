@@ -73,10 +73,10 @@
             $nuevo_email_proveedor = depurar($_POST["nuevo_email_proveedor"]);
             $nuevo_nombre_proveedor = depurar($_POST["nuevo_nombre_proveedor"]);
             $nueva_contrasena_proveedor = $_POST["nueva_contrasena_proveedor"];
-            $nueva_foto_proveedor = "estandar.png";
+            $nueva_img_proveedor = "estandar.png";
 
-            $nuevo_nombre_imagen = $_FILES["nueva_foto_proveedor"]["name"];
-            $ubicacion_temporal = $_FILES["nueva_foto_proveedor"]["tmp_name"];
+            $nuevo_nombre_imagen = $_FILES["nueva_img_proveedor"]["name"];
+            $ubicacion_temporal = $_FILES["nueva_img_proveedor"]["tmp_name"];
             $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
 
             if ($nuevo_email_proveedor == "") {
@@ -164,7 +164,7 @@
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
                                             <img src="<?php echo IMG_USUARIO.$foto_proveedor_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
-                                            <input type="file" disabled hidden name="nueva_foto_proveedor" id="nueva_foto_proveedor" class="form-control mb-4" accept="image/*"/>
+                                            <input type="file" disabled hidden name="nueva_img_proveedor" id="nueva_img_proveedor" class="form-control mb-4" accept="image/*"/>
                                         </div>
                                     
                                         <div data-mdb-input-init class="form-outline mb-4">
@@ -291,7 +291,7 @@
                         input.disabled = false;
                     });
 
-                    const inputFile = document.getElementById('nueva_foto_proveedor');
+                    const inputFile = document.getElementById('nueva_img_proveedor');
                     inputFile.hidden = false;
                 } else {
                     form.requestSubmit();
