@@ -48,6 +48,7 @@
         $tmp_largo = depurar($_POST["largo"]);
         $tmp_ancho = depurar($_POST["ancho"]);
         $tmp_alto = depurar($_POST["alto"]);
+        $medidas = array('largo' => intval($tmp_largo),'ancho' => intval($tmp_ancho),'alto' => intval($tmp_alto));
         $oferta = $_POST["oferta"];
         $id_proveedor = $_SESSION["usuario"];
 
@@ -186,8 +187,8 @@
 
         if (isset($nombre) && isset($precio) && isset($categoria) && isset($imagen) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
             // Inserta un nuevo producto
-            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, largo, ancho, alto, id_proveedor, id_oferta)
-            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', $largo, $ancho, $alto, $id_proveedor, $oferta)";
+            $sql = "INSERT INTO productos (nombre, precio, categoria, stock, imagen, descripcion, medidas, id_proveedor, id_oferta)
+            VALUES ('$nombre', $precio, '$categoria', $stock, '$imagen', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
             $_conexion->query($sql);
 
             header("location: ./index.php");
