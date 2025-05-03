@@ -1,6 +1,6 @@
 CREATE SCHEMA u929679314_samashome_db;
-
 USE u929679314_samashome_db;
+DROP SCHEMA u929679314_samashome_db;
 
 CREATE TABLE categorias (
 	nombre_categoria VARCHAR(50) PRIMARY KEY,
@@ -88,10 +88,15 @@ INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"mesas.j
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Colchones',"colchones.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
 
-SELECT * FROM categorias;
-SELECT * FROM usuarios;
-SELECT * FROM proveedores;
+SELECT * FROM detalle_pedidos;
+SELECT * FROM pedidos;
+SELECT * FROM carrito;
 SELECT * FROM productos;
+SELECT * FROM ofertas;
+SELECT * FROM proveedores;
+SELECT * FROM usuarios;
+SELECT * FROM suscripciones;
+SELECT * FROM categorias;
 
 DROP TABLE detalle_pedidos;
 DROP TABLE pedidos;

@@ -312,34 +312,6 @@
                 }
             });
         });
-    </script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-          const emailInput = document.getElementById('email_proveedor');
-
-           // Para mostrar errores
-           const emailError = document.createElement('span');
-            emailError.classList.add('error');
-            emailInput.parentNode.appendChild(emailError);
-
-            form.addEventListener('submit', function (event) {
-                let valid = true;
-
-                emailError.textContent = '';
-
-                // Email
-                const emailValue = emailInput.value.trim();
-                if (emailValue === '') {
-                    emailError.textContent = 'El email es obligatorio.';
-                    valid = false;
-                } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-                    emailError.textContent = 'El email no es válido.';
-                    valid = false;
-                }
-              });
-            });
     </script>
   </body>
 </html>
