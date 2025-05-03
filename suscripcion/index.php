@@ -31,6 +31,8 @@
         }
 
         .pricing-card {
+            display: flex;
+            flex-direction: column;
             border: none;
             border-radius: 15px;
             transition: all 0.3s ease;
@@ -59,7 +61,15 @@
         }
 
         .pricing-features {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             padding: 2rem;
+        }
+
+        .pricing-features .text-center {
+            margin-top: auto;
         }
 
         .btn-custom {
@@ -123,7 +133,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                1 uso del plano por trimestre
+                                1 uso mensual del plano
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20"
@@ -159,7 +169,7 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                5 usos del plano por trimestre
+                                4 usos mensuales del plano
                             </li>
                             <li class="mb-3">
                                 <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
