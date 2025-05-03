@@ -149,7 +149,7 @@
 				<div class="panel active"
 					style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
 					<h3>
-						<?php echo $categoria['categoria'] ?>
+						<?php echo $categoria['nombre_categoria'] ?>
 					</h3>
 				</div>
 			<?php } ?>
@@ -180,7 +180,7 @@
 				while ($producto = $productos->fetch_assoc()) { ?>
 					<div class="col">
 						<div class="card h-100 shadow-sm">
-							<img src="./img/productos/<?php echo $producto['imagen'] ?>" class="card-img-top"
+							<img src="./img/productos/<?php echo $producto['img_producto'] ?>" class="card-img-top"
 								alt="Producto <?php echo $productos->field_count ?>" />
 							<div class="card-body">
 								<h5 class="card-title">
