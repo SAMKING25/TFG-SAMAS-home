@@ -35,7 +35,7 @@
             $email_usuario_actual = $fila['email_usuario'];
             $nombre_usuario_actual = $fila['nombre_usuario'];
             $contrasena_usuario_cifrada_actual = $fila['contrasena_usuario'];
-            $foto_usuario_actual = $fila['foto_usuario'];
+            $img_usuario_actual = $fila['img_usuario'];
         } 
     ?>
     <style>
@@ -75,11 +75,11 @@
             $nuevo_email_usuario = depurar($_POST["nuevo_email_usuario"]);
             $nuevo_nombre_usuario = depurar($_POST["nuevo_nombre_usuario"]);
             $nueva_contrasena_usuario = $_POST["nueva_contrasena_usuario"];
-            $nueva_foto_usuario = "estandar.png";
-            $nueva_suscripcion = "Gratuita";
+            $nueva_img_usuario = "estandar.png";
+            $nuevo_id_suscripcion = 1; //Suscripción básica por defecto
 
-            $nuevo_nombre_imagen = $_FILES["nueva_foto_usuario"]["name"];
-            $ubicacion_temporal = $_FILES["nueva_foto_usuario"]["tmp_name"];
+            $nuevo_nombre_imagen = $_FILES["nueva_img_usuario"]["name"];
+            $ubicacion_temporal = $_FILES["nueva_img_usuario"]["tmp_name"];
             $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
 
             if ($nuevo_email_usuario == "") {
@@ -135,8 +135,8 @@
                     $err_foto_usuario = "La ruta de la imagen no puede tener mas de 60 caracteres";
                 } else {
                     move_uploaded_file($ubicacion_temporal, $ubicacion_final);
-                    $foto_usuario_actual = $nuevo_nombre_imagen;
-                    $sql = "UPDATE usuarios SET foto_usuario = '$foto_usuario_actual' WHERE id_usuario = $id_usuario";
+                    $img_usuario_actual = $nuevo_nombre_imagen;
+                    $sql = "UPDATE usuarios SET img_usuario = '$img_usuario_actual' WHERE id_usuario = $id_usuario";
                     $_conexion->query($sql);
                 }
             }
@@ -166,8 +166,8 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
-                                            <img src="<?php echo IMG_USUARIO.$foto_usuario_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
-                                            <input type="file" disabled hidden name="nueva_foto_usuario" id="nueva_foto_usuario" class="form-control mb-4" accept="image/*"/>
+                                            <img src="<?php echo IMG_USUARIO.$img_usuario_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
+                                            <input type="file" disabled hidden name="nueva_img_usuario" id="nueva_img_usuario" class="form-control mb-4" accept="image/*"/>
                                         </div>
                                     
                                         <div data-mdb-input-init class="form-outline mb-4">
@@ -294,7 +294,7 @@
                         input.disabled = false;
                     });
 
-                    const inputFile = document.getElementById('nueva_foto_usuario');
+                    const inputFile = document.getElementById('nueva_img_usuario');
                     inputFile.hidden = false;
                 } else {
                     form.requestSubmit();

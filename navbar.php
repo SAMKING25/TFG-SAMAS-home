@@ -72,7 +72,7 @@ define('FUNCIONES', '/util/funciones/');
                                 <i class="bi bi-person-circle icono-personalizado"></i>
                             <?php } ?>
                             <?php while ($fila = $resultado_usuario->fetch_assoc()) { ?>
-                                <img src="<?php echo IMG_USUARIO . $fila['foto_usuario'] ?>" alt="" width="32" height="32"
+                                <img src="<?php echo IMG_USUARIO . $fila['img_usuario'] ?>" alt="" width="32" height="32"
                                     class="rounded-circle me-2">
                                 <strong>
                                     <?php echo $fila['nombre_usuario'] ?>

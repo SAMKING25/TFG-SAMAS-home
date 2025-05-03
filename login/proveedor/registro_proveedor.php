@@ -51,7 +51,7 @@
         $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
         $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
         $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
-        $foto_proveedor = "estandar.png";
+        $img_proveedor = "estandar.png";
 
         if ($tmp_email_proveedor == "") {
             $err_email_proveedor = "El email es obligatorio";
@@ -104,8 +104,8 @@
         }
 
         if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
-            $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, foto_proveedor) 
-                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$foto_proveedor')";
+            $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, img_proveedor) 
+                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
             $_conexion->query($sql);
             header("location: iniciar_sesion_proveedor.php");
             exit;
