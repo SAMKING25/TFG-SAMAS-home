@@ -29,7 +29,7 @@ define('FUNCIONES', '/util/funciones/');
                             <a class="nav-link" href="/">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Productos</a>
+                            <a class="nav-link" href="/productos">Productos</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/plano">Plano</a>
@@ -69,30 +69,30 @@ define('FUNCIONES', '/util/funciones/');
                         <a class="dropdown-toggle text-light text-decoration-none" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <?php if (!isset($_SESSION['usuario'])) { ?>
-                            <i class="bi bi-person-circle icono-personalizado"></i>
+                                <i class="bi bi-person-circle icono-personalizado"></i>
                             <?php } ?>
                             <?php while ($fila = $resultado_usuario->fetch_assoc()) { ?>
-                            <img src="<?php echo IMG_USUARIO . $fila['foto_usuario'] ?>" alt="" width="32" height="32"
-                                class="rounded-circle me-2">
-                            <strong>
-                                <?php echo $fila['nombre_usuario'] ?>
-                            </strong>
+                                <img src="<?php echo IMG_USUARIO . $fila['foto_usuario'] ?>" alt="" width="32" height="32"
+                                    class="rounded-circle me-2">
+                                <strong>
+                                    <?php echo $fila['nombre_usuario'] ?>
+                                </strong>
                             <?php } ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])) { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi
-                                    Perfil</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar
-                                    cuenta</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi
+                                        Perfil</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar
+                                        cuenta</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
                             <?php } else { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Iniciar
-                                    Sesión</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/registro_usuario.php">Registrarse</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Iniciar
+                                        Sesión</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/registro_usuario.php">Registrarse</a></li>
                             <?php }; ?>
                         </ul>
                     </div>
