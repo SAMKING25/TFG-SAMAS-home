@@ -39,8 +39,10 @@
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $tmp_nombre = depurar($_POST["nombre"]);
         $tmp_precio = depurar($_POST["precio"]);
-        if (isset($_POST["categoria"])) $tmp_categoria = depurar($_POST["categoria"]);
-        else $tmp_categoria = "";
+        if (isset($_POST["categoria"]))
+            $tmp_categoria = depurar($_POST["categoria"]);
+        else
+            $tmp_categoria = "";
         $tmp_stock = depurar($_POST["stock"]);
         $tmp_descripcion = depurar($_POST["descripcion"]);
         $tmp_largo = depurar($_POST["largo"]);
@@ -216,91 +218,102 @@
             <div class="col-lg-8">
                 <div class="card shadow rounded-4">
                     <div class="card-body p-5">
-                        <h2 class="mb-4 text-center">Agregar Nuevo Producto</h2>
-
-                        <form method="post" enctype="multipart/form-data">
-
-                            <div class="mb-3">
-                                <label class="form-label">Nombre</label>
-                                <input class="form-control" type="text" name="nombre">
-                                <?php if (isset($err_nombre)) echo "<span class='error'>$err_nombre</span>"; ?>
-                            </div>
-
-                            <div class="row g-3">
+                        <h2 class="text-center mb-3">Nuevo producto</h2>
+                        <form action="" method="post" enctype="multipart/form-data">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
-                                    <label class="form-label">Precio</label>
-                                    <input class="form-control" type="text" name="precio">
-                                    <?php if (isset($err_precio)) echo "<span class='error'>$err_precio</span>"; ?>
+                                    <label class="form-label">Nombre</label>
+                                    <input class="form-control" type="text" name="nombre">
+                                    <?php if (isset($err_nombre))
+                                        echo "<span class='error'>$err_nombre</span>"; ?>
                                 </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Categorias</label>
                                     <select class="form-select" name="categoria">
-                                        <option selected disabled hidden>--- Elige una categoria ---</option>
+                                    <option selected disabled hidden>--- Elige una categoria ---</option>
                                         <?php
                                         foreach ($categorias as $categoria) { ?>
-                                        <option value="<?php echo $categoria ?>">
-                                            <?php echo $categoria ?>
-                                        </option>
+                                            <option value="<?php echo $categoria ?>">
+                                                <?php echo $categoria; ?>
+                                            </option>
                                         <?php } ?>
                                     </select>
-                                    <?php if (isset($err_categoria)) echo "<span class='error'>$err_categoria</span>"; ?>
+                                    <?php if (isset($err_categoria))
+                                        echo "<span class='error'>$err_categoria</span>"; ?>
                                 </div>
                             </div>
 
-                            <div class="mt-3 mb-3">
-                                <label class="form-label">Stock</label>
-                                <input class="form-control" type="text" name="stock">
-                                <?php if (isset($err_stock)) echo "<span class='error'>$err_stock</span>"; ?>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Descripcion</label>
-                                <textarea class="form-control" name="descripcion"></textarea>
-                                <?php if (isset($err_descripcion)) echo "<span class='error'>$err_descripcion</span>"; ?>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Precio</label>
+                                    <input class="form-control" type="text" name="precio">
+                                    <?php if (isset($err_precio))
+                                        echo "<span class='error'>$err_precio</span>"; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Stock</label>
+                                    <input class="form-control" type="text" name="stock">
+                                    <?php if (isset($err_stock))
+                                        echo "<span class='error'>$err_stock</span>"; ?>
+                                </div>
                             </div>
 
-                            <div class="row g-3">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-4">
                                     <label class="form-label">Largo (cm)</label>
                                     <input class="form-control" type="number" min="0" name="largo">
-                                    <?php if (isset($err_largo)) echo "<span class='error'>$err_largo</span>"; ?>
+                                    <?php if (isset($err_largo))
+                                        echo "<span class='error'>$err_largo</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Ancho (cm)</label>
                                     <input class="form-control" type="number" min="0" name="ancho">
-                                    <?php if (isset($err_ancho)) echo "<span class='error'>$err_ancho</span>"; ?>
+                                    <?php if (isset($err_ancho))
+                                        echo "<span class='error'>$err_ancho</span>"; ?>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label">Alto (cm)</label>
                                     <input class="form-control" type="number" min="0" name="alto">
-                                    <?php if (isset($err_alto)) echo "<span class='error'>$err_alto</span>"; ?>
+                                    <?php if (isset($err_alto))
+                                        echo "<span class='error'>$err_alto</span>"; ?>
                                 </div>
                             </div>
 
-                            <div class="mb-4 mt-4">
-                                <label class="form-label">Imagen</label>
-                                <input class="form-control" type="file" name="imagen">
-                                <?php if (isset($err_imagen)) echo "<span class='error'>$err_imagen</span>"; ?>
+                            <div class="mb-3">
+                                <label class="form-label">Descripcion</label>
+                                <textarea class="form-control" name="descripcion"></textarea>
+                                <?php if (isset($err_descripcion))
+                                    echo "<span class='error'>$err_descripcion</span>"; ?>
                             </div>
 
-                            <div class="mb-4 mt-4">
+                            <div class="row g-3 mb-3">
                                 <div class="col-md-6">
                                     <label class="form-label">Oferta</label>
                                     <select class="form-select" name="oferta">
                                         <option selected value="null">No tiene oferta</option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
-                                        <option value="<?php echo $oferta['id_oferta']; ?>">
-                                            <?php echo $oferta['nombre']; ?>
-                                        </option>
+                                            <option value="<?php echo $oferta['id_oferta'] ?>">
+                                                <?php echo $oferta['nombre']; ?>
+                                            </option>
                                         <?php } ?>
                                     </select>
-                                    <?php if (isset($err_oferta)) echo "<span class='error'>$err_oferta</span>"; ?>
+                                    <?php if (isset($err_oferta))
+                                        echo "<span class='error'>$err_oferta</span>"; ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Imagen</label>
+                                    <input class="form-control" type="file" name="imagen">
+                                    <?php if (isset($err_imagen))
+                                        echo "<span class='error'>$err_imagen</span>"; ?>
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <a href="index.php" class="btn btn-outline-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-success">Guardar Producto</button>
+                                <input type="hidden" name="id_producto">
+                                <a href="./index.php" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-success">Confirmar cambio</button>
                             </div>
                         </form>
                     </div>

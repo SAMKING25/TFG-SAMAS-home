@@ -1,4 +1,4 @@
-<?php
+<?php $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     // Consulta SQL
     $id_proveedor = $_SESSION['usuario'];
 
