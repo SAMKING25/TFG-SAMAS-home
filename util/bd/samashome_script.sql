@@ -71,4 +71,6 @@ DROP TABLE proveedores;
 DROP TABLE productos;
 
 DELETE FROM usuarios WHERE id_usuario = 1;
+DELETE FROM proveedores WHERE id_proveedor = 1;
+DELETE FROM productos WHERE id_proveedor = 1;
 DELETE FROM categorias WHERE categoria = "Sillas";

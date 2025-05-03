@@ -22,6 +22,8 @@
             exit;
         }
 
+
+
         $id_usuario = $_SESSION['usuario'];
 
         $sql = $_conexion-> prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
@@ -139,6 +141,14 @@
                 }
             }
         } 
+
+        // Redirige a donde quería ir el usuario
+        if (isset($_SESSION['redirect_after_login'])) {
+            $redirect_url = $_SESSION['redirect_after_login'];
+            unset($_SESSION['redirect_after_login']);
+        } else {
+            $redirect_url = "/index.php";
+        }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
@@ -185,7 +195,7 @@
                                             <button data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="button" id="cambiar_datos">Cambiar datos</button>
-                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                            <a href="<?php echo $redirect_url ?>" data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
                                     </form>
@@ -293,5 +303,4 @@
         });
     </script>
 </body>
-
 </html>
