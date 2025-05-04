@@ -12,16 +12,22 @@ window.addEventListener('resize', () => {
     canvas.setHeight(window.innerHeight);
 });
 
-function agregarProducto(imagenURL) {
-    console.log(imagenURL);
+function agregarProducto(imagenURL, medidas) {
+    medidas = JSON.parse(medidas);
+    
+    const anchoPx = medidas.ancho;
+    const altoPx = medidas.largo;
+
     fabric.Image.fromURL(imagenURL, function (img) {
-        const escala = 0.5;
+        // Escala para que la imagen tenga el tamaño en px correspondiente a las medidas
+        const scaleX = anchoPx / img.width;
+        const scaleY = altoPx / img.height;
 
         img.set({
             left: 50,
             top: 50,
-            scaleX: escala,
-            scaleY: escala,
+            scaleX: scaleX,
+            scaleY: scaleY,
             hasControls: true,
             lockScalingX: true,
             lockScalingY: true,
@@ -30,11 +36,13 @@ function agregarProducto(imagenURL) {
             lockScalingFlip: true,
             lockRotation: false,
         });
+
         canvas.add(img);
         canvas.setActiveObject(img);
         canvas.renderAll();
     });
 }
+
 
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
