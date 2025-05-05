@@ -253,7 +253,7 @@
 						Contacto
 					</h6>
 					<p><i class="fas fa-home me-2"></i>Málaga, Andalucía, España</p>
-					<p><i class="fas fa-envelope me-2"></i>samashome@gmail.com</p>
+					<p><i class="fas fa-envelope me-2"></i>samashome1@gmail.com</p>
 					<p><i class="fas fa-phone me-2"></i>+34 645 867 244</p>
 				</div>
 			</div>
@@ -276,11 +276,13 @@
 	<style>
 		#dify-chatbot-bubble-button {
 			background-color: #1C64F2 !important;
+			position: fixed !important;
 		}
 
 		#dify-chatbot-bubble-window {
 			width: 24rem !important;
 			height: 40rem !important;
+			position: fixed !important;
 		}
 	</style>
 	<!-- Bootstrap JS -->

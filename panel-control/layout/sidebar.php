@@ -41,14 +41,14 @@
                 </a>
             </li>
             <li>
-                <a href="<?php echo BASE_URL; ?>productos/index.php"
+                <a href="<?php echo BASE_URL; ?>productos/"
                     class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/index.php') !== false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-archive me-2"></i>
                     Gestión de productos
                 </a>
             </li>
             <li>
-                <a href="<?php echo BASE_URL; ?>productos/nuevo_producto.php"
+                <a href="<?php echo BASE_URL; ?>productos/nuevo_producto"
                     class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/nuevo_producto.php') !== false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-folder-plus me-2"></i>
                     Nuevo producto
