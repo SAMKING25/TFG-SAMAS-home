@@ -58,7 +58,7 @@
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
                 <?php while ($fila = $resultado->fetch_assoc()): ?>
                     <div class="col">
-                        <a href="ver_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="text-decoration-none text-dark">
+                        <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>" class="text-decoration-none text-dark">
                             <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
                                 <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
                                      class="card-img-top img-fluid"

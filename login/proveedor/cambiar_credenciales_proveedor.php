@@ -17,12 +17,12 @@
         define('IMG_USUARIO','/img/usuario/');
 
         session_start();
-        if (!isset($_SESSION["usuario"])) { 
+        if (!isset($_SESSION["proveedor"])) { 
             header("location: ../login/proveedor/iniciar_sesion_proveedor.php");
             exit;
         }
 
-        $id_proveedor = $_SESSION['usuario'];
+        $id_proveedor = $_SESSION['proveedor'];
 
         $sql = $_conexion-> prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
         $sql->bind_param("i", $id_proveedor);
@@ -33,7 +33,7 @@
             $email_proveedor_actual = $fila['email_proveedor'];
             $nombre_proveedor_actual = $fila['nombre_proveedor'];
             $contrasena_proveedor_cifrada_actual = $fila['contrasena_proveedor'];
-            $foto_proveedor_actual = $fila['foto_proveedor'];
+            $img_proveedor_actual = $fila['img_proveedor'];
         } 
     ?>
     <style>
@@ -126,14 +126,14 @@
             }
 
             if ($nuevo_nombre_imagen == "") {
-                $err_foto_proveedor = "La imagen es obligatoria";
+                $err_img_proveedor = "La imagen es obligatoria";
             } else {
                 if (strlen($nuevo_nombre_imagen) > 60) {
-                    $err_foto_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
+                    $err_img_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
                 } else {
                     move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
-                    $foto_proveedor_actual = $nuevo_nombre_imagen;
-                    $sql = "UPDATE proveedores SET foto_proveedor = '$foto_proveedor_actual' WHERE id_proveedor = $id_proveedor";
+                    $img_proveedor_actual = $nuevo_nombre_imagen;
+                    $sql = "UPDATE proveedores SET img_proveedor = '$img_proveedor_actual' WHERE id_proveedor = $id_proveedor";
                     $_conexion->query($sql);
                 }
             }
@@ -144,7 +144,7 @@
             $redirect_url = $_SESSION['redirect_after_login'];
             unset($_SESSION['redirect_after_login']);
         } else {
-            $redirect_url = "/index.php";
+            $redirect_url = "/index";
         }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
@@ -163,7 +163,7 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
-                                            <img src="<?php echo IMG_USUARIO.$foto_proveedor_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
+                                            <img src="<?php echo IMG_USUARIO.$img_proveedor_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
                                             <input type="file" disabled hidden name="nueva_img_proveedor" id="nueva_img_proveedor" class="form-control mb-4" accept="image/*"/>
                                         </div>
                                     
