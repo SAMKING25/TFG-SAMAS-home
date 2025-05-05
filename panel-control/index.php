@@ -15,7 +15,7 @@
     require('../util/conexion.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) { 
+    if (!isset($_SESSION["proveedor"])) { 
         header("location: ../login/usuario/iniciar_sesion_usuario.php");
         exit;
     }
@@ -39,7 +39,7 @@
         $_conexion->query($sql);
     }
 
-    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['usuario'] . "'";
+    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "'";
     $resultado = $_conexion->query($sql);
     ?>
 
