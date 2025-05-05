@@ -262,7 +262,7 @@
 						<div class="col-md-7">
 							<div class="contact-form">
 								<h2 class="mb-4">Envíanos un mensaje</h2>
-								<form action="datos" method="post" enctype="multipart/form-data">
+								<form action="datos.php" method="post" enctype="multipart/form-data">
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Nombre</label>
