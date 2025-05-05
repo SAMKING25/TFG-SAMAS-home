@@ -36,6 +36,7 @@
             border: none;
             border-radius: 15px;
             transition: all 0.3s ease;
+            min-width: 280px;
         }
 
         .pricing-card:hover {
@@ -48,16 +49,23 @@
             padding: 2rem;
         }
 
-        .pricing-header.basic {
-            background-color: rgba(163, 144, 130);
+        .pricing-header h3,
+        .pricing-header .display-4 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .pricing-header.basica {
+            background-color: rgba(163, 144, 130, 1);
         }
 
         .pricing-header.premium {
-            background-color: rgba(146, 116, 71);
+            background-color: rgba(146, 116, 71, 1);
         }
 
         .pricing-header.vip {
-            background-color: rgba(165, 125, 49);
+            background-color: rgba(165, 125, 49, 1);
         }
 
         .pricing-features {
@@ -85,12 +93,16 @@
             transform: scale(1.05);
         }
 
-        .btn.premium {
-            background-color: rgba(146, 116, 71, 0.7);
+        .Básica {
+            background-color: rgba(163, 144, 130, 1);
         }
 
-        .btn.vip {
-            background-color: rgba(165, 125, 49, 0.7);
+        .Premium {
+            background-color: rgba(146, 116, 71, 1);
+        }
+
+        .VIP {
+            background-color: rgba(165, 125, 49, 1);
         }
 
         .feature-icon {
@@ -110,149 +122,68 @@
 </head>
 
 <body>
-    <?php
-    include('../navbar.php');
-    ?>
+    <?php include('../navbar.php'); ?>
+
     <div class="container py-5">
-        <h2 class="text-center mb-5">¡Escoge el plan perfecto para tí!</h2>
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- Basic Plan -->
-            <div class="col">
-                <div class="card h-100 pricing-card">
-                    <div class="pricing-header basic text-white text-center">
-                        <h3 class="mb-0">Básica</h3>
-                        <div class="display-4 fw-bold my-3">0€</div>
-                        <p class="mb-0">cada mes</p>
-                    </div>
-                    <div class="card-body pricing-features">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                1 uso mensual del plano
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Acceso a ofertas genéricas
-                            </li>
-                        </ul>
-                        <div class="text-center mt-4">
-                            <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <h2 class="text-center mb-5">¡Escoge el plan perfecto para ti!</h2>
 
-            <!-- Pro Plan -->
-            <div class="col">
-                <div class="card h-100 pricing-card">
-                    <div class="pricing-header premium text-white text-center">
-                        <h3 class="mb-0">Premium</h3>
-                        <div class="display-4 fw-bold my-3">10€</div>
-                        <p class="mb-0">cada mes</p>
-                    </div>
-                    <div class="card-body pricing-features">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                4 usos mensuales del plano
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Acceso a ofertas mayores
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-success" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Acceso a descuentos exclusivos
-                            </li>
-                        </ul>
-                        <div class="text-center mt-4">
-                            <a href="/pasarela-pago/index.php" class="btn premium btn-custom">Adquirir</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <?php
+            $sql = "SELECT * FROM suscripciones ORDER BY id_suscripcion ASC";
+            $suscripciones = $_conexion->query($sql);
+            $i = 0;
+        ?>
 
-            <!-- Enterprise Plan -->
-            <div class="col">
-                <div class="card h-100 pricing-card">
-                    <div class="pricing-header vip text-white text-center">
-                        <h3 class="mb-0">VIP</h3>
-                        <div class="display-4 fw-bold my-3">25€</div>
-                        <p class="mb-0">cada mes</p>
-                    </div>
-                    <div class="card-body pricing-features">
-                        <ul class="list-unstyled">
-                            <li class="mb-3">
-                                <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+        <div class="row justify-content-center g-4">
+            <?php while ($suscripcion = $suscripciones->fetch_assoc()): ?>
+                <div class="col-12 col-md-6 col-lg-4 d-flex">
+                    <div class="card h-100 pricing-card w-100">
+                        <div class="pricing-header <?php echo $suscripcion['nombre'] ?> text-white text-center">
+                            <h3 class="mb-0"><?php echo $suscripcion['nombre'] ?></h3>
+                            <div class="display-4 fw-bold my-3"><?php echo $suscripcion['precio'] ?>€</div>
+                            <p class="mb-0">cada mes</p>
+                        </div>
+                        <div class="card-body pricing-features d-flex flex-column justify-content-between">
+                            <ul class="list-unstyled">
+                                <?php
+                                    $usos = $suscripcion['max_usos_plano'];
+                                    if ($usos == -1) {
+                                        $texto_uso = "Uso infinito del plano";
+                                    } elseif ($usos == 1) {
+                                        $texto_uso = "1 uso del plano por mes";
+                                    } else {
+                                        $texto_uso = "$usos usos del plano por mes";
+                                    }
+                                ?>
+                                <li class="mb-3">
+                                    <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
-                                </svg>
-                                Uso infinito del plano
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    </svg>
+                                    <?php echo $texto_uso ?></li>
+                                <li class="mb-3">
+                                    <svg class="feature-icon text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd"></path>
-                                </svg>
-                                Mayores ofertas exclusivas
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Mayores descuentos exclusivos
-                            </li>
-                            <li class="mb-3">
-                                <svg class="feature-icon text-dark" fill="currentColor" viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd"
-                                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                Prioridad a la hora de atenderte
-                            </li>
-                        </ul>
-                        <div class="text-center mt-4">
-                            <a href="/pasarela-pago/index.php" class="btn vip btn-custom">Adquirir</a>
+                                    </svg>
+                                    Acceso a beneficios según plan</li>
+                            </ul>
+                            <div class="text-center">
+                                <?php if ($i === 0): ?>
+                                    <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
+                                <?php else: ?>
+                                    <a href="/pasarela-pago/index.php" class="btn btn-custom <?php echo $suscripcion['nombre'] ?>">Adquirir</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <?php $i++; ?>
+            <?php endwhile; ?>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 
 </html>
