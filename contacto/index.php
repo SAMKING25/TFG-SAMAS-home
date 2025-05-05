@@ -140,6 +140,10 @@
 			justify-content: center;
 			margin-bottom: 20px;
 		}
+
+		.error {
+			color: red;
+		}
 	</style>
 	<?php
 	error_reporting(E_ALL);
@@ -154,7 +158,57 @@
 <body>
 	<?php
 	include('../navbar.php');
+
+	function depurar($campo) {
+		return htmlspecialchars(stripslashes(trim($campo)));
+	}
+	
+	$err_nombre = $err_apellido = $err_email = $err_asunto = $err_mensaje = "";
+	$nombre = $apellido = $email = $asunto = $mensaje = "";
+	
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		if (empty($_POST["nombre"])) {
+			$err_nombre = "El nombre es obligatorio.";
+		} else {
+			$nombre = depurar($_POST["nombre"]);
+		}
+	
+		if (empty($_POST["apellido"])) {
+			$err_apellido = "El apellido es obligatorio.";
+		} else {
+			$apellido = depurar($_POST["apellido"]);
+		}
+	
+		if (empty($_POST["email"])) {
+			$err_email = "El correo electrónico es obligatorio.";
+		} elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+			$err_email = "El formato del email no es válido.";
+		} else {
+			$email = depurar($_POST["email"]);
+		}
+	
+		if (empty($_POST["asunto"])) {
+			$err_asunto = "El asunto es obligatorio.";
+		} else {
+			$asunto = depurar($_POST["asunto"]);
+		}
+	
+		if (empty($_POST["mensaje"])) {
+			$err_mensaje = "El mensaje no puede estar vacío.";
+		} else {
+			$mensaje = depurar($_POST["mensaje"]);
+		}
+	
+		// Si no hay errores, se puede procesar el formulario
+		if (!$err_nombre && !$err_apellido && !$err_email && !$err_asunto && !$err_mensaje) {
+			// Aquí podrías enviar un correo, guardar en base de datos, etc.
+			// Redirigir a una página de agradecimiento si todo está bien
+			header("Location: gracias.php");
+			exit();
+		}
+	}
 	?>
+
 	<div class="container py-5">
 		<div class="row justify-content-center">
 			<div class="col-lg-10">
@@ -212,37 +266,37 @@
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Nombre</label>
-											<input name="nombre" type="text" class="form-control"
+											<input name="nombre" id="nombre" type="text" class="form-control"
 												placeholder="Nombre" />
-                      						<?php if (isset($err_nombre))echo "<span class='error'>$err_nombre</span>"; ?>
+                      						<?php if (isset($err_nombre))echo "<span id='err_nombre' class='error'>$err_nombre</span>"; ?>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Apellido</label>
-											<input name="apellido" type="text" class="form-control"
+											<input name="apellido" id="apellido" type="text" class="form-control"
 												placeholder="Apellido" />
-                     						<?php if (isset($err_apellido))echo "<span class='error'>$err_apellido</span>"; ?>
+                     						<?php if (isset($err_apellido))echo "<span id='err_apellido' class='error'>$err_apellido</span>"; ?>
 										</div>
 									</div>
 
 									<div class="mb-3">
 										<label class="form-label" for="email">Email</label>
-										<input type="email" id="email" name="email" class="form-control"
+										<input type="text" id="email" name="email" class="form-control"
 											placeholder="Inserte su correo electrónico" />
-										<?php if (isset($err_email))echo "<span class='error'>$err_email</span>"; ?>
+										<?php if (isset($err_email))echo "<span id='err_email' class='error'>$err_email</span>"; ?>
 									</div>
 
 									<div class="mb-3">
 										<label class="form-label">Asunto</label>
-										<input name="asunto" type="text" class="form-control"
+										<input name="asunto" id="asunto" type="text" class="form-control"
 											placeholder="¿Cómo podemos ayudarte?" />
-                    					<?php if (isset($err_asunto))echo "<span class='error'>$err_asunto</span>"; ?>
+                    					<?php if (isset($err_asunto))echo "<span id='err_asunto' class='error'>$err_asunto</span>"; ?>
 									</div>
 
 									<div class="mb-4">
 										<label class="form-label">Mensaje</label>
-										<textarea name="mensaje" class="form-control" rows="5"
+										<textarea name="mensaje" id="mensaje" class="form-control" rows="5"
 											placeholder="Tu mensaje aquí..."></textarea>
-                    					<?php if (isset($err_mensaje))echo "<span class='error'>$err_mensaje</span>"; ?>
+                    					<?php if (isset($err_mensaje))echo "<span id='err_mensaje' class='error'>$err_mensaje</span>"; ?>
 									</div>
 
 									<button type="submit" class="btn btn-submit text-white">
@@ -261,52 +315,63 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
-    <script>
-    document.getElementById('formulario').addEventListener('submit', function(event) {
-      let valid = true;
+		<script>
+		document.addEventListener("DOMContentLoaded", function () {
+			const form = document.querySelector("form");
 
-      // Limpiar errores anteriores
-      document.querySelectorAll('.error').forEach(e => e.textContent = '');
+			form.addEventListener("submit", function (e) {
+				// Obtener los valores
+				const nombre = document.getElementById("nombre").value.trim();
+				const apellido = document.getElementById("apellido").value.trim();
+				const email = document.getElementById("email").value.trim();
+				const asunto = document.getElementById("asunto").value.trim();
+				const mensaje = document.querySelector("textarea[name='mensaje']").value.trim();
 
-      const nombre = document.getElementById('nombre').value.trim();
-      const apellido = document.getElementById('apellido').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const asunto = document.getElementById('asunto').value.trim();
-      const mensaje = document.getElementById('mensaje').value.trim();
+				// Limpiar mensajes previos
+				document.getElementById("err_nombre").innerText = "";
+				document.getElementById("err_apellido").innerText = "";
+				document.getElementById("err_email").innerText = "";
+				document.getElementById("err_asunto").innerText = "";
+				document.getElementById("err_mensaje").innerText = "";
 
-      if (nombre === '') {
-        document.getElementById('err_nombre').textContent = 'El nombre es obligatorio.';
-        valid = false;
-      }
+				let errores = false;
 
-      if (apellido === '') {
-        document.getElementById('err_apellido').textContent = 'El apellido es obligatorio.';
-        valid = false;
-      }
+				if (!nombre) {
+					document.getElementById("err_nombre").innerText = "El nombre es obligatorio.";
+					errores = true;
+				}
 
-      if (email === '') {
-        document.getElementById('err_email').textContent = 'El email es obligatorio.';
-        valid = false;
-      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById('err_email').textContent = 'El email no es válido.';
-        valid = false;
-      }
+				if (!apellido) {
+					document.getElementById("err_apellido").innerText = "El apellido es obligatorio.";
+					errores = true;
+				}
 
-      if (asunto === '') {
-        document.getElementById('err_asunto').textContent = 'El asunto es obligatorio.';
-        valid = false;
-      }
+				if (!email) {
+					document.getElementById("err_email").innerText = "El correo es obligatorio.";
+					errores = true;
+				} else if (!/^\S+@\S+\.\S+$/.test(email)) {
+					document.getElementById("err_email").innerText = "Formato de email no válido.";
+					errores = true;
+				}
 
-      if (mensaje === '') {
-        document.getElementById('err_mensaje').textContent = 'El mensaje es obligatorio.';
-        valid = false;
-      }
+				if (!asunto) {
+					document.getElementById("err_asunto").innerText = "El asunto es obligatorio.";
+					errores = true;
+				}
 
-      if (!valid) {
-        event.preventDefault(); // Evita que se envíe el formulario
-      }
-    });
-  </script>
+				if (!mensaje) {
+					document.getElementById("err_mensaje").innerText = "El mensaje no puede estar vacío.";
+					errores = true;
+				}
+
+				// Cancelar envío si hay errores
+				if (errores) {
+					e.preventDefault();
+				}
+			});
+		});
+</script>
+
 </body>
 
 </html>
