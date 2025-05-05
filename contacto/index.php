@@ -158,6 +158,55 @@
 <body>
 	<?php
 	include('../navbar.php');
+
+	function depurar($campo) {
+		return htmlspecialchars(stripslashes(trim($campo)));
+	}
+	
+	$err_nombre = $err_apellido = $err_email = $err_asunto = $err_mensaje = "";
+	$nombre = $apellido = $email = $asunto = $mensaje = "";
+	
+	if ($_SERVER["REQUEST_METHOD"] == "POST") {
+		if (empty($_POST["nombre"])) {
+			$err_nombre = "El nombre es obligatorio.";
+		} else {
+			$nombre = depurar($_POST["nombre"]);
+		}
+	
+		if (empty($_POST["apellido"])) {
+			$err_apellido = "El apellido es obligatorio.";
+		} else {
+			$apellido = depurar($_POST["apellido"]);
+		}
+	
+		if (empty($_POST["email"])) {
+			$err_email = "El correo electrónico es obligatorio.";
+		} elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) {
+			$err_email = "El formato del email no es válido.";
+		} else {
+			$email = depurar($_POST["email"]);
+		}
+	
+		if (empty($_POST["asunto"])) {
+			$err_asunto = "El asunto es obligatorio.";
+		} else {
+			$asunto = depurar($_POST["asunto"]);
+		}
+	
+		if (empty($_POST["mensaje"])) {
+			$err_mensaje = "El mensaje no puede estar vacío.";
+		} else {
+			$mensaje = depurar($_POST["mensaje"]);
+		}
+	
+		// Si no hay errores, se puede procesar el formulario
+		if (!$err_nombre && !$err_apellido && !$err_email && !$err_asunto && !$err_mensaje) {
+			// Aquí podrías enviar un correo, guardar en base de datos, etc.
+			// Redirigir a una página de agradecimiento si todo está bien
+			header("Location: gracias.php");
+			exit();
+		}
+	}
 	?>
 
 	<div class="container py-5">
@@ -219,11 +268,13 @@
 											<label class="form-label">Nombre</label>
 											<input name="nombre" id="nombre" type="text" class="form-control"
 												placeholder="Nombre" />
+                      						<?php if (isset($err_nombre))echo "<span id='err_nombre' class='error'>$err_nombre</span>"; ?>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Apellido</label>
 											<input name="apellido" id="apellido" type="text" class="form-control"
 												placeholder="Apellido" />
+                     						<?php if (isset($err_apellido))echo "<span id='err_apellido' class='error'>$err_apellido</span>"; ?>
 										</div>
 									</div>
 
@@ -231,18 +282,21 @@
 										<label class="form-label" for="email">Email</label>
 										<input type="text" id="email" name="email" class="form-control"
 											placeholder="Inserte su correo electrónico" />
+										<?php if (isset($err_email))echo "<span id='err_email' class='error'>$err_email</span>"; ?>
 									</div>
 
 									<div class="mb-3">
 										<label class="form-label">Asunto</label>
 										<input name="asunto" id="asunto" type="text" class="form-control"
 											placeholder="¿Cómo podemos ayudarte?" />
+                    					<?php if (isset($err_asunto))echo "<span id='err_asunto' class='error'>$err_asunto</span>"; ?>
 									</div>
 
 									<div class="mb-4">
 										<label class="form-label">Mensaje</label>
 										<textarea name="mensaje" id="mensaje" class="form-control" rows="5"
 											placeholder="Tu mensaje aquí..."></textarea>
+                    					<?php if (isset($err_mensaje))echo "<span id='err_mensaje' class='error'>$err_mensaje</span>"; ?>
 									</div>
 
 									<button type="submit" class="btn btn-submit text-white">
