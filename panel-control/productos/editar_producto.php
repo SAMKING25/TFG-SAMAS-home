@@ -19,7 +19,7 @@
 
     session_start();
     if (!isset($_SESSION["proveedor"])) {
-        header("location: ../../login/proveedor/iniciar_sesion_proveedor.php");
+        header("location: ../../login/proveedor/iniciar_sesion_proveedor");
         exit;
     }
     ?>
@@ -348,7 +348,7 @@
 
                             <div class="d-flex justify-content-between">
                                 <input type="hidden" name="id_producto" value="<?php echo $id_producto ?>">
-                                <a href="./index.php" class="btn btn-outline-secondary">Salir</a>
+                                <a href="./" class="btn btn-outline-secondary">Salir</a>
                                 <button type="submit" class="btn btn-success">Confirmar cambio</button>
                             </div>
                         </form>

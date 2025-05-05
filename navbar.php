@@ -64,7 +64,7 @@ if (isset($_SESSION['usuario'])) {
 
                 <!-- Logo (Center) -->
                 <div class="col-md-4 d-flex justify-content-center">
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="/">
                         <img src="/img/logos/logo-marron-nobg.png" alt="Logo" height="80px" />
                     </a>
                 </div>
@@ -114,18 +114,18 @@ if (isset($_SESSION['usuario'])) {
                                 </li>
                                 <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
                             <?php } elseif ($tipo_sesion === 'proveedor') { ?>
-                                <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor.php">Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="/panel-control/index.php">Panel de control</a></li>
-                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar
+                                <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="/panel-control/">Panel de control</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar
                                         cuenta</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
+                                <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar Sesión</a></li>
                             <?php } else { ?>
-                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Iniciar
+                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar
                                         Sesión</a></li>
-                                <li><a class="dropdown-item" href="/login/usuario/registro_usuario.php">Registrarse</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/registro_usuario">Registrarse</a></li>
                             <?php }; ?>
                         </ul>
                     </div>
