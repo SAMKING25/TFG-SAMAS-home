@@ -81,9 +81,11 @@ if (isset($_SESSION['usuario'])) {
                             </button>
                         </div>
                     </div>
-                    <a href="/carrito" class="nav-link me-3">
-                        <i class="bi bi-cart2 icono-personalizado"></i>
-                    </a>
+                    <?php if ($tipo_sesion !== 'proveedor') { ?>
+                        <a href="/carrito" class="nav-link me-3">
+                            <i class="bi bi-cart2 icono-personalizado"></i>
+                        </a>
+                    <?php } ?>
                     <div class="dropdown">
                     <a class="dropdown-toggle text-light text-decoration-none" role="button"
                     data-bs-toggle="dropdown" aria-expanded="false">
