@@ -43,12 +43,11 @@ function agregarProducto(imagenURL, medidas) {
     });
 }
 
-
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
     if (activeObject) {
-        if (confirm('¿Estás seguro de que quieres eliminar el(los) objeto(s) seleccionado(s)?')) {
+        // if (confirm('¿Estás seguro de que quieres eliminar el(los) objeto(s) seleccionado(s)?')) {
             if (activeObject.type === 'activeSelection') {
                 activeObject.forEachObject(function (obj) {
                     canvas.remove(obj);
@@ -58,7 +57,7 @@ function borrarObjeto() {
                 canvas.remove(activeObject);
             }
             canvas.requestRenderAll();
-        }
+        // }
     } else {
         alert('No hay ningún objeto seleccionado.');
     }
