@@ -75,7 +75,7 @@
                         <li><strong>Medidas:</strong> <?php echo "{$medidas['largo']}cm × {$medidas['ancho']}cm × {$medidas['alto']}cm"; ?></li>
                     </ul>
 
-                    <a href="index.php" class="btn btn-outline-secondary mt-4">← Volver a productos</a>
+                    <a href="./" class="btn btn-outline-secondary mt-4">← Volver a productos</a>
                 </div>
             </div>
         </div>

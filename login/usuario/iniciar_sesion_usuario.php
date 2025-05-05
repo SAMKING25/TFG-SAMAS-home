@@ -119,21 +119,21 @@
                                             <button data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="submit">Iniciar sesión</button>
-                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                            <a href="../../" data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">¿Eres una empresa?
                                                 <a style="text-decoration: none; color: black;"
-                                                    href="../proveedor/iniciar_sesion_proveedor.php"><u>Iniciar
+                                                    href="../proveedor/iniciar_sesion_proveedor"><u>Iniciar
                                                         sesión</u></a>
                                             </p>
                                         </div>
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">¿No tienes cuenta?
                                                 <a style="text-decoration: none; color: black;"
-                                                    href="./registro_usuario.php"><u>Registrarse</u></a>
+                                                    href="./registro_usuario"><u>Registrarse</u></a>
                                             </p>
                                         </div>
                                     </form>

@@ -171,7 +171,7 @@
                                 <?php if ($i === 0): ?>
                                     <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
                                 <?php else: ?>
-                                    <a href="/pasarela-pago/index.php" class="btn btn-custom <?php echo $suscripcion['nombre'] ?>">Adquirir</a>
+                                    <a href="/pasarela-pago/" class="btn btn-custom <?php echo $suscripcion['nombre'] ?>">Adquirir</a>
                                 <?php endif; ?>
                             </div>
                         </div>

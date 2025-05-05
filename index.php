@@ -34,7 +34,7 @@
 				<p class="banner-subtext">
 					Encuentra los mejores muebles para tu hogar
 				</p>
-				<a href="./productos/index.php" class="banner-btn btn btn-dark">
+				<a href="./productos/" class="banner-btn btn btn-dark">
 					Ver Productos
 				</a>
 			</div>

@@ -153,14 +153,14 @@
                                             <button data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="submit">Registrarse</button>
-                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                            <a href="../../" data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">Ya tienes cuenta?
                                                 <a style="text-decoration: none; color: black;"
-                                                    href="./iniciar_sesion_usuario.php"><u>Iniciar sesión</u></a>
+                                                    href="./iniciar_sesion_usuario"><u>Iniciar sesión</u></a>
                                             </p>
                                         </div>
                                     </form>

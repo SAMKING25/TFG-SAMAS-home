@@ -35,21 +35,21 @@
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a href="<?php echo BASE_URL; ?>index.php"
-                    class="nav-link <?php echo (strpos($current_url, '/panel-control/index.php') !== false) ? 'active' : 'link-dark'; ?>">
+                    class="nav-link <?php echo (strpos($current_url, '/panel-control/') !== false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-house-door me-2"></i>
                     Inicio
                 </a>
             </li>
             <li>
                 <a href="<?php echo BASE_URL; ?>productos/"
-                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/index.php') !== false) ? 'active' : 'link-dark'; ?>">
+                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/') !== false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-archive me-2"></i>
                     Gestión de productos
                 </a>
             </li>
             <li>
                 <a href="<?php echo BASE_URL; ?>productos/nuevo_producto"
-                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/nuevo_producto.php') !== false) ? 'active' : 'link-dark'; ?>">
+                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/nuevo_producto') !== false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-folder-plus me-2"></i>
                     Nuevo producto
                 </a>
