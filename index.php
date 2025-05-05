@@ -245,7 +245,7 @@
 					<p><a href="/plano" class="footer-link">Plano</a></p>
 					<p><a href="/suscripcion" class="footer-link">Suscripción</a></p>
 					<p><a href="/contacto" class="footer-link">Contacto</a></p>
-					<p><a href="./util/archivos/politica-cookies.pdf" target="_blank" id="politica-cookies"
+					<p><a href="./util/archivos/politica-cookies" target="_blank" id="politica-cookies"
 							class="footer-link">Política de cookies</a></p>
 				</div>
 				<div class="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">
