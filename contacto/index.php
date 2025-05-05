@@ -208,17 +208,19 @@
 						<div class="col-md-7">
 							<div class="contact-form">
 								<h2 class="mb-4">Envíanos un mensaje</h2>
-								<form action="datos.php" method="post" enctype="multipart/form-data">
+								<form action="datos" method="post" enctype="multipart/form-data">
 									<div class="row">
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Nombre</label>
 											<input name="nombre" type="text" class="form-control"
 												placeholder="Nombre" />
+                      						<?php if (isset($err_nombre))echo "<span class='error'>$err_nombre</span>"; ?>
 										</div>
 										<div class="col-md-6 mb-3">
 											<label class="form-label">Apellido</label>
 											<input name="apellido" type="text" class="form-control"
 												placeholder="Apellido" />
+                     						<?php if (isset($err_apellido))echo "<span class='error'>$err_apellido</span>"; ?>
 										</div>
 									</div>
 
@@ -226,20 +228,21 @@
 										<label class="form-label" for="email">Email</label>
 										<input type="email" id="email" name="email" class="form-control"
 											placeholder="Inserte su correo electrónico" />
-										<?php if (isset($err_email))
-											echo "<span class='error'>$err_email</span>"; ?>
+										<?php if (isset($err_email))echo "<span class='error'>$err_email</span>"; ?>
 									</div>
 
 									<div class="mb-3">
 										<label class="form-label">Asunto</label>
 										<input name="asunto" type="text" class="form-control"
 											placeholder="¿Cómo podemos ayudarte?" />
+                    					<?php if (isset($err_asunto))echo "<span class='error'>$err_asunto</span>"; ?>
 									</div>
 
 									<div class="mb-4">
 										<label class="form-label">Mensaje</label>
 										<textarea name="mensaje" class="form-control" rows="5"
 											placeholder="Tu mensaje aquí..."></textarea>
+                    					<?php if (isset($err_mensaje))echo "<span class='error'>$err_mensaje</span>"; ?>
 									</div>
 
 									<button type="submit" class="btn btn-submit text-white">
@@ -258,36 +261,52 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
 		crossorigin="anonymous"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			const form = document.querySelector('form');
-			const emailInput = document.getElementById('email');
+    <script>
+    document.getElementById('formulario').addEventListener('submit', function(event) {
+      let valid = true;
 
-			// Para mostrar errores
-			const emailError = document.createElement('span');
-			emailError.classList.add('error');
-			emailInput.parentNode.appendChild(emailError);
+      // Limpiar errores anteriores
+      document.querySelectorAll('.error').forEach(e => e.textContent = '');
 
-			form.addEventListener('submit', function (event) {
-				let valid = true;
+      const nombre = document.getElementById('nombre').value.trim();
+      const apellido = document.getElementById('apellido').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const asunto = document.getElementById('asunto').value.trim();
+      const mensaje = document.getElementById('mensaje').value.trim();
 
-				emailError.textContent = '';
+      if (nombre === '') {
+        document.getElementById('err_nombre').textContent = 'El nombre es obligatorio.';
+        valid = false;
+      }
 
-				// Email
-				const emailValue = emailInput.value.trim();
-				if (emailValue === '') {
-					emailError.textContent = 'El email es obligatorio.';
-					valid = false;
-				} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-					emailError.textContent = 'El email no es válido.';
-					valid = false;
-				}
-				if (!valid) {
-					event.preventDefault();
-				}
-			});
-		});
-	</script>
+      if (apellido === '') {
+        document.getElementById('err_apellido').textContent = 'El apellido es obligatorio.';
+        valid = false;
+      }
+
+      if (email === '') {
+        document.getElementById('err_email').textContent = 'El email es obligatorio.';
+        valid = false;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        document.getElementById('err_email').textContent = 'El email no es válido.';
+        valid = false;
+      }
+
+      if (asunto === '') {
+        document.getElementById('err_asunto').textContent = 'El asunto es obligatorio.';
+        valid = false;
+      }
+
+      if (mensaje === '') {
+        document.getElementById('err_mensaje').textContent = 'El mensaje es obligatorio.';
+        valid = false;
+      }
+
+      if (!valid) {
+        event.preventDefault(); // Evita que se envíe el formulario
+      }
+    });
+  </script>
 </body>
 
 </html>
