@@ -15,8 +15,8 @@
     require('../../util/funciones/utilidades.php');
 
     session_start();
-    if (!isset($_SESSION["usuario"])) {
-        header("location: ../../login/proveedores/iniciar_sesion_proveedor.php");
+    if (!isset($_SESSION["proveedor"])) {
+        header("location: ../../login/proveedor/iniciar_sesion_proveedor.php");
         exit;
     }
     ?>
@@ -50,7 +50,7 @@
         $tmp_alto = depurar($_POST["alto"]);
         $medidas = array('largo' => intval($tmp_largo),'ancho' => intval($tmp_ancho),'alto' => intval($tmp_alto));
         $oferta = $_POST["oferta"];
-        $id_proveedor = $_SESSION["usuario"];
+        $id_proveedor = $_SESSION["proveedor"];
 
         $nombre_imagen = $_FILES["img_producto"]["name"];
         $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];

@@ -62,9 +62,14 @@
 
                 if($acceso_concedido){
                     session_start();
+    
+                    session_unset();
+                    session_destroy();
+                                        
+                    session_start();
                     
-                    $_SESSION["usuario"] = $datos_usuario["id_proveedor"];
-                    header("location: ../../panel-control/index.php");
+                    $_SESSION["proveedor"] = $datos_usuario["id_proveedor"];
+                    header("location: ../../index.php");
                     exit;
                 }else{
                     $err_contrasena_proveedor = "Contraseña incorrecta";

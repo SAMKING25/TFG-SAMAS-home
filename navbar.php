@@ -1,16 +1,29 @@
-<?php $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-
-if (isset($_SESSION['usuario'])) {
-    $id_usuario = $_SESSION['usuario'];
-}
-
-$sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
-$sql->bind_param("i", $id_usuario);
-$sql->execute();
-$resultado_usuario = $sql->get_result();
+<?php
+$_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
 define('IMG_USUARIO', '/img/usuario/');
 define('FUNCIONES', '/util/funciones/');
+
+$tipo_sesion = null;
+$datos = null;
+
+if (isset($_SESSION['usuario'])) {
+    $id = $_SESSION['usuario'];
+    $tipo_sesion = 'usuario';
+    $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
+    $sql->bind_param("i", $id);
+    $sql->execute();
+    $resultado = $sql->get_result();
+    $datos = $resultado->fetch_assoc();
+} elseif (isset($_SESSION['proveedor'])) {
+    $id = $_SESSION['proveedor'];
+    $tipo_sesion = 'proveedor';
+    $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
+    $sql->bind_param("i", $id);
+    $sql->execute();
+    $resultado = $sql->get_result();
+    $datos = $resultado->fetch_assoc();
+}
 ?>
 
 <!-- Navbar -->
@@ -31,12 +44,18 @@ define('FUNCIONES', '/util/funciones/');
                         <li class="nav-item">
                             <a class="nav-link" href="/productos">Productos</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/plano">Plano</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/suscripcion">Suscripción</a>
-                        </li>
+                        <?php if ($tipo_sesion !== 'proveedor') { ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/plano">Plano</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/suscripcion">Suscripción</a>
+                            </li>
+                        <?php } else { ?>
+                            <li class="nav-item">
+                            <a class="nav-link" href="/panel-control">Panel de control</a>
+                            </li>
+                        <?php } ?>
                         <li class="nav-item">
                             <a class="nav-link" href="/contacto">Contacto</a>
                         </li>
@@ -62,27 +81,39 @@ define('FUNCIONES', '/util/funciones/');
                             </button>
                         </div>
                     </div>
-                    <a href="#" class="nav-link me-3">
+                    <a href="/carrito" class="nav-link me-3">
                         <i class="bi bi-cart2 icono-personalizado"></i>
                     </a>
                     <div class="dropdown">
-                        <a class="dropdown-toggle text-light text-decoration-none" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <?php if (!isset($_SESSION['usuario'])) { ?>
-                                <i class="bi bi-person-circle icono-personalizado"></i>
-                            <?php } ?>
-                            <?php while ($fila = $resultado_usuario->fetch_assoc()) { ?>
-                                <img src="<?php echo IMG_USUARIO . $fila['img_usuario'] ?>" alt="" width="32" height="32"
-                                    class="rounded-circle me-2">
-                                <strong>
-                                    <?php echo $fila['nombre_usuario'] ?>
-                                </strong>
-                            <?php } ?>
-                        </a>
+                    <a class="dropdown-toggle text-light text-decoration-none" role="button"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php if (!$datos) { ?>
+                            <i class="bi bi-person-circle icono-personalizado"></i>
+                        <?php } else { ?>
+                            <img src="<?php echo $tipo_sesion === 'usuario' 
+                                            ? IMG_USUARIO . $datos['img_usuario'] 
+                                            : IMG_USUARIO . $datos['img_proveedor']; ?>" 
+                                alt="" width="32" height="32" class="rounded-circle me-2">
+                            <strong>
+                                <?php echo $tipo_sesion === 'usuario' 
+                                    ? $datos['nombre_usuario'] 
+                                    : $datos['nombre_proveedor']; ?>
+                            </strong>
+                        <?php } ?>
+                    </a>
+
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <?php if (isset($_SESSION['usuario']) && !empty($_SESSION['usuario'])) { ?>
-                                <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi
-                                        Perfil</a></li>
+                            <?php if ($tipo_sesion === 'usuario') { ?>
+                                <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar
+                                        cuenta</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
+                            <?php } elseif ($tipo_sesion === 'proveedor') { ?>
+                                <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor.php">Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="/panel-control/index.php">Panel de control</a></li>
                                 <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar
                                         cuenta</a></li>
                                 <li>
@@ -101,5 +132,3 @@ define('FUNCIONES', '/util/funciones/');
         </div>
     </div>
 </nav>
-
-<!-- End Navbar -->

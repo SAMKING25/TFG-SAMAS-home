@@ -62,6 +62,12 @@
 
                 if($acceso_concedido){
                     session_start();
+    
+                    session_unset();
+                    session_destroy();
+                    
+                    session_start();
+                    
                     $_SESSION["usuario"] = $datos_usuario["id_usuario"];
 
                     // Redirige a donde quería ir el usuario

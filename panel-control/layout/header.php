@@ -1,6 +1,6 @@
 <?php $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
     // Consulta SQL
-    $id_proveedor = $_SESSION['usuario'];
+    $id_proveedor = $_SESSION['proveedor'];
 
     $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
     $sql->bind_param("i", $id_proveedor);
