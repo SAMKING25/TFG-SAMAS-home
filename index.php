@@ -276,11 +276,13 @@
 	<style>
 		#dify-chatbot-bubble-button {
 			background-color: #1C64F2 !important;
+			position: fixed !important;
 		}
 
 		#dify-chatbot-bubble-window {
 			width: 24rem !important;
 			height: 40rem !important;
+			position: fixed !important;
 		}
 	</style>
 	<!-- Bootstrap JS -->
