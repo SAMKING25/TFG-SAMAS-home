@@ -69,7 +69,7 @@
                     session_start();
                     
                     $_SESSION["proveedor"] = $datos_usuario["id_proveedor"];
-                    header("location: ../../index.php");
+                    header("location: ../../");
                     exit;
                 }else{
                     $err_contrasena_proveedor = "Contraseña incorrecta";
@@ -111,14 +111,14 @@
                                             <button data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="submit">Iniciar sesión</button>
-                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                            <a href="../../" data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
                                         <div class="d-flex align-items-center justify-content-center pb-4">
                                             <p class="mb-0 me-2">¿Eres un usuario normal?
                                                 <a style="text-decoration: none; color: black;"
-                                                    href="../usuario/iniciar_sesion_usuario.php"><u>Iniciar
+                                                    href="../usuario/iniciar_sesion_usuario"><u>Iniciar
                                                         sesión</u></a>
                                             </p>
                                         </div>

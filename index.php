@@ -59,11 +59,11 @@
 						$precio_original = $producto['precio'];
 						$porcentaje_descuento = $producto['porcentaje'];
 						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
-						?>
+					?>
 						<div class="carousel-item <?php if ($primero) {
-							echo 'active';
-							$primero = false;
-						} ?>">
+														echo 'active';
+														$primero = false;
+													} ?>">
 							<img src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
 								alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
 								style="object-fit: cover; height: 100%; width: 100%;">
@@ -76,11 +76,11 @@
 								</p>
 								<p class="fs-6">
 									<span style="text-decoration:line-through; color:grey;">
-										<?php echo number_format($precio_original, 2); ?> €
+										<?php echo number_format($precio_original, 2, ',', '.'); ?> €
 									</span>
 								</p>
 								<p class="fs-1 fw-bold">
-									<?php echo number_format($precio_final, 2); ?> €
+									<?php echo number_format($precio_final, 2, ',', '.'); ?> €
 								</p>
 							</div>
 						</div>
@@ -245,7 +245,7 @@
 					<p><a href="/plano" class="footer-link">Plano</a></p>
 					<p><a href="/suscripcion" class="footer-link">Suscripción</a></p>
 					<p><a href="/contacto" class="footer-link">Contacto</a></p>
-					<p><a href="./util/archivos/politica-cookies.pdf" target="_blank" id="politica-cookies"
+					<p><a href="./util/archivos/politica-cookies" target="_blank" id="politica-cookies"
 							class="footer-link">Política de cookies</a></p>
 				</div>
 				<div class="col-md-4 col-lg-3 col-xl-3 mb-md-0 mb-4">

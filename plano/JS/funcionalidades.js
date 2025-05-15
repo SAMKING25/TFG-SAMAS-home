@@ -4,12 +4,12 @@ const canvas = new fabric.Canvas('canvas', {
 
 // Hacer que el canvas ocupe todo el contenedor
 canvas.setWidth(window.innerWidth - 400); // 400px del sidebar
-canvas.setHeight(window.innerHeight);
+canvas.setHeight(window.innerHeight - 230);
 
 // Ajustar cuando cambie el tamaño de la ventana
 window.addEventListener('resize', () => {
     canvas.setWidth(window.innerWidth - 400);
-    canvas.setHeight(window.innerHeight);
+    canvas.setHeight(window.innerHeight - 230);
 });
 
 function agregarProducto(imagenURL, medidas) {
@@ -43,12 +43,11 @@ function agregarProducto(imagenURL, medidas) {
     });
 }
 
-
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
     if (activeObject) {
-        if (confirm('¿Estás seguro de que quieres eliminar el(los) objeto(s) seleccionado(s)?')) {
+        // if (confirm('¿Estás seguro de que quieres eliminar el(los) objeto(s) seleccionado(s)?')) {
             if (activeObject.type === 'activeSelection') {
                 activeObject.forEachObject(function (obj) {
                     canvas.remove(obj);
@@ -58,7 +57,7 @@ function borrarObjeto() {
                 canvas.remove(activeObject);
             }
             canvas.requestRenderAll();
-        }
+        // }
     } else {
         alert('No hay ningún objeto seleccionado.');
     }
@@ -322,47 +321,4 @@ canvas.on('object:modified', function (e) {
         canvas.remove(guiaY);
         guiaY = null;
     }
-});
-canvas.on('object:modified', function (e) {
-    const obj = e.target;
-
-    const allObjects = canvas.getObjects();
-    
-    // Umbral de proximidad para detectar si dos objetos están cerca (en píxeles)
-    const snapThreshold = 10; 
-
-    // Comprobar si el objeto está cerca de otro
-    for (let otherObj of allObjects) {
-        if (otherObj === obj) continue; // No comparar consigo mismo
-
-        // Obtener las posiciones de ambos objetos
-        const objRect = obj.getBoundingRect();
-        const otherObjRect = otherObj.getBoundingRect();
-
-        // Verificar proximidad en el eje X
-        if (Math.abs(objRect.left + objRect.width - otherObjRect.left) < snapThreshold) {
-            obj.set({
-                left: otherObjRect.left - objRect.width // Alinea el borde derecho de 'obj' con el borde izquierdo de 'otherObj'
-            });
-        } else if (Math.abs(otherObjRect.left + otherObjRect.width - objRect.left) < snapThreshold) {
-            obj.set({
-                left: otherObjRect.left + otherObjRect.width // Alinea el borde izquierdo de 'obj' con el borde derecho de 'otherObj'
-            });
-        }
-
-        // Verificar proximidad en el eje Y
-        if (Math.abs(objRect.top + objRect.height - otherObjRect.top) < snapThreshold) {
-            obj.set({
-                top: otherObjRect.top - objRect.height // Alinea el borde inferior de 'obj' con el borde superior de 'otherObj'
-            });
-        } else if (Math.abs(otherObjRect.top + otherObjRect.height - objRect.top) < snapThreshold) {
-            obj.set({
-                top: otherObjRect.top + otherObjRect.height // Alinea el borde superior de 'obj' con el borde inferior de 'otherObj'
-            });
-        }
-
-        obj.setCoords(); // Recalcular las coordenadas del objeto
-    }
-
-    canvas.renderAll(); // Volver a renderizar el canvas para aplicar los cambios
 });

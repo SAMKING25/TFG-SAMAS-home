@@ -1,3 +1,10 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+require('../util/conexion.php');
+session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -12,13 +19,6 @@
     <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
     <link rel="stylesheet" href="/css/landing.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-    require('../util/conexion.php');
-    session_start();
-    ?>
 </head>
 
 <body>
@@ -42,32 +42,71 @@
         </form>
 
         <?php
-        // ✅ ESTA ES LA PARTE CAMBIADA: usar lo que el usuario buscó
         if (isset($_GET['busqueda']) && !empty(trim($_GET['busqueda']))) {
             $busqueda = $_conexion->real_escape_string($_GET['busqueda']);
-            $sql = "SELECT * FROM productos WHERE nombre LIKE '%$busqueda%'";
+
+            $sql = "SELECT p.*, o.porcentaje FROM productos p 
+                    LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta 
+                    WHERE p.nombre LIKE '%$busqueda%'";
         } else {
-            $sql = "SELECT * FROM productos";
+            $sql = "SELECT p.*, o.porcentaje FROM productos p 
+                    LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta";
         }
 
         $resultado = $_conexion->query($sql);
         ?>
 
-        <!-- Mostrar productos -->
         <?php if ($resultado && $resultado->num_rows > 0): ?>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
                 <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <?php
+                    $precio = $fila["precio"];
+                    $porcentaje = $fila["porcentaje"];
+
+                    $hayOferta = false;
+                    if (!is_null($porcentaje)) {
+                        $hayOferta = true;
+                        $precioFinal = $precio * (1 - $porcentaje / 100);
+                    }
+                    ?>
                     <div class="col">
                         <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>" class="text-decoration-none text-dark">
-                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+
+                                <?php if ($hayOferta): ?>
+                                    <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
+                                        -<?php echo $porcentaje; ?>%
+                                    </span>
+                                <?php endif; ?>
+
                                 <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
-                                     class="card-img-top img-fluid"
-                                     style="object-fit: contain; height: 300px; background-color: #f8f8f8; padding: 10px;"
-                                     alt="Imagen del producto">
+                                    class="card-img-top img-fluid"
+                                    style="object-fit: contain; height: 300px; background-color: #f8f8f8; padding: 10px;"
+                                    alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
 
                                 <div class="card-body text-center">
-                                    <h5 class="card-title fw-bold fs-5 mb-1"><?php echo $fila["nombre"]; ?></h5>
-                                    <p class="card-text text-success fs-5"><?php echo number_format($fila["precio"], 2); ?> €</p>
+                                    <h5 class="card-title fw-bold fs-5 mb-2"><?php echo $fila["nombre"]; ?></h5>
+
+                                    <div class="card-text fs-5">
+                                        <?php
+                                        if ($hayOferta) {
+                                        ?>
+                                            <span class="text-muted text-decoration-line-through me-2">
+                                                <?php echo number_format($precio, 2, ',', '.'); ?> €
+                                            </span>
+                                            <span class="text-success fw-semibold">
+                                                <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
+                                            </span>
+                                        <?php
+                                        } else {
+                                        ?>
+                                            <span class="text-success fw-semibold">
+                                                <?php echo number_format($precio, 2, ',', '.'); ?> €
+                                            </span>
+                                        <?php
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                             </div>
                         </a>
@@ -79,8 +118,8 @@
                 No se encontraron productos.
             </div>
         <?php endif; ?>
-
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
