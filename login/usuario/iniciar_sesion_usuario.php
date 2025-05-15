@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <?php
-        error_reporting( E_ALL );
-        ini_set("display_errors", 1 );    
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
 
-        require('../../util/conexion.php');
-        require('../../util/funciones/utilidades.php');
+    require('../../util/conexion.php');
+    require('../../util/funciones/utilidades.php');
     ?>
     <style>
         .error {
@@ -47,43 +48,43 @@
 
 <body>
     <?php
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $email_usuario = depurar($_POST["email_usuario"]);
-            $contrasena_usuario = $_POST["contrasena_usuario"];
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email_usuario = depurar($_POST["email_usuario"]);
+        $contrasena_usuario = $_POST["contrasena_usuario"];
 
-            $sql="SELECT * FROM usuarios WHERE email_usuario ='$email_usuario'";
-            $resultado=$_conexion -> query($sql);
+        $sql = "SELECT * FROM usuarios WHERE email_usuario ='$email_usuario'";
+        $resultado = $_conexion->query($sql);
 
-            if($resultado -> num_rows == 0){
-                $err_email_usuario = "El correo es incorrecto";
-            }else{
-                $datos_usuario = $resultado -> fetch_assoc();
-                $acceso_concedido = password_verify($contrasena_usuario,$datos_usuario["contrasena_usuario"]);
+        if ($resultado->num_rows == 0) {
+            $err_email_usuario = "El correo es incorrecto";
+        } else {
+            $datos_usuario = $resultado->fetch_assoc();
+            $acceso_concedido = password_verify($contrasena_usuario, $datos_usuario["contrasena_usuario"]);
 
-                if($acceso_concedido){
-                    session_start();
-    
-                    session_unset();
-                    session_destroy();
-                    
-                    session_start();
-                    
-                    $_SESSION["usuario"] = $datos_usuario["id_usuario"];
+            if ($acceso_concedido) {
+                session_start();
 
-                    // Redirige a donde quería ir el usuario
-                    if (isset($_SESSION['redirect_after_login'])) {
-                        $redirect_url = $_SESSION['redirect_after_login'];
-                        unset($_SESSION['redirect_after_login']);
-                        header("Location: $redirect_url");
-                    } else {
-                        header("Location: /index.php"); // Si no había una página previa, va al inicio
-                    }
-                    exit();
-                }else{
-                    $err_contrasena_usuario = "Contraseña incorrecta";
+                session_unset();
+                session_destroy();
+
+                session_start();
+
+                $_SESSION["usuario"] = $datos_usuario["id_usuario"];
+
+                // Redirige a donde quería ir el usuario
+                if (isset($_SESSION['redirect_after_login'])) {
+                    $redirect_url = $_SESSION['redirect_after_login'];
+                    unset($_SESSION['redirect_after_login']);
+                    header("Location: $redirect_url");
+                } else {
+                    header("Location: /index.php"); // Si no había una página previa, va al inicio
                 }
+                exit();
+            } else {
+                $err_contrasena_usuario = "Contraseña incorrecta";
             }
-        } 
+        }
+    }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
@@ -105,14 +106,14 @@
                                             <label class="form-label" for="email_usuario">Email</label>
                                             <input type="email_usuario" id="email_usuario" name="email_usuario"
                                                 class="form-control" placeholder="Inserte su correo electrónico" />
-                                            <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                                            <?php if (isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="contrasena_usuario">Contraseña</label>
                                             <input type="password" id="contrasena_usuario" name="contrasena_usuario"
                                                 class="form-control" />
-                                            <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                                            <?php if (isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
                                         </div>
 
                                         <div class="pt-1 mb-5 pb-1">
@@ -157,7 +158,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_usuario');
             const passwordInput = document.getElementById('contrasena_usuario');
@@ -171,7 +172,7 @@
             passwordError.classList.add('error');
             passwordInput.parentNode.appendChild(passwordError);
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', function(event) {
                 let valid = true;
 
                 emailError.textContent = '';
@@ -201,4 +202,5 @@
         });
     </script>
 </body>
+
 </html>
