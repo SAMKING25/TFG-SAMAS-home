@@ -1,3 +1,61 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../util/conexion.php');
+session_start();
+
+// Procesar solicitud POST para añadir al carrito
+if (isset($_GET["id_producto"])) {
+    $id = intval($_GET["id_producto"]);
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (!isset($_SESSION["usuario"])) {
+            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            exit;
+        }
+
+        $id_producto = intval($_GET["id_producto"]);
+        $id_usuario = $_SESSION["usuario"];
+        $cantidad = $_POST["cantidad"];
+
+        $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+
+        if ($stmt->execute()) {
+            $mensaje = "success";
+        } else {
+            $mensaje = "error";
+            $errorMsg = $stmt->error;
+        }
+
+        $stmt->close();
+    }
+
+    $sql = "SELECT p.*, o.porcentaje 
+            FROM productos p
+            LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
+            WHERE p.id_producto = $id";
+    $resultado = $_conexion->query($sql);
+
+    if ($resultado->num_rows > 0) {
+        $producto = $resultado->fetch_assoc();
+        $medidas = json_decode($producto["medidas"], true);
+        $precio = $producto["precio"];
+        $porcentaje = $producto["porcentaje"];
+    } else {
+        die("Producto no encontrado.");
+    }
+} else {
+    die("ID no válido.");
+}
+
+$hayOferta = !is_null($porcentaje);
+if ($hayOferta) {
+    $precioFinal = $precio * (1 - $porcentaje / 100);
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,15 +71,6 @@
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-    <!--conexion con BD-->
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    require('../util/conexion.php');
-
-    session_start();
-    ?>
 </head>
 
 <body>
@@ -29,33 +78,12 @@
 
     <div class="container">
         <?php
-        if (isset($_GET["id_producto"])) {
-            $id = intval($_GET["id_producto"]);
-            $sql = "SELECT p.*, o.porcentaje 
-                    FROM productos p
-                    LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
-                    WHERE p.id_producto = $id";
-            $resultado = $_conexion->query($sql);
-
-            if ($resultado->num_rows > 0) {
-                $producto = $resultado->fetch_assoc();
-                $medidas = json_decode($producto["medidas"], true);
-                $precio = $producto["precio"];
-                $porcentaje = $producto["porcentaje"];
+        if (isset($mensaje)) {
+            if ($mensaje == "success") {
+                echo '<div class="alert alert-success mt-3" role="alert">Producto añadido al carrito.</div>';
             } else {
-                echo "Producto no encontrado.";
-                exit;
+                echo '<div class="alert alert-danger mt-3" role="alert">Error al añadir el producto al carrito: ' . $errorMsg . '</div>';
             }
-        } else {
-            echo "ID no válido.";
-            exit;
-        }
-
-        // Verificar si hay oferta activa
-        $hayOferta = false;
-        if (!is_null($porcentaje)) {
-            $hayOferta = true;
-            $precioFinal = $precio * (1 - $porcentaje / 100);
         }
         ?>
 
@@ -66,15 +94,11 @@
                         class="img-fluid rounded shadow"
                         style="object-fit: contain; max-height: 500px; background-color: #f9f9f9; padding: 20px;">
 
-                    <?php
-                    if ($hayOferta) {
-                    ?>
+                    <?php if ($hayOferta): ?>
                         <div class="badge bg-danger text-white fs-6 py-2 px-3 rounded-3 position-absolute top-0 start-0 mt-3 ms-3">
                             ¡Descuento <?php echo $porcentaje; ?>%!
                         </div>
-                    <?php
-                    }
-                    ?>
+                    <?php endif; ?>
                 </div>
 
                 <div class="col-md-6">
@@ -83,50 +107,46 @@
 
                     <div class="d-flex align-items-center mb-4">
                         <div>
-                            <?php
-                            if ($hayOferta) {
-                            ?>
+                            <?php if ($hayOferta): ?>
                                 <span class="text-muted text-decoration-line-through me-2 fs-5">
                                     <?php echo number_format($precio, 2, ',', '.'); ?> €
                                 </span>
                                 <span class="text-success fw-semibold fs-4">
                                     <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
                                 </span>
-                            <?php
-                            } else {
-                            ?>
+                            <?php else: ?>
                                 <span class="text-success fw-semibold fs-4">
                                     <?php echo number_format($precio, 2, ',', '.'); ?> €
                                 </span>
-                            <?php
-                            }
-                            ?>
+                            <?php endif; ?>
                         </div>
                     </div>
 
                     <ul class="list-unstyled fs-5 mt-4">
                         <li><strong>Categoría:</strong> <?php echo $producto["categoria"]; ?></li>
                         <li><strong>Stock:</strong>
-                            <?php
-                            if ($producto["stock"] > 0) {
-                                echo "Disponible";
-                            } else {
-                                echo "No hay stock actualmente";
-                            }
-                            ?>
+                            <?php echo $producto["stock"] > 0 ? "Disponible" : "No hay stock actualmente"; ?>
                         </li>
-
                         <li><strong>Medidas:</strong> <?php echo "{$medidas['largo']}cm × {$medidas['ancho']}cm × {$medidas['alto']}cm"; ?></li>
                     </ul>
 
-                    <a href="#" class="btn btn-warning btn-lg mt-4">Agregar al carrito</a>
-
-                    <a href="./" class="btn btn-outline-secondary mt-4">← Volver a productos</a>
+                    <form action="" method="post">
+                        <select name="cantidad" id="cantidad" class="form-select form-select-lg w-auto">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <button type="submit" class="btn btn-warning btn-lg mt-4">Añadir al carrito</button>
+                        <a href="./" class="btn btn-outline-secondary mt-4">← Volver a productos</a>
+                    </form>
                 </div>
             </div>
         </div>
-
     </div>
 </body>
 
 </html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
