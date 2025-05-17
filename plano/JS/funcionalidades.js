@@ -69,9 +69,9 @@ function agregarPared() {
     const pared = new fabric.Rect({
         left: 0,
         top: 0,
-        fill: '#403f3f',
+        fill: '#fhfhfh',
         width: 200,
-        height: 22,
+        height: 15,
         selectable: false,
         originX: 'center',
         originY: 'center',
@@ -85,7 +85,7 @@ function agregarPared() {
         originX: 'center',
         originY: 'center',
         selectable: false,
-        evented: false,
+        evented: true,
     });
 
     const grupo = new fabric.Group([pared, textoMedida], {
@@ -132,9 +132,9 @@ function agregarPuerta() {
     const puerta = new fabric.Rect({
         left: 0,
         top: 0,
-        fill: '#8b5a2b', // color marrón para distinguir
-        width: 90,
-        height: 22,
+        fill: '#9c9c9c', // color marrón para distinguir
+        width: 100,
+        height: 15,
         selectable: false,
         originX: 'center',
         originY: 'center',
@@ -200,10 +200,23 @@ function guardarCanvas() {
     link.click();
 }
 
-window.addEventListener('wheel', (event) => {
+//Scroll del mouse para hacer zoom
+/* window.addEventListener('wheel', (event) => {
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     canvas.setZoom(canvas.getZoom() * zoomFactor);
-});
+}); */
+
+//Scroll de mouse para hacer zoom, pero solo si el mouse está sobre el canvas
+window.addEventListener('wheel', (event) => {
+    const productosSidebar = document.querySelector('.productos-sidebar'); // Ajusta esta clase si tiene otro nombre
+    const esEnSidebar = productosSidebar.contains(event.target);
+
+    if (!esEnSidebar) {
+        event.preventDefault(); // Previene el scroll general solo si es en el canvas
+        const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+        canvas.setZoom(canvas.getZoom() * zoomFactor);
+    }
+}, { passive: false });
 
 const snapThreshold = 2;
 let guiaX = null;
@@ -397,3 +410,24 @@ canvas.on('object:modified', function (e) {
         guiaY = null;
     }
 });
+
+canvas.on('object:scaling', function(e) {
+  const obj = e.target;
+
+  // Si el objeto tiene una propiedad isMedida (o algo para identificarlo)
+  if (obj.isPared || obj.isPuerta) {
+    // Suponemos que el texto de medida es un objeto hijo o propiedad del objeto
+    if (obj.medidaTexto) {
+      // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
+      obj.medidaTexto.scaleX = 1 / obj.scaleX;
+      obj.medidaTexto.scaleY = 1 / obj.scaleY;
+
+      // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
+      // obj.medidaTexto.left = ...
+      // obj.medidaTexto.top = ...
+
+      obj.medidaTexto.setCoords(); // actualizar bounds
+    }
+  }
+});
+

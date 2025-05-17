@@ -74,7 +74,7 @@
 
     ?>
     <!-- Contenedor principal -->
-    <div class="d-flex">
+    <div class="d-flex productos-sidebar">
         <!-- Sidebar de productos -->
         <div id="sidebar" class="p-3">
             <h5>Productos</h5>
