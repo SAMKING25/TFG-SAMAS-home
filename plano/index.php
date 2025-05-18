@@ -105,6 +105,11 @@
                         style="width: 60px; height: 60px;">
                         <i class="bi bi-door-open" style="font-size: 24px;"></i>
                     </button>
+                    <!-- Mostrar/Ocultar medidas -->
+                    <button id="toggle-measures" class="btn btn-secondary rounded-circle shadow ms-2"
+                        style="width: 60px; height: 60px;" title="Ocultar/Mostrar medidas">
+                        <i id="toggle-measures-icon" class="bi bi-eye"></i>
+                    </button>
                 </div>
 
                 <div class="d-flex text-end me-2">
