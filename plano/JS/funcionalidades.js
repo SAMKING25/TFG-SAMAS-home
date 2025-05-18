@@ -16,7 +16,7 @@ window.addEventListener('resize', () => {
 
 function agregarProducto(imagenURL, medidas) {
     medidas = JSON.parse(medidas);
-    
+
     const anchoPx = medidas.ancho;
     const altoPx = medidas.largo;
 
@@ -49,15 +49,21 @@ function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
     if (activeObject) {
-            if (activeObject.type === 'activeSelection') {
-                activeObject.forEachObject(function (obj) {
-                    canvas.remove(obj);
-                });
-                canvas.discardActiveObject();
-            } else {
-                canvas.remove(activeObject);
+        if (activeObject.type === 'activeSelection') {
+            activeObject.forEachObject(function (obj) {
+                canvas.remove(obj);
+                if (obj.relatedTexts) {
+                    obj.relatedTexts.forEach(txt => canvas.remove(txt));
+                }
+            });
+            canvas.discardActiveObject();
+        } else {
+            if (activeObject.relatedTexts) {
+                activeObject.relatedTexts.forEach(txt => canvas.remove(txt));
             }
-            canvas.requestRenderAll();
+            canvas.remove(activeObject);
+        }
+        canvas.requestRenderAll();
     } else {
         alert('No hay ningún objeto seleccionado.');
     }
@@ -67,64 +73,67 @@ function agregarPared() {
     const factorConversion = 100; // 100px = 1 metro
 
     const pared = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#fhfhfh',
         width: 200,
-        height: 15,
-        selectable: false,
+        height: 20,
+        fill: '#ffffff',
+        stroke: '#000000',
+        strokeWidth: 2,
         originX: 'center',
         originY: 'center',
     });
 
-    const textoMedida = new fabric.Text('2.00 m', {
-        fontSize: 26,
-        fill: '#000',
-        backgroundColor: 'white',
-        padding: 4,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        evented: true,
-    });
-
-    const grupo = new fabric.Group([pared, textoMedida], {
-        left: 100,
-        top: 100,
-        selectable: true,
-        lockScalingY: true,
+    const grupo = new fabric.Group([pared], {
+        left: 200,
+        top: 200,
         hasControls: true,
+        lockScalingY: true,
+        lockRotation: false,
     });
 
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
 
-    // Función para actualizar la medida de la pared
+    // Texto que indica la longitud
+    const textoMedida = new fabric.Text('', {
+        fontSize: 20,
+        fill: '#000',
+        backgroundColor: 'white',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
+    });
+
+    canvas.add(textoMedida);
+
+    // Vincular el texto a la pared
+    grupo.relatedTexts = [textoMedida];
+
     function actualizarMedida() {
-        const anchoReal = pared.width * grupo.scaleX;
-        const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metrosActualizados;
+        const anchoPx = pared.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-        // Mantener el texto sin escalar
-        textoMedida.scaleX = 1 / grupo.scaleX;
-        textoMedida.scaleY = 1 / grupo.scaleY;
+        // Posicionarlo justo encima, centrado
+        const center = grupo.getCenterPoint();
+        textoMedida.left = center.x;
+        textoMedida.top = center.y - (pared.height * grupo.scaleY) / 2 - 20;
 
-        // Posicionar el texto encima de la pared
-        textoMedida.top = pared.top - pared.height / 2 - 20; // 20px encima
-        textoMedida.left = pared.left;
+        // Mantener tamaño del texto legible
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
 
         canvas.requestRenderAll();
     }
 
-    // Escuchar eventos para actualizar la medida
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
-    grupo.on('rotating', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
 
-    // Actualizar medida al principio
     actualizarMedida();
-    canvas.renderAll();
 }
+
 
 function agregarPuerta() {
     const factorConversion = 100; // 100px = 1 metro
@@ -184,7 +193,7 @@ function agregarPuerta() {
     canvas.renderAll();
 }
 
-document.addEventListener('keydown', function (event) { 
+document.addEventListener('keydown', function (event) {
     if (event.key === 'Delete' || event.key === 'Backspace') {
         borrarObjeto();
     }
@@ -411,23 +420,23 @@ canvas.on('object:modified', function (e) {
     }
 });
 
-canvas.on('object:scaling', function(e) {
-  const obj = e.target;
+canvas.on('object:scaling', function (e) {
+    const obj = e.target;
 
-  // Si el objeto tiene una propiedad isMedida (o algo para identificarlo)
-  if (obj.isPared || obj.isPuerta) {
-    // Suponemos que el texto de medida es un objeto hijo o propiedad del objeto
-    if (obj.medidaTexto) {
-      // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
-      obj.medidaTexto.scaleX = 1 / obj.scaleX;
-      obj.medidaTexto.scaleY = 1 / obj.scaleY;
+    // Si el objeto tiene una propiedad isMedida (o algo para identificarlo)
+    if (obj.isPared || obj.isPuerta) {
+        // Suponemos que el texto de medida es un objeto hijo o propiedad del objeto
+        if (obj.medidaTexto) {
+            // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
+            obj.medidaTexto.scaleX = 1 / obj.scaleX;
+            obj.medidaTexto.scaleY = 1 / obj.scaleY;
 
-      // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
-      // obj.medidaTexto.left = ...
-      // obj.medidaTexto.top = ...
+            // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
+            // obj.medidaTexto.left = ...
+            // obj.medidaTexto.top = ...
 
-      obj.medidaTexto.setCoords(); // actualizar bounds
+            obj.medidaTexto.setCoords(); // actualizar bounds
+        }
     }
-  }
 });
 
