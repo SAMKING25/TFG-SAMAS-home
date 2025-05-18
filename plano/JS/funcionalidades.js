@@ -41,8 +41,20 @@ function agregarProducto(imagenURL, medidas) {
 
         canvas.add(img);
         canvas.setActiveObject(img);
+        img.setControlsVisibility({
+            tl: false,
+            tr: false,
+            bl: false,
+            br: false,
+            mt: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mtr: true
+        });
         canvas.renderAll();
     });
+
 }
 
 function borrarObjeto() {
@@ -69,17 +81,33 @@ function borrarObjeto() {
     }
 }
 
+// Limita los handlers visibles en selección múltiple
+fabric.ActiveSelection.prototype.controls = {
+    tl: new fabric.Control({ visible: false }),
+    tr: new fabric.Control({ visible: false }),
+    bl: new fabric.Control({ visible: false }),
+    br: new fabric.Control({ visible: false }),
+    mt: new fabric.Control({ visible: false }),
+    mb: new fabric.Control({ visible: false }),
+    ml: new fabric.Control({ visible: false }),
+    mr: new fabric.Control({ visible: false }),
+    // mtr: new fabric.Control({ visible: true }),
+};
+
 function agregarPared() {
     const factorConversion = 100; // 100px = 1 metro
 
     const pared = new fabric.Rect({
+        left: 0,
+        top: 0,
+        fill: '#fhfhfh',
         width: 200,
-        height: 20,
-        fill: '#ffffff',
+        height: 15,
         stroke: '#000000',
         strokeWidth: 2,
         originX: 'center',
         originY: 'center',
+        selectable: false
     });
 
     const grupo = new fabric.Group([pared], {
@@ -93,6 +121,18 @@ function agregarPared() {
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
 
+    grupo.setControlsVisibility({
+        tl: false,
+        tr: false,
+        bl: false,
+        br: false,
+        mt: false,
+        mb: false,
+        ml: true,
+        mr: true,
+        mtr: true
+    });
+
     // Texto que indica la longitud
     const textoMedida = new fabric.Text('', {
         fontSize: 20,
@@ -102,7 +142,8 @@ function agregarPared() {
         originY: 'center',
         selectable: false,
         evented: false,
-        excludeFromExport: true
+        excludeFromExport: true,
+        visible: medidasVisibles // <-- Añade esto
     });
 
     canvas.add(textoMedida);
@@ -115,12 +156,31 @@ function agregarPared() {
         const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
         textoMedida.text = metros;
 
-        // Posicionarlo justo encima, centrado
         const center = grupo.getCenterPoint();
-        textoMedida.left = center.x;
-        textoMedida.top = center.y - (pared.height * grupo.scaleY) / 2 - 20;
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
 
-        // Mantener tamaño del texto legible
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
+
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (pared.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (pared.height * grupo.scaleY) / 2 - offset;
+        }
+
+        textoMedida.left = textX;
+        textoMedida.top = textY;
+
         textoMedida.scaleX = 1;
         textoMedida.scaleY = 1;
 
@@ -130,10 +190,10 @@ function agregarPared() {
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
     grupo.on('moving', actualizarMedida);
+    grupo.on('rotating', actualizarMedida);
 
     actualizarMedida();
 }
-
 
 function agregarPuerta() {
     const factorConversion = 100; // 100px = 1 metro
@@ -144,53 +204,96 @@ function agregarPuerta() {
         fill: '#9c9c9c', // color marrón para distinguir
         width: 100,
         height: 15,
+        stroke: '#9c9c9c',
+        strokeWidth: 2,
         selectable: false,
         originX: 'center',
         originY: 'center',
     });
 
-    const textoMedida = new fabric.Text('0.90 m', {
-        fontSize: 20,
-        fill: '#000',
-        backgroundColor: 'white',
-        padding: 4,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        evented: false,
-    });
-
-    const grupo = new fabric.Group([puerta, textoMedida], {
+    const grupo = new fabric.Group([puerta], {
         left: 150,
         top: 150,
-        selectable: true,
-        lockScalingY: true,
         hasControls: true,
+        lockScalingY: true,
+        lockRotation: false,
+        // Oculta los handlers bloqueados
     });
 
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
 
+    grupo.setControlsVisibility({
+        tl: false,
+        tr: false,
+        bl: false,
+        br: false,
+        mt: false,
+        mb: false,
+        ml: true,
+        mr: true,
+        mtr: true
+    });
+
+    const textoMedida = new fabric.Text('', {
+        fontSize: 20,
+        fill: '#000',
+        backgroundColor: 'white',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        visible: medidasVisibles
+    });
+
+    canvas.add(textoMedida);
+
+    // Vincular el texto a la puerta
+    grupo.relatedTexts = [textoMedida];
+
     function actualizarMedida() {
-        const anchoReal = puerta.width * grupo.scaleX;
-        const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metrosActualizados;
+        const anchoPx = puerta.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-        textoMedida.scaleX = 1 / grupo.scaleX;
-        textoMedida.scaleY = 1 / grupo.scaleY;
+        const center = grupo.getCenterPoint();
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
 
-        textoMedida.top = puerta.top - puerta.height / 2 - 20;
-        textoMedida.left = puerta.left;
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
+
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (puerta.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (puerta.height * grupo.scaleY) / 2 - offset;
+        }
+
+        textoMedida.left = textX;
+        textoMedida.top = textY;
+
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
 
         canvas.requestRenderAll();
     }
 
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
     grupo.on('rotating', actualizarMedida);
 
     actualizarMedida();
-    canvas.renderAll();
 }
 
 document.addEventListener('keydown', function (event) {
@@ -216,16 +319,28 @@ function guardarCanvas() {
 }); */
 
 //Scroll de mouse para hacer zoom, pero solo si el mouse está sobre el canvas
-window.addEventListener('wheel', (event) => {
-    const productosSidebar = document.querySelector('.productos-sidebar'); // Ajusta esta clase si tiene otro nombre
-    const esEnSidebar = productosSidebar.contains(event.target);
+canvas.on('mouse:wheel', (event) => {
+    const delta = event.e.deltaY;
+    const zoom = canvas.getZoom();
+    const zoomFactor = 0.1;
+    let newZoom = zoom;
 
-    if (!esEnSidebar) {
-        event.preventDefault(); // Previene el scroll general solo si es en el canvas
-        const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
-        canvas.setZoom(canvas.getZoom() * zoomFactor);
+    if (delta < 0) {
+        // Rueda hacia adelante: acercar (zoom in)
+        newZoom = zoom + zoomFactor;
+    } else {
+        // Rueda hacia atrás: alejar (zoom out)
+        newZoom = zoom - zoomFactor;
     }
-}, { passive: false });
+
+    // Limitar el zoom a un rango razonable
+    newZoom = Math.max(0.2, Math.min(3, newZoom));
+    canvas.setZoom(newZoom);
+
+    // Prevenir el scroll de la página
+    event.e.preventDefault();
+    event.e.stopPropagation();
+});
 
 const snapThreshold = 2;
 let guiaX = null;
@@ -289,6 +404,37 @@ canvas.on('object:moving', function (e) {
 });
 
 
+// Mostrar/Ocultar medidas
+let medidasVisibles = true;
+
+function toggleMedidas() {
+    medidasVisibles = !medidasVisibles;
+    canvas.getObjects().forEach(obj => {
+        if (obj.type === 'text' && obj.excludeFromExport) {
+            obj.visible = medidasVisibles;
+        }
+        if (obj.relatedTexts) {
+            obj.relatedTexts.forEach(txt => {
+                txt.visible = medidasVisibles;
+            });
+        }
+    });
+    canvas.requestRenderAll();
+    const icon = document.getElementById('toggle-measures-icon');
+    if (icon) {
+        icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+    }
+}
+
+document.getElementById('toggle-measures').addEventListener('click', toggleMedidas);
+
+// Al cargar la página, asegúrate de que el icono sea correcto
+// document.addEventListener('DOMContentLoaded', function() {
+//     const icon = document.getElementById('toggle-measures-icon');
+//     if (icon) {
+//         icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+//     }
+// });
 
 
 canvas.on('object:modified', function () {
