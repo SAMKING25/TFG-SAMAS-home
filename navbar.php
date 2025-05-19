@@ -71,16 +71,13 @@ if (isset($_SESSION['usuario'])) {
 
                 <!-- Icons & Search (Right) -->
                 <div class="col-md-4 d-flex justify-content-end align-items-center">
-                    <div class="search-bar me-3">
-                        <!-- Added me-2 for a little spacing -->
-                        <div class="input-group">
-                            <input type="text" class="form-control form-control-sm" placeholder="Buscar..."
-                                aria-label="Search" aria-describedby="search-addon" width="400px" />
-                            <button class="btn btn-dark btn-sm" type="button" id="search-addon">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
+                   <div class="me-3" style="font-size: 1rem;">
+                        <a href="/productos?focus=1" title="Ir a productos" class="text-white">
+                            <i class="bi bi-search icono-personalizado"></i>
+                        </a>
                     </div>
+
+
                     <?php if ($tipo_sesion !== 'proveedor') { ?>
                         <a href="/carrito" class="nav-link me-3">
                             <i class="bi bi-cart2 icono-personalizado"></i>

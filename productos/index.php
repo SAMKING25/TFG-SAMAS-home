@@ -30,7 +30,7 @@ session_start();
         <!-- Buscador -->
         <form method="GET" class="row g-2 mb-4 justify-content-center">
             <div class="col-md-4">
-                <input type="text" class="form-control" name="busqueda" placeholder="Buscar por nombre"
+                <input type="text" class="form-control" name="busqueda" id="input-busqueda" placeholder="Buscar por nombre"
                     value="<?php echo isset($_GET['busqueda']) ? ($_GET['busqueda']) : ''; ?>">
             </div>
             <div class="col-auto">
@@ -121,6 +121,14 @@ session_start();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+    // Si la URL tiene ?focus=1, enfoca el input de búsqueda
+    if (new URLSearchParams(window.location.search).get('focus') === '1') {
+        const input = document.getElementById('input-busqueda');
+        if (input) input.focus();
+    }
+    </script>
 </body>
 
 </html>
