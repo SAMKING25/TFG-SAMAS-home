@@ -216,10 +216,10 @@ function agregarPuerta() {
     const puerta = new fabric.Rect({
         left: 0,
         top: 0,
-        fill: '#9c9c9c', // color marrón para distinguir
+        fill: '#6C3B2A', // color marrón para distinguir
         width: 100,
         height: 15,
-        stroke: '#9c9c9c',
+        stroke: '#6C3B2A',
         strokeWidth: 2,
         selectable: false,
         originX: 'center',
@@ -442,15 +442,15 @@ canvas.on('object:moving', function(e) {
     }
 });
 
-const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
-    stroke: '#ccc',
-    strokeDashArray: [5, 5],
-    selectable: false,
-    evented: false,
-    excludeFromExport: true
-});
-canvas.add(lineaBloqueo);
-canvas.sendToBack(lineaBloqueo);
+// const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+//     stroke: '#ccc',
+//     strokeDashArray: [5, 5],
+//     selectable: false,
+//     evented: false,
+//     excludeFromExport: true
+// });
+// canvas.add(lineaBloqueo);
+// canvas.sendToBack(lineaBloqueo);
 
 
 // Mostrar/Ocultar medidas
@@ -751,14 +751,14 @@ document.getElementById('import-json-input').addEventListener('change', function
                 crearEscalaGrafica();
 
                 // Vuelve a crear la línea de bloqueo (zona bloqueada)
-                const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
-                    stroke: '#ccc',
-                    strokeDashArray: [5, 5],
-                    selectable: false,
-                    evented: false
-                });
-                canvas.add(lineaBloqueo);
-                canvas.sendToBack(lineaBloqueo);
+                // const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+                //     stroke: '#ccc',
+                //     strokeDashArray: [5, 5],
+                //     selectable: false,
+                //     evented: false
+                // });
+                // canvas.add(lineaBloqueo);
+                // canvas.sendToBack(lineaBloqueo);
 
                 // Reaplica los handlers personalizados a cada objeto
                 canvas.getObjects().forEach(obj => {

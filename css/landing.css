@@ -12,6 +12,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Satoshi";
+  src: url("../fonts/Satoshi-Variable.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* https://www.fontsquirrel.com/fonts/web-symbols */
 @font-face {
   font-family: "WebSymbolsRegular";
@@ -27,7 +34,7 @@
 }
 
 html {
-  font-family: "TrebuchetMS" !important;
+  font-family: "Satoshi" !important;
 }
 
 body {
@@ -62,7 +69,7 @@ body {
 /* Estilos personalizados */
 .navbar {
   background-color: var(--color1);
-  font-family: "TrebuchetMS";
+  font-family: "Satoshi" !important;
 }
 
 .nav-img {
@@ -182,7 +189,6 @@ body {
   -o-border-radius: 5px;
 }
 
-/**/
 h3 {
   color: rgb(255, 255, 255);
   text-shadow: 2px 2px 4px rgb(0, 0, 0);
@@ -206,7 +212,7 @@ h3 {
   padding-top: 320px;
   color: var(--color3);
   font-weight: bold;
-  font-family: "BebasNeue";
+  font-family: "Satoshi" !important;
   text-shadow: 2px 2px 3px rgb(2, 2, 2);
   letter-spacing: 2px;
   font-size: 25px;
