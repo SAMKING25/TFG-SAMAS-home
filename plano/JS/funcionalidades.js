@@ -886,3 +886,59 @@ canvas.on('mouse:up', function() {
     canvas.selection = false;
     canvas.defaultCursor = 'grab';
 });
+
+// Guarda los valores iniciales de zoom y viewport
+const ZOOM_INICIAL = 0.6;
+const VIEWPORT_INICIAL = [1, 0, 0, 1, 0, 0];
+
+// Botón para restablecer la vista inicial
+document.getElementById('reset-view-btn').addEventListener('click', function () {
+    canvas.setZoom(ZOOM_INICIAL);
+    canvas.viewportTransform = VIEWPORT_INICIAL.slice();
+    canvas.requestRenderAll();
+});
+
+let clipboard = null;
+
+// Copiar (Ctrl+C)
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+        const activeObject = canvas.getActiveObject();
+        if (activeObject) {
+            activeObject.clone(function(cloned) {
+                clipboard = cloned;
+            });
+            e.preventDefault();
+        }
+    }
+});
+
+// Pegar (Ctrl+V)
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
+        if (clipboard) {
+            clipboard.clone(function(clonedObj) {
+                canvas.discardActiveObject();
+                clonedObj.set({
+                    left: clonedObj.left + 20,
+                    top: clonedObj.top + 20,
+                    evented: true
+                });
+                if (clonedObj.type === 'activeSelection') {
+                    // Multi-selection
+                    clonedObj.canvas = canvas;
+                    clonedObj.forEachObject(function(obj) {
+                        canvas.add(obj);
+                    });
+                    // Group to selection
+                    clonedObj.setCoords();
+                } else {
+                    canvas.add(clonedObj);
+                }
+                canvas.setActiveObject(clonedObj);
+                canvas.requestRenderAll();
+            });
+            e.preventDefault();
+        }
+    }
+});
