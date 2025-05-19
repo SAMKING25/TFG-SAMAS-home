@@ -157,8 +157,8 @@ function agregarPared() {
         originY: 'center',
         selectable: false,
         evented: false,
-        excludeFromExport: true,
-        visible: medidasVisibles // <-- Añade esto
+        excludeFromExport: false,
+        visible: medidasVisibles
     });
 
     canvas.add(textoMedida);
@@ -258,7 +258,7 @@ function agregarPuerta() {
         originY: 'center',
         selectable: false,
         evented: false,
-        excludeFromExport: true,
+        excludeFromExport: false,
         visible: medidasVisibles
     });
 
@@ -750,15 +750,19 @@ document.getElementById('import-json-input').addEventListener('change', function
                 // Vuelve a crear la escala gráfica
                 crearEscalaGrafica();
 
-                // Vuelve a crear la línea de bloqueo (zona bloqueada)
-                // const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
-                //     stroke: '#ccc',
-                //     strokeDashArray: [5, 5],
-                //     selectable: false,
-                //     evented: false
-                // });
-                // canvas.add(lineaBloqueo);
-                // canvas.sendToBack(lineaBloqueo);
+                // --- NUEVO: restaurar relatedTexts ---
+                canvas.getObjects().forEach(obj => {
+                    if (obj.relatedTexts && Array.isArray(obj.relatedTexts)) {
+                        obj.relatedTexts.forEach(txt => {
+                            // Si el texto no está ya en el canvas, añádelo
+                            if (!canvas.getObjects().includes(txt)) {
+                                canvas.add(txt);
+                            }
+                            // Asegura que la visibilidad sea la correcta
+                            txt.visible = medidasVisibles;
+                        });
+                    }
+                });
 
                 // Reaplica los handlers personalizados a cada objeto
                 canvas.getObjects().forEach(obj => {
@@ -775,6 +779,16 @@ document.getElementById('import-json-input').addEventListener('change', function
                             mr: true,
                             mtr: true
                         });
+
+                        // Ya no necesitas volver a buscar los textos, solo asegúrate de que estén en el canvas
+                        if (obj.relatedTexts) {
+                            obj.relatedTexts.forEach(txt => {
+                                txt.visible = medidasVisibles;
+                                if (!canvas.getObjects().includes(txt)) {
+                                    canvas.add(txt);
+                                }
+                            });
+                        }
                     }
                     // Productos (fabric.Image)
                     if (obj.type === 'image') {
@@ -790,7 +804,6 @@ document.getElementById('import-json-input').addEventListener('change', function
                             mtr: true
                         });
                     }
-                    // Si tienes otros tipos, añade aquí su configuración de handlers
                 });
 
                 canvas.renderAll();
