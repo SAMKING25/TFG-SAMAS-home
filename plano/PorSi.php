@@ -50,25 +50,6 @@
             width: 100%;
             height: 60vh;
         }
-
-        /* Anula el hover cuando el botón está en outline (seleccionado) */
-        #add-wall-button.btn-outline-primary:hover,
-        #add-wall-button.btn-outline-primary:focus,
-        #add-door-button.btn-outline-warning:hover,
-        #add-door-button.btn-outline-warning:focus,
-        #mouse-mode-btn.btn-outline-dark:hover,
-        #mouse-mode-btn.btn-outline-dark:focus,
-        #move-mode-btn.btn-outline-dark:hover,
-        #move-mode-btn.btn-outline-dark:focus {
-            background-color: transparent !important;
-            color: inherit !important;
-            border-color: inherit !important;
-            box-shadow: none !important;
-            filter: none !important;
-            outline: none !important;
-            transition: none !important;
-            cursor: pointer;
-        }
     </style>
     <?php
     error_reporting(E_ALL);
@@ -116,14 +97,14 @@
         <div id="canvas-container" class="p-3">
             <div class="d-flex justify-content-between mb-3">
                 <div class="d-flex text-start me-2">
-                    <!-- Botón de agregar pared -->
-                    <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
-                        style="width: 60px; height: 60px;" title="Agregar pared">
+                    <!-- Botón de pared -->
+                    <button id="add-wall-button" class="btn btn-primary rounded-circle shadow"
+                        style="width: 60px; height: 60px;">
                         <i class="bi bi-square" style="font-size: 24px;"></i>
                     </button>
-                    <!-- Botón de agregar puerta -->
-                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2" onclick="agregarPuerta()"
-                        style="width: 60px; height: 60px;" title="Agregar puerta">
+                    <!-- Botón de puerta -->
+                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2"
+                        style="width: 60px; height: 60px;">
                         <i class="bi bi-door-open" style="font-size: 24px;"></i>
                     </button>
                     <!-- Botón de modo ratón -->
