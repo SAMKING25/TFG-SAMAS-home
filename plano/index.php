@@ -136,6 +136,11 @@
                         style="width: 60px; height: 60px;" title="Modo mover">
                         <i class="bi bi-arrows-move" id="move-mode-icon"></i>
                     </button>
+                    <!-- Botón de reset de vista -->
+                    <button id="reset-view-btn" class="btn btn-secondary rounded-circle shadow ms-2"
+                        style="width: 60px; height: 60px;" title="Vista inicial">
+                        <i class="bi bi-aspect-ratio" style="font-size: 24px;"></i>
+                    </button>
                     <!-- Mostrar/Ocultar medidas -->
                     <button id="toggle-measures" class="btn btn-secondary rounded-circle shadow ms-2"
                         style="width: 60px; height: 60px;" title="Ocultar/Mostrar medidas">
