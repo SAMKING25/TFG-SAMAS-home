@@ -181,7 +181,7 @@
 									</div>
 									<div>
 										<h6 class="mb-0">Teléfono</h6>
-										<p class="mb-0">+34 .../../../..</p>
+										<p class="mb-0">+34 699 99 99 99</p>
 									</div>
 								</div>
 
@@ -195,13 +195,6 @@
 									</div>
 								</div>
 
-								<div class="social-links">
-									<h6 class="mb-3">Síguenos</h6>
-									<a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-									<a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-									<a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-									<a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-								</div>
 							</div>
 						</div>
 
