@@ -74,7 +74,7 @@
 
     ?>
     <!-- Contenedor principal -->
-    <div class="d-flex">
+    <div class="d-flex productos-sidebar">
         <!-- Sidebar de productos -->
         <div id="sidebar" class="p-3">
             <h5>Productos</h5>
@@ -104,6 +104,11 @@
                     <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2" onclick="agregarPuerta()"
                         style="width: 60px; height: 60px;">
                         <i class="bi bi-door-open" style="font-size: 24px;"></i>
+                    </button>
+                    <!-- Mostrar/Ocultar medidas -->
+                    <button id="toggle-measures" class="btn btn-secondary rounded-circle shadow ms-2"
+                        style="width: 60px; height: 60px;" title="Ocultar/Mostrar medidas">
+                        <i id="toggle-measures-icon" class="bi bi-eye"></i>
                     </button>
                 </div>
 

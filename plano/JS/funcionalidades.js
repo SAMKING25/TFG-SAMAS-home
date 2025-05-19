@@ -2,6 +2,8 @@ const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
 });
 
+crearEscalaGrafica();
+
 // Hacer que el canvas ocupe todo el contenedor
 canvas.setWidth(window.innerWidth - 400); // 400px del sidebar
 canvas.setHeight(window.innerHeight - 230);
@@ -14,7 +16,7 @@ window.addEventListener('resize', () => {
 
 function agregarProducto(imagenURL, medidas) {
     medidas = JSON.parse(medidas);
-    
+
     const anchoPx = medidas.ancho;
     const altoPx = medidas.largo;
 
@@ -39,29 +41,58 @@ function agregarProducto(imagenURL, medidas) {
 
         canvas.add(img);
         canvas.setActiveObject(img);
+        img.setControlsVisibility({
+            tl: false,
+            tr: false,
+            bl: false,
+            br: false,
+            mt: false,
+            mb: false,
+            ml: false,
+            mr: false,
+            mtr: true
+        });
         canvas.renderAll();
     });
+
 }
 
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
     if (activeObject) {
-        // if (confirm('¿Estás seguro de que quieres eliminar el(los) objeto(s) seleccionado(s)?')) {
-            if (activeObject.type === 'activeSelection') {
-                activeObject.forEachObject(function (obj) {
-                    canvas.remove(obj);
-                });
-                canvas.discardActiveObject();
-            } else {
-                canvas.remove(activeObject);
+        if (activeObject.type === 'activeSelection') {
+            activeObject.forEachObject(function (obj) {
+                canvas.remove(obj);
+                if (obj.relatedTexts) {
+                    obj.relatedTexts.forEach(txt => canvas.remove(txt));
+                }
+            });
+            canvas.discardActiveObject();
+        } else {
+            if (activeObject.relatedTexts) {
+                activeObject.relatedTexts.forEach(txt => canvas.remove(txt));
             }
-            canvas.requestRenderAll();
-        // }
+            canvas.remove(activeObject);
+        }
+        canvas.requestRenderAll();
     } else {
         alert('No hay ningún objeto seleccionado.');
     }
 }
+
+// Limita los handlers visibles en selección múltiple
+fabric.ActiveSelection.prototype.controls = {
+    tl: new fabric.Control({ visible: false }),
+    tr: new fabric.Control({ visible: false }),
+    bl: new fabric.Control({ visible: false }),
+    br: new fabric.Control({ visible: false }),
+    mt: new fabric.Control({ visible: false }),
+    mb: new fabric.Control({ visible: false }),
+    ml: new fabric.Control({ visible: false }),
+    mr: new fabric.Control({ visible: false }),
+    // mtr: new fabric.Control({ visible: true }),
+};
 
 function agregarPared() {
     const factorConversion = 100; // 100px = 1 metro
@@ -69,61 +100,99 @@ function agregarPared() {
     const pared = new fabric.Rect({
         left: 0,
         top: 0,
-        fill: '#403f3f',
+        fill: '#fhfhfh',
         width: 200,
-        height: 22,
-        selectable: false,
+        height: 15,
+        stroke: '#000000',
+        strokeWidth: 2,
         originX: 'center',
         originY: 'center',
+        selectable: false
     });
 
-    const textoMedida = new fabric.Text('2.00 m', {
-        fontSize: 26,
-        fill: '#000',
-        backgroundColor: 'white',
-        padding: 4,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        evented: false,
-    });
-
-    const grupo = new fabric.Group([pared, textoMedida], {
-        left: 100,
-        top: 100,
-        selectable: true,
-        lockScalingY: true,
+    const grupo = new fabric.Group([pared], {
+        left: 200,
+        top: 200,
         hasControls: true,
+        lockScalingY: true,
+        lockRotation: false,
     });
 
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
 
-    // Función para actualizar la medida de la pared
+    grupo.setControlsVisibility({
+        tl: false,
+        tr: false,
+        bl: false,
+        br: false,
+        mt: false,
+        mb: false,
+        ml: true,
+        mr: true,
+        mtr: true
+    });
+
+    // Texto que indica la longitud
+    const textoMedida = new fabric.Text('', {
+        fontSize: 20,
+        fill: '#000',
+        backgroundColor: 'white',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        visible: medidasVisibles // <-- Añade esto
+    });
+
+    canvas.add(textoMedida);
+
+    // Vincular el texto a la pared
+    grupo.relatedTexts = [textoMedida];
+
     function actualizarMedida() {
-        const anchoReal = pared.width * grupo.scaleX;
-        const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metrosActualizados;
+        const anchoPx = pared.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-        // Mantener el texto sin escalar
-        textoMedida.scaleX = 1 / grupo.scaleX;
-        textoMedida.scaleY = 1 / grupo.scaleY;
+        const center = grupo.getCenterPoint();
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
 
-        // Posicionar el texto encima de la pared
-        textoMedida.top = pared.top - pared.height / 2 - 20; // 20px encima
-        textoMedida.left = pared.left;
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
+
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (pared.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (pared.height * grupo.scaleY) / 2 - offset;
+        }
+
+        textoMedida.left = textX;
+        textoMedida.top = textY;
+
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
 
         canvas.requestRenderAll();
     }
 
-    // Escuchar eventos para actualizar la medida
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
     grupo.on('rotating', actualizarMedida);
 
-    // Actualizar medida al principio
     actualizarMedida();
-    canvas.renderAll();
 }
 
 function agregarPuerta() {
@@ -132,59 +201,102 @@ function agregarPuerta() {
     const puerta = new fabric.Rect({
         left: 0,
         top: 0,
-        fill: '#8b5a2b', // color marrón para distinguir
-        width: 90,
-        height: 22,
+        fill: '#9c9c9c', // color marrón para distinguir
+        width: 100,
+        height: 15,
+        stroke: '#9c9c9c',
+        strokeWidth: 2,
         selectable: false,
         originX: 'center',
         originY: 'center',
     });
 
-    const textoMedida = new fabric.Text('0.90 m', {
-        fontSize: 20,
-        fill: '#000',
-        backgroundColor: 'white',
-        padding: 4,
-        originX: 'center',
-        originY: 'center',
-        selectable: false,
-        evented: false,
-    });
-
-    const grupo = new fabric.Group([puerta, textoMedida], {
+    const grupo = new fabric.Group([puerta], {
         left: 150,
         top: 150,
-        selectable: true,
-        lockScalingY: true,
         hasControls: true,
+        lockScalingY: true,
+        lockRotation: false,
+        // Oculta los handlers bloqueados
     });
 
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
 
+    grupo.setControlsVisibility({
+        tl: false,
+        tr: false,
+        bl: false,
+        br: false,
+        mt: false,
+        mb: false,
+        ml: true,
+        mr: true,
+        mtr: true
+    });
+
+    const textoMedida = new fabric.Text('', {
+        fontSize: 20,
+        fill: '#000',
+        backgroundColor: 'white',
+        originX: 'center',
+        originY: 'center',
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        visible: medidasVisibles
+    });
+
+    canvas.add(textoMedida);
+
+    // Vincular el texto a la puerta
+    grupo.relatedTexts = [textoMedida];
+
     function actualizarMedida() {
-        const anchoReal = puerta.width * grupo.scaleX;
-        const metrosActualizados = (anchoReal / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metrosActualizados;
+        const anchoPx = puerta.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-        textoMedida.scaleX = 1 / grupo.scaleX;
-        textoMedida.scaleY = 1 / grupo.scaleY;
+        const center = grupo.getCenterPoint();
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
 
-        textoMedida.top = puerta.top - puerta.height / 2 - 20;
-        textoMedida.left = puerta.left;
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
+
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (puerta.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (puerta.height * grupo.scaleY) / 2 - offset;
+        }
+
+        textoMedida.left = textX;
+        textoMedida.top = textY;
+
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
 
         canvas.requestRenderAll();
     }
 
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
     grupo.on('rotating', actualizarMedida);
 
     actualizarMedida();
-    canvas.renderAll();
 }
 
-document.addEventListener('keydown', function (event) { 
+document.addEventListener('keydown', function (event) {
     if (event.key === 'Delete' || event.key === 'Backspace') {
         borrarObjeto();
     }
@@ -200,87 +312,129 @@ function guardarCanvas() {
     link.click();
 }
 
-window.addEventListener('wheel', (event) => {
+//Scroll del mouse para hacer zoom
+/* window.addEventListener('wheel', (event) => {
     const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
     canvas.setZoom(canvas.getZoom() * zoomFactor);
-});
+}); */
 
-let aligningLine;
+//Scroll de mouse para hacer zoom, pero solo si el mouse está sobre el canvas
+canvas.on('mouse:wheel', (event) => {
+    const delta = event.e.deltaY;
+    const zoom = canvas.getZoom();
+    const zoomFactor = 0.1;
+    let newZoom = zoom;
 
-function drawAligningLine(coords, orientation = 'vertical') {
-    if (aligningLine) {
-        canvas.remove(aligningLine);
+    if (delta < 0) {
+        // Rueda hacia adelante: acercar (zoom in)
+        newZoom = zoom + zoomFactor;
+    } else {
+        // Rueda hacia atrás: alejar (zoom out)
+        newZoom = zoom - zoomFactor;
     }
 
-    aligningLine = new fabric.Line(coords, {
-        stroke: 'red',
-        strokeWidth: 1,
-        selectable: false,
-        evented: false,
-        excludeFromExport: true,
-    });
+    // Limitar el zoom a un rango razonable
+    newZoom = Math.max(0.2, Math.min(3, newZoom));
+    canvas.setZoom(newZoom);
 
-    canvas.add(aligningLine);
-    canvas.renderAll();
-}
+    // Prevenir el scroll de la página
+    event.e.preventDefault();
+    event.e.stopPropagation();
+});
 
+const snapThreshold = 2;
 let guiaX = null;
 let guiaY = null;
 
 canvas.on('object:moving', function (e) {
     const movingObj = e.target;
-    const center = movingObj.getCenterPoint();
-    const snapThreshold = 10;
+    const a = movingObj.getBoundingRect();
 
-    // Eliminar guías anteriores si existen
-    if (guiaX) {
-        canvas.remove(guiaX);
-        guiaX = null;
-    }
-    if (guiaY) {
-        canvas.remove(guiaY);
-        guiaY = null;
-    }
+    // Eliminar guías anteriores
+    if (guiaX) canvas.remove(guiaX);
+    if (guiaY) canvas.remove(guiaY);
+    guiaX = guiaY = null;
 
     let snappedX = false;
     let snappedY = false;
 
-    canvas.getObjects().forEach(obj => {
+    const objetosAConsiderar = canvas.getObjects().filter(obj => !obj.excludeFromAlign);
+
+    objetosAConsiderar.forEach(obj => {
         if (obj === movingObj) return;
 
-        const otherCenter = obj.getCenterPoint();
+        const b = obj.getBoundingRect();
 
-        // Alinear centro horizontal
-        if (!snappedX && Math.abs(center.x - otherCenter.x) < snapThreshold) {
-            movingObj.left += otherCenter.x - center.x;
-            guiaX = new fabric.Line([otherCenter.x, 0, otherCenter.x, canvas.height], {
-                stroke: 'red',
-                strokeWidth: 1,
-                selectable: false,
-                evented: false,
-                excludeFromExport: true
-            });
-            canvas.add(guiaX);
-            snappedX = true;
+        // BORDES HORIZONTALES
+        if (!snappedX) {
+            if (Math.abs(a.left - b.left) < snapThreshold) {
+                movingObj.left += b.left - a.left;
+                drawVerticalGuide(b.left);
+                snappedX = true;
+            } else if (Math.abs(a.left + a.width - (b.left + b.width)) < snapThreshold) {
+                movingObj.left += (b.left + b.width) - (a.left + a.width);
+                drawVerticalGuide(b.left + b.width);
+                snappedX = true;
+            } else if (Math.abs(a.left + a.width / 2 - (b.left + b.width / 2)) < snapThreshold) {
+                movingObj.left += (b.left + b.width / 2) - (a.left + a.width / 2);
+                drawVerticalGuide(b.left + b.width / 2);
+                snappedX = true;
+            }
         }
 
-        // Alinear centro vertical
-        if (!snappedY && Math.abs(center.y - otherCenter.y) < snapThreshold) {
-            movingObj.top += otherCenter.y - center.y;
-            guiaY = new fabric.Line([0, otherCenter.y, canvas.width, otherCenter.y], {
-                stroke: 'red',
-                strokeWidth: 1,
-                selectable: false,
-                evented: false,
-                excludeFromExport: true
-            });
-            canvas.add(guiaY);
-            snappedY = true;
+        // BORDES VERTICALES
+        if (!snappedY) {
+            if (Math.abs(a.top - b.top) < snapThreshold) {
+                movingObj.top += b.top - a.top;
+                drawHorizontalGuide(b.top);
+                snappedY = true;
+            } else if (Math.abs(a.top + a.height - (b.top + b.height)) < snapThreshold) {
+                movingObj.top += (b.top + b.height) - (a.top + a.height);
+                drawHorizontalGuide(b.top + b.height);
+                snappedY = true;
+            } else if (Math.abs(a.top + a.height / 2 - (b.top + b.height / 2)) < snapThreshold) {
+                movingObj.top += (b.top + b.height / 2) - (a.top + a.height / 2);
+                drawHorizontalGuide(b.top + b.height / 2);
+                snappedY = true;
+            }
         }
     });
 
-    canvas.renderAll();
+    canvas.requestRenderAll();
 });
+
+
+// Mostrar/Ocultar medidas
+let medidasVisibles = true;
+
+function toggleMedidas() {
+    medidasVisibles = !medidasVisibles;
+    canvas.getObjects().forEach(obj => {
+        if (obj.type === 'text' && obj.excludeFromExport) {
+            obj.visible = medidasVisibles;
+        }
+        if (obj.relatedTexts) {
+            obj.relatedTexts.forEach(txt => {
+                txt.visible = medidasVisibles;
+            });
+        }
+    });
+    canvas.requestRenderAll();
+    const icon = document.getElementById('toggle-measures-icon');
+    if (icon) {
+        icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+    }
+}
+
+document.getElementById('toggle-measures').addEventListener('click', toggleMedidas);
+
+// Al cargar la página, asegúrate de que el icono sea correcto
+// document.addEventListener('DOMContentLoaded', function() {
+//     const icon = document.getElementById('toggle-measures-icon');
+//     if (icon) {
+//         icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+//     }
+// });
 
 
 canvas.on('object:modified', function () {
@@ -294,6 +448,95 @@ canvas.on('object:modified', function () {
     }
     canvas.renderAll();
 });
+
+// Funciones auxiliares para dibujar guías
+function drawVerticalGuide(x) {
+    guiaX = new fabric.Line([x, 0, x, canvas.getHeight()], {
+        stroke: 'red',
+        strokeWidth: 1,
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
+    });
+    canvas.add(guiaX);
+}
+
+function drawHorizontalGuide(y) {
+    guiaY = new fabric.Line([0, y, canvas.getWidth(), y], {
+        stroke: 'red',
+        strokeWidth: 1,
+        selectable: false,
+        evented: false,
+        excludeFromExport: true
+    });
+    canvas.add(guiaY);
+}
+
+const factorConversion = 100; // 100 px = 1 metro
+
+const escalaTexto = new fabric.Text(`Escala: ${factorConversion} px = 1 m`, {
+    left: 20,
+    top: 20,
+    fontSize: 18,
+    fill: '#333',
+    backgroundColor: '#fff',
+    padding: 6,
+    excludeFromAlign: true,
+    selectable: false,
+    evented: false
+});
+canvas.add(escalaTexto);
+
+function crearEscalaGrafica() {
+    const factorConversion = 100; // 100 px = 1 m
+    const metros = 2; // longitud total de la regla en metros
+
+    // Línea base
+    const linea = new fabric.Line([0, 0, metros * factorConversion, 0], {
+        left: 20,
+        top: 60,
+        stroke: 'black',
+        strokeWidth: 2,
+        selectable: false,
+        evented: false,
+    });
+
+    const marcas = [];
+    for (let i = 0; i <= metros; i++) {
+        // Marca vertical
+        const marca = new fabric.Line([0, -5, 0, 5], {
+            left: 20 + i * factorConversion,
+            top: 60,
+            stroke: 'black',
+            strokeWidth: 2,
+            selectable: false,
+            evented: false,
+        });
+
+        // Texto de la marca
+        const texto = new fabric.Text(`${i} m`, {
+            left: 20 + i * factorConversion,
+            top: 70,
+            fontSize: 14,
+            originX: 'center',
+            selectable: false,
+            evented: false,
+        });
+
+        marcas.push(marca, texto);
+    }
+
+    // Agrupar todo
+    const grupoEscala = new fabric.Group([linea, ...marcas], {
+        excludeFromAlign: true,
+        selectable: false,
+        evented: false,
+        left: 20,
+        top: 50,
+    });
+
+    canvas.add(grupoEscala);
+}
 
 canvas.on('object:modified', function (e) {
     const obj = e.target;
@@ -322,3 +565,24 @@ canvas.on('object:modified', function (e) {
         guiaY = null;
     }
 });
+
+canvas.on('object:scaling', function (e) {
+    const obj = e.target;
+
+    // Si el objeto tiene una propiedad isMedida (o algo para identificarlo)
+    if (obj.isPared || obj.isPuerta) {
+        // Suponemos que el texto de medida es un objeto hijo o propiedad del objeto
+        if (obj.medidaTexto) {
+            // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
+            obj.medidaTexto.scaleX = 1 / obj.scaleX;
+            obj.medidaTexto.scaleY = 1 / obj.scaleY;
+
+            // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
+            // obj.medidaTexto.left = ...
+            // obj.medidaTexto.top = ...
+
+            obj.medidaTexto.setCoords(); // actualizar bounds
+        }
+    }
+});
+
