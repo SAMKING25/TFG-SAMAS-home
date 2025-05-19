@@ -53,6 +53,7 @@
         $descripcion_actual = $datos_actuales["descripcion"];
         $medidas = json_decode($datos_actuales["medidas"], true);
         $img_actual = $datos_actuales["img_producto"];
+        $oferta_actual = $datos_actuales["id_oferta"];
     }
 
     $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
@@ -83,6 +84,7 @@
         $nuevo_largo = depurar($_POST["largo"]);
         $nuevo_ancho = depurar($_POST["ancho"]);
         $nuevo_alto = depurar($_POST["alto"]);
+        $nueva_oferta = depurar($_POST["oferta"]);
 
         $nuevo_nombre_imagen = $_FILES["img_producto"]["name"];
         $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
@@ -216,7 +218,7 @@
         }
 
         if ($nuevo_nombre_imagen == "") {
-            $err_foto_proveedor = "La img es obligatoria";
+            $err_foto_proveedor = "La imagen es obligatoria";
         } else {
             if (strlen($nuevo_nombre_imagen) > 60) {
                 $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
@@ -226,6 +228,14 @@
                 $sql = "UPDATE productos SET img_producto = '$img_actual' WHERE id_producto = $id_producto";
                 $_conexion->query($sql);
             }
+        }
+
+        if ($nueva_oferta === "") {
+            $err_oferta = "La oferta no existe";
+        } else {
+            $sql = "UPDATE productos SET id_oferta = $nueva_oferta WHERE id_producto = $id_producto";
+            $_conexion->query($sql);
+            $oferta_actual = $nueva_oferta;
         }
     }
 
@@ -326,12 +336,25 @@
                                 <div class="col-md-6">
                                     <label class="form-label">Oferta</label>
                                     <select class="form-select" name="oferta">
-                                        <option selected value="null">No tiene oferta</option>
+                                        <option selected value="<?php echo $oferta_actual ?>">
+                                            <?php if ($oferta_actual === null) {
+                                                    echo "Sin oferta";
+                                                } else {
+                                                    foreach ($ofertas as $oferta) {
+                                                        if ($oferta['id_oferta'] == $oferta_actual) {
+                                                            echo $oferta['nombre'];
+                                                        }
+                                                    }
+                                                }
+                                            ?>
+                                        </option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
-                                            <option value="<?php echo $oferta['id_oferta']; ?>">
-                                                <?php echo $oferta['nombre']; ?>
-                                            </option>
+                                            <?php if ($oferta['id_oferta'] != $oferta_actual) { ?>
+                                                    <option value="<?php echo $oferta['id_oferta']; ?>">
+                                                        <?php echo $oferta['nombre']; ?>
+                                                    </option>
+                                            <?php } ?>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_oferta))
