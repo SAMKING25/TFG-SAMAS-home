@@ -91,62 +91,75 @@
         </div>
 
         <?php if ($resultado->num_rows > 0): ?>
-        <div class="row g-3">
-            <?php while ($fila = $resultado->fetch_assoc()): ?>
-            <?php 
-            $medidas = json_decode($fila["medidas"], true)
-            ?>
-            <div class="col-12 col-md-6 col-xxl-4">
-                <div class="card h-100 shadow-sm">
-                    <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
-                        class="text-decoration-none">
-                        <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
-                        style="height: 260px; object-fit: cover;" alt="Imagen del producto">
-                    </a>
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">
-                            <?php echo $fila["nombre"]; ?>
-                        </h5>
-                        <p class="card-text text-muted">
-                            <?php echo $fila["descripcion"]; ?>
-                        </p>
-                        <ul class="list-unstyled mb-3">
-                            <li><strong>Id:</strong>
-                                <?php echo $fila["id_producto"]; ?>
-                            </li>
-                            <li><strong>Precio:</strong>
-                                <?php echo $fila["precio"]; ?>€
-                            </li>
-                            <li><strong>Categoría:</strong>
-                                <?php echo $fila["categoria"]; ?>
-                            </li>
-                            <li><strong>Stock:</strong>
-                                <?php echo $fila["stock"]; ?>
-                            </li>
-                            <li><strong>Medidas:</strong>
-                                <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
-                            </li>
-                            <li><strong>Oferta:</strong>
-                                <?php echo $fila["id_oferta"] ?>
-                            </li>
-                        </ul>
-                        <div class="mt-auto d-flex justify-content-between">
-                            <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
+            <div class="row g-3">
+                <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <?php
+                    $medidas = json_decode($fila["medidas"], true)
+                    ?>
+                    <div class="col-12 col-md-6 col-xxl-4">
+                        <div class="card h-100 shadow-sm">
+                            <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
+                                class="text-decoration-none">
+                                <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
+                                    style="height: 260px; object-fit: cover;" alt="Imagen del producto">
+                            </a>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">
+                                    <?php echo $fila["nombre"]; ?>
+                                </h5>
+                                <p class="card-text text-muted">
+                                    <?php echo $fila["descripcion"]; ?>
+                                </p>
+                                <ul class="list-unstyled mb-3">
+                                    <li><strong>Id:</strong>
+                                        <?php echo $fila["id_producto"]; ?>
+                                    </li>
+                                    <li><strong>Precio:</strong>
+                                        <?php echo $fila["precio"]; ?>€
+                                    </li>
+                                    <li><strong>Categoría:</strong>
+                                        <?php echo $fila["categoria"]; ?>
+                                    </li>
+                                    <li><strong>Stock:</strong>
+                                        <?php echo $fila["stock"]; ?>
+                                    </li>
+                                    <li><strong>Medidas:</strong>
+                                        <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
+                                    </li>
+                                    <li><strong>Oferta:</strong>
+                                        <?php
+                                        if (!empty($fila['id_oferta'])) {
+                                            $sql_oferta = "SELECT id_oferta, nombre FROM ofertas WHERE id_oferta = {$fila['id_oferta']} ORDER BY id_oferta";
+                                            $resultado_oferta = $_conexion->query($sql_oferta);
+                                            if ($resultado_oferta && $resultado_oferta->num_rows > 0) {
+                                                $oferta = $resultado_oferta->fetch_assoc();
+                                                echo $oferta["nombre"];
+                                            } else {
+                                                echo "Sin oferta";
+                                            }
+                                        } else {
+                                            echo "Sin oferta";
+                                        }
+                                        ?>
+                                    </li>
+                                </ul>
+                                <div class="mt-auto d-flex justify-content-between">
+                                    <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
                                 btn-outline-primary ">Editar</a>
-                            <form method="POST" class="d-inline">
-                                <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
-                                <button type="submit" class="btn btn-outline-danger">Borrar</button>
-                            </form>
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
+                                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                <?php endwhile; ?>
             </div>
-            <?php endwhile; ?>
-        </div>
         <?php else: ?>
-        <div class="alert alert-warning text-center" role="alert">
-            No se encontraron productos con ese criterio.
-        </div>
+            <div class="alert alert-warning text-center" role="alert">
+                No se encontraron productos con ese criterio.
+            </div>
         <?php endif; ?>
     </div>
 
