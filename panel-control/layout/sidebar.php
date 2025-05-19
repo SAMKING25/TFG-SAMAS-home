@@ -35,14 +35,14 @@
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a href="<?php echo BASE_URL; ?>index.php"
-                    class="nav-link <?php echo (strpos($current_url, '/panel-control/') !== false) ? 'active' : 'link-dark'; ?>">
+                    class="nav-link <?php echo ($current_url === BASE_URL) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-house-door me-2"></i>
                     Inicio
                 </a>
             </li>
             <li>
                 <a href="<?php echo BASE_URL; ?>productos/"
-                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/') !== false) ? 'active' : 'link-dark'; ?>">
+                    class="nav-link <?php echo (strpos($current_url, '/panel-control/productos/') !== false && strpos($current_url, '/panel-control/productos/nuevo_producto') === false) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-archive me-2"></i>
                     Gestión de productos
                 </a>
@@ -57,7 +57,7 @@
             <li>
                 <a href="/util/funciones/cerrar_sesion.php" class="nav-link link-dark">
                     <i class="bi bi-box-arrow-right me-2"></i>
-                    Salir
+                    Cerrar sesión
                 </a>
             </li>
         </ul>
