@@ -16,21 +16,16 @@ window.addEventListener('resize', () => {
     canvas.setHeight(window.innerHeight - 230);
 });
 
-function agregarProducto(imagenURL, medidas) {
+function agregarProductoEn(imagenURL, medidas, x, y) {
     medidas = JSON.parse(medidas);
-
     const anchoPx = medidas.ancho;
     const altoPx = medidas.largo;
-
     fabric.Image.fromURL(imagenURL, function (img) {
-        // Escala para que la imagen tenga el tamaño en px correspondiente a las medidas
         const scaleX = anchoPx / img.width;
         const scaleY = altoPx / img.height;
-
         img.set({
-            left: 50,
-            // Asegura que la imagen se cree justo debajo de la zona bloqueada
-            top: Math.max(zonaBloqueadaAltura + 10, 50),
+            left: x,
+            top: y,
             scaleX: scaleX,
             scaleY: scaleY,
             hasControls: true,
@@ -41,19 +36,11 @@ function agregarProducto(imagenURL, medidas) {
             lockScalingFlip: true,
             lockRotation: false,
         });
-
         canvas.add(img);
         canvas.setActiveObject(img);
         img.setControlsVisibility({
-            tl: false,
-            tr: false,
-            bl: false,
-            br: false,
-            mt: false,
-            mb: false,
-            ml: false,
-            mr: false,
-            mtr: true
+            tl: false, tr: false, bl: false, br: false,
+            mt: false, mb: false, ml: false, mr: false, mtr: true
         });
         canvas.renderAll();
     });
@@ -109,43 +96,51 @@ fabric.ActiveSelection.prototype.controls = {
     // mtr: new fabric.Control({ visible: true }),
 };
 
-function agregarPared() {
-    const factorConversion = 100; // 100px = 1 metro
+let herramientaActiva = null; // 'pared', 'puerta', 'producto', null
+let productoActivo = null;    // Guarda el producto seleccionado si es un producto
 
+function limpiarSeleccionHerramientas() {
+    // Pared
+    const wallBtn = document.getElementById('add-wall-button');
+    wallBtn.classList.add('btn-primary');
+    wallBtn.classList.remove('btn-outline-primary');
+
+    // Puerta
+    const doorBtn = document.getElementById('add-door-button');
+    doorBtn.classList.add('btn-warning');
+    doorBtn.classList.remove('btn-outline-warning');
+
+    // Ratón
+    const mouseBtn = document.getElementById('mouse-mode-btn');
+    mouseBtn.classList.add('btn-dark');
+    mouseBtn.classList.remove('btn-outline-dark');
+
+    // Mover
+    const moveBtn = document.getElementById('move-mode-btn');
+    moveBtn.classList.add('btn-dark');
+    moveBtn.classList.remove('btn-outline-dark');
+
+    // Productos
+    document.querySelectorAll('#productos .list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+}
+
+function agregarParedEn(x, y) {
+    // Usa tu función agregarPared, pero añade left:x, top:y al grupo
+    const factorConversion = 100;
     const pared = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#fhfhfh',
-        width: 200,
-        height: 15,
-        stroke: '#000000',
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-        selectable: false
+        left: 0, top: 0, fill: '#fhfhfh', width: 200, height: 15,
+        stroke: '#000000', strokeWidth: 2, originX: 'center', originY: 'center', selectable: false
     });
-
     const grupo = new fabric.Group([pared], {
-        left: 200,
-        top: 200,
-        hasControls: true,
-        lockScalingY: true,
-        lockRotation: false,
+        left: x, top: y, hasControls: true, lockScalingY: true, lockRotation: false,
     });
-
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
-
     grupo.setControlsVisibility({
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-        mt: false,
-        mb: false,
-        ml: true,
-        mr: true,
-        mtr: true
+        tl: false, tr: false, bl: false, br: false,
+        mt: false, mb: false, ml: true, mr: true, mtr: true
     });
 
     // Texto que indica la longitud
@@ -210,44 +205,21 @@ function agregarPared() {
     actualizarMedida();
 }
 
-function agregarPuerta() {
-    const factorConversion = 100; // 100px = 1 metro
-
+function agregarPuertaEn(x, y) {
+    // Igual que agregarPuerta, pero con left:x, top:y
+    const factorConversion = 100;
     const puerta = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#6C3B2A', // color marrón para distinguir
-        width: 100,
-        height: 15,
-        stroke: '#6C3B2A',
-        strokeWidth: 2,
-        selectable: false,
-        originX: 'center',
-        originY: 'center',
+        left: 0, top: 0, fill: '#9c9c9c', width: 100, height: 15,
+        stroke: '#9c9c9c', strokeWidth: 2, selectable: false, originX: 'center', originY: 'center',
     });
-
     const grupo = new fabric.Group([puerta], {
-        left: 150,
-        top: 150,
-        hasControls: true,
-        lockScalingY: true,
-        lockRotation: false,
-        // Oculta los handlers bloqueados
+        left: x, top: y, hasControls: true, lockScalingY: true, lockRotation: false,
     });
-
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
-
     grupo.setControlsVisibility({
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-        mt: false,
-        mb: false,
-        ml: true,
-        mr: true,
-        mtr: true
+        tl: false, tr: false, bl: false, br: false,
+        mt: false, mb: false, ml: true, mr: true, mtr: true
     });
 
     const textoMedida = new fabric.Text('', {
@@ -442,15 +414,15 @@ canvas.on('object:moving', function(e) {
     }
 });
 
-// const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
-//     stroke: '#ccc',
-//     strokeDashArray: [5, 5],
-//     selectable: false,
-//     evented: false,
-//     excludeFromExport: true
-// });
-// canvas.add(lineaBloqueo);
-// canvas.sendToBack(lineaBloqueo);
+const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+    stroke: '#ccc',
+    strokeDashArray: [5, 5],
+    selectable: false,
+    evented: false,
+    excludeFromExport: true
+});
+canvas.add(lineaBloqueo);
+canvas.sendToBack(lineaBloqueo);
 
 
 // Mostrar/Ocultar medidas
@@ -751,14 +723,14 @@ document.getElementById('import-json-input').addEventListener('change', function
                 crearEscalaGrafica();
 
                 // Vuelve a crear la línea de bloqueo (zona bloqueada)
-                // const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
-                //     stroke: '#ccc',
-                //     strokeDashArray: [5, 5],
-                //     selectable: false,
-                //     evented: false
-                // });
-                // canvas.add(lineaBloqueo);
-                // canvas.sendToBack(lineaBloqueo);
+                const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+                    stroke: '#ccc',
+                    strokeDashArray: [5, 5],
+                    selectable: false,
+                    evented: false
+                });
+                canvas.add(lineaBloqueo);
+                canvas.sendToBack(lineaBloqueo);
 
                 // Reaplica los handlers personalizados a cada objeto
                 canvas.getObjects().forEach(obj => {
@@ -802,44 +774,92 @@ document.getElementById('import-json-input').addEventListener('change', function
     reader.readAsText(file);
 });
 
+// Botón de pared
+document.getElementById('add-wall-button').addEventListener('click', function () {
+    limpiarSeleccionHerramientas();
+    this.classList.remove('btn-primary');
+    this.classList.add('btn-outline-primary');
+    herramientaActiva = 'pared';
+    productoActivo = null;
+});
+
+// Botón de puerta
+document.getElementById('add-door-button').addEventListener('click', function () {
+    limpiarSeleccionHerramientas();
+    this.classList.remove('btn-warning');
+    this.classList.add('btn-outline-warning');
+    herramientaActiva = 'puerta';
+    productoActivo = null;
+});
+
+// Productos (delegación de eventos)
+document.querySelectorAll('#productos .list-group-item').forEach(item => {
+    item.addEventListener('click', function (e) {
+        limpiarSeleccionHerramientas();
+        this.classList.add('active');
+        herramientaActiva = 'producto';
+        // Guarda los datos del producto activo
+        productoActivo = {
+            imagenURL: this.querySelector('img').src,
+            medidas: this.getAttribute('onclick').match(/\(([^)]+)\)/)[1].split(',').slice(1).join(',').trim()
+        };
+        e.stopPropagation();
+    });
+});
+
 let moveMode = false;
 let lastPan = { x: 0, y: 0 };
 
 // Inicialmente, modo ratón activo
-document.getElementById('mouse-mode-btn').classList.remove('btn-dark');
-document.getElementById('mouse-mode-btn').classList.add('btn-outline-dark');
-document.getElementById('move-mode-btn').classList.remove('btn-outline-dark');
-document.getElementById('move-mode-btn').classList.add('btn-dark');
+document.getElementById('mouse-mode-btn').classList.add('btn-dark');
+document.getElementById('move-mode-btn').classList.add('btn-outline-dark');
 canvas.defaultCursor = 'default';
 canvas.selection = true;
 canvas.skipTargetFind = false;
 
-// Cambia a modo ratón
+// Botón de modo ratón
 document.getElementById('mouse-mode-btn').addEventListener('click', function () {
     moveMode = false;
+    limpiarSeleccionHerramientas();
     this.classList.remove('btn-dark');
     this.classList.add('btn-outline-dark');
-    document.getElementById('move-mode-btn').classList.remove('btn-outline-dark');
-    document.getElementById('move-mode-btn').classList.add('btn-dark');
     canvas.defaultCursor = 'default';
     canvas.selection = true;
     canvas.skipTargetFind = false;
     canvas.discardActiveObject();
     canvas.requestRenderAll();
+    herramientaActiva = null;
+    productoActivo = null;
 });
 
-// Cambia a modo mover
+// Botón de modo mover
 document.getElementById('move-mode-btn').addEventListener('click', function () {
     moveMode = true;
+    limpiarSeleccionHerramientas();
     this.classList.remove('btn-dark');
     this.classList.add('btn-outline-dark');
-    document.getElementById('mouse-mode-btn').classList.remove('btn-outline-dark');
-    document.getElementById('mouse-mode-btn').classList.add('btn-dark');
     canvas.defaultCursor = 'grab';
     canvas.selection = false;
     canvas.skipTargetFind = true;
     canvas.discardActiveObject();
     canvas.requestRenderAll();
+    herramientaActiva = null;
+    productoActivo = null;
+});
+
+// Al hacer click en el canvas, añade la figura seleccionada en la posición del click
+canvas.on('mouse:down', function(opt) {
+    if (herramientaActiva === 'pared') {
+        const pointer = canvas.getPointer(opt.e);
+        agregarParedEn(pointer.x, pointer.y);
+    } else if (herramientaActiva === 'puerta') {
+        const pointer = canvas.getPointer(opt.e);
+        agregarPuertaEn(pointer.x, pointer.y);
+    } else if (herramientaActiva === 'producto' && productoActivo) {
+        const pointer = canvas.getPointer(opt.e);
+        agregarProductoEn(productoActivo.imagenURL, productoActivo.medidas, pointer.x, pointer.y);
+    }
+    // Si está en modo mover, sigue funcionando el pan como antes
 });
 
 // Pan con el ratón cuando el modo mover está activo
@@ -885,60 +905,4 @@ canvas.on('mouse:up', function() {
     canvas.isDragging = false;
     canvas.selection = false;
     canvas.defaultCursor = 'grab';
-});
-
-// Guarda los valores iniciales de zoom y viewport
-const ZOOM_INICIAL = 0.6;
-const VIEWPORT_INICIAL = [1, 0, 0, 1, 0, 0];
-
-// Botón para restablecer la vista inicial
-document.getElementById('reset-view-btn').addEventListener('click', function () {
-    canvas.setZoom(ZOOM_INICIAL);
-    canvas.viewportTransform = VIEWPORT_INICIAL.slice();
-    canvas.requestRenderAll();
-});
-
-let clipboard = null;
-
-// Copiar (Ctrl+C)
-document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            activeObject.clone(function(cloned) {
-                clipboard = cloned;
-            });
-            e.preventDefault();
-        }
-    }
-});
-
-// Pegar (Ctrl+V)
-document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
-        if (clipboard) {
-            clipboard.clone(function(clonedObj) {
-                canvas.discardActiveObject();
-                clonedObj.set({
-                    left: clonedObj.left + 20,
-                    top: clonedObj.top + 20,
-                    evented: true
-                });
-                if (clonedObj.type === 'activeSelection') {
-                    // Multi-selection
-                    clonedObj.canvas = canvas;
-                    clonedObj.forEachObject(function(obj) {
-                        canvas.add(obj);
-                    });
-                    // Group to selection
-                    clonedObj.setCoords();
-                } else {
-                    canvas.add(clonedObj);
-                }
-                canvas.setActiveObject(clonedObj);
-                canvas.requestRenderAll();
-            });
-            e.preventDefault();
-        }
-    }
 });

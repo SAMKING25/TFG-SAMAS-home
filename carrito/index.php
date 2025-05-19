@@ -1,202 +1,138 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../util/conexion.php');
+session_start();
+
+if (!isset($_SESSION["usuario"])) {
+    header("Location: /login/usuario/iniciar_sesion_usuario.php");
+    exit;
+}
+
+$id_usuario = $_SESSION["usuario"];
+
+// Obtener productos del carrito agrupados por producto
+$sql = "SELECT c.id_producto, SUM(c.cantidad) AS cantidad_total, p.nombre, p.precio, p.img_producto, o.porcentaje
+        FROM carrito c
+        INNER JOIN productos p ON c.id_producto = p.id_producto
+        LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
+        WHERE c.id_usuario = ?
+        GROUP BY c.id_producto";
+
+$stmt = $_conexion->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$resultado = $stmt->get_result();
+
+$productos = [];
+$total = 0;
+
+while ($fila = $resultado->fetch_assoc()) {
+    $cantidad = $fila["cantidad_total"];
+    $precio = $fila["precio"];
+    $porcentaje = $fila["porcentaje"];
+
+    if (!is_null($porcentaje)) {
+        $precio_final = $precio * (1 - $porcentaje / 100);
+    } else {
+        $precio_final = $precio;
+    }
+
+    $subtotal = $precio_final * $cantidad;
+    $total += $subtotal;
+
+    $productos[] = [
+        "nombre" => $fila["nombre"],
+        "cantidad" => $cantidad,
+        "img" => $fila["img_producto"],
+        "precio" => $precio,
+        "porcentaje" => $porcentaje,
+        "precio_final" => $precio_final,
+        "subtotal" => $subtotal
+    ];
+}
+?>
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carrito</title>
-    <!-- Bootstrap CSS -->
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-	<link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
-	<!-- Archivo CSS personalizado -->
-	<link rel="stylesheet" href="/css/landing.css" />
-	<!--search-->
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-    <style>
-        @media (min-width: 1025px) {
-            .h-custom {
-                height: 100vh !important;
-            }
-        }
-
-        .card-registration .select-input.form-control[readonly]:not([disabled]) {
-            font-size: 1rem;
-            line-height: 2.15;
-            padding-left: .75em;
-            padding-right: .75em;
-        }
-
-        .card-registration .select-arrow {
-            top: 13px;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <title>Mi Carrito</title>
+    <link rel="stylesheet" href="/css/landing.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 </head>
 
-<body>
-    <?php include("../navbar.php"); ?>
-    <section class="h-100 h-custom" style="background-color: #F7E5CB">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-12">
-                    <div class="card card-registration card-registration-2" style="border-radius: 15px;">
-                        <div class="card-body p-0">
+<body style="background-color: #f4e5cc;">
+    <?php include('../navbar.php'); ?>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Productos a la izquierda -->
+            <div class="col-md-7">
+                <h2 class="mb-4">Mi Carrito</h2>
+                <?php if (empty($productos)): ?>
+                    <p>Tu carrito está vacío.</p>
+                <?php else: ?>
+                    <?php foreach ($productos as $producto): ?>
+                        <div class="card mb-3 shadow-sm">
                             <div class="row g-0">
-                                <div class="col-lg-8">
-                                    <div class="p-5">
-                                        <div class="d-flex justify-content-between align-items-center mb-5">
-                                            <h1 class="fw-bold mb-0">Carrito</h1>
-                                            <h6 class="mb-0 text-muted">X artículos</h6>
-                                        </div>
-                                        <hr class="my-4">
-
-                                        <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img5.webp"
-                                                    class="img-fluid rounded-3" alt="Cotton T-shirt">
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                                <h6 class="text-muted">Categoría</h6>
-                                                <h6 class="mb-0">Nombre</h6>
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-
-                                                <input id="form1" min="0" name="quantity" value="1" type="number"
-                                                    class="form-control form-control-sm" />
-
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                <h6 class="mb-0">44.00€</h6>
-                                            </div>
-                                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
-                                            </div>
-                                        </div>
-
-                                        <hr class="my-4">
-
-                                        <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img6.webp"
-                                                    class="img-fluid rounded-3" alt="Cotton T-shirt">
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                                <h6 class="text-muted">Categoría</h6>
-                                                <h6 class="mb-0">Nombre</h6>
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-
-                                                <input id="form1" min="0" name="quantity" value="1" type="number"
-                                                    class="form-control form-control-sm" />
-
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                <h6 class="mb-0">44.00€</h6>
-                                            </div>
-                                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
-                                            </div>
-                                        </div>
-
-                                        <hr class="my-4">
-
-                                        <div class="row mb-4 d-flex justify-content-between align-items-center">
-                                            <div class="col-md-2 col-lg-2 col-xl-2">
-                                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img7.webp"
-                                                    class="img-fluid rounded-3" alt="Cotton T-shirt">
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-3">
-                                                <h6 class="text-muted">Categoría</h6>
-                                                <h6 class="mb-0">Nombre</h6>
-                                            </div>
-                                            <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepDown()">
-                                                    <i class="fas fa-minus"></i>
-                                                </button>
-
-                                                <input id="form1" min="0" name="quantity" value="1" type="number"
-                                                    class="form-control form-control-sm" />
-
-                                                <button data-mdb-button-init data-mdb-ripple-init
-                                                    class="btn btn-link px-2"
-                                                    onclick="this.parentNode.querySelector('input[type=number]').stepUp()">
-                                                    <i class="fas fa-plus"></i>
-                                                </button>
-                                            </div>
-                                            <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
-                                                <h6 class="mb-0">44.00€</h6>
-                                            </div>
-                                            <div class="col-md-1 col-lg-1 col-xl-1 text-end">
-                                                <a href="#!" class="text-muted"><i class="fas fa-times"></i></a>
-                                            </div>
-                                        </div>
-
-                                        <hr class="my-4">
-                                    </div>
+                                <div class="col-md-4 text-center p-3">
+                                    <img src="/img/productos/<?php echo $producto["img"]; ?>" class="img-fluid rounded" style="max-height: 150px; object-fit: contain;">
                                 </div>
-                                <div class="col-lg-4 bg-body-tertiary">
-                                    <div class="p-5">
-                                        <h3 class="fw-bold mb-5 mt-2 pt-1">Resumén del pedido</h3>
-                                        <hr class="my-4">
-
-                                        <div class="d-flex justify-content-between mb-4">
-                                            <h5 class="text-uppercase">Artículos X</h5>
-                                            <h5>132.00€</h5>
-                                        </div>
-
-                                        <h5 class="text-uppercase mb-3">Código de descuento</h5>
-
-                                        <div class="mb-5">
-                                            <div data-mdb-input-init class="form-outline">
-                                                <input type="text" id="form3Examplea2"
-                                                    class="form-control form-control-lg" />
-                                                <label class="form-label" for="form3Examplea2">Introduce tu código</label>
-                                            </div>
-                                        </div>
-
-                                        <hr class="my-4">
-
-                                        <div class="d-flex justify-content-between mb-5">
-                                            <h5 class="text-uppercase">Total</h5>
-                                            <h5>137.00€</h5>
-                                        </div>
-
-                                        <a href="../pasarela-pago" data-mdb-button-init data-mdb-ripple-init
-                                            class="btn btn-dark btn-block btn-lg"
-                                            data-mdb-ripple-color="dark">Ir a pago</a>
-
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title fw-bold"><?php echo $producto["nombre"]; ?></h5>
+                                        <p class="card-text mb-1">Cantidad: <?php echo $producto["cantidad"]; ?></p>
+                                        <?php if (!is_null($producto["porcentaje"])): ?>
+                                            <p class="card-text text-danger mb-1">
+                                                Descuento del <?php echo $producto["porcentaje"]; ?>%
+                                            </p>
+                                            <p class="card-text">
+                                                <span class="text-muted text-decoration-line-through me-2"><?php echo number_format($producto["precio"], 2, ',', '.'); ?> €</span>
+                                                <span class="text-success fw-semibold"><?php echo number_format($producto["precio_final"], 2, ',', '.'); ?> €</span>
+                                            </p>
+                                        <?php else: ?>
+                                            <p class="card-text text-success fw-semibold">
+                                                <?php echo number_format($producto["precio"], 2, ',', '.'); ?> €
+                                            </p>
+                                        <?php endif; ?>
+                                        <p class="card-text"><strong>Subtotal:</strong> <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- Resumen y pago a la derecha -->
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Resumen del pedido</h4>
+                        <p class="card-text">Cantidad de productos: <strong><?php echo array_sum(array_column($productos, "cantidad")); ?></strong></p>
+                        <p class="card-text fs-5">Total: <span class="fw-bold text-success"><?php echo number_format($total, 2, ',', '.'); ?> €</span></p>
+
+                        <hr>
+                        <form action="#" method="post">
+                            <div class="mb-3">
+                                <label for="codigo_descuento" class="form-label">Código de descuento</label>
+                                <input type="text" class="form-control" name="codigo_descuento" id="codigo_descuento" placeholder="Introduce tu código">
+                            </div>
+                            <button type="submit" class="btn btn-outline-primary">Aplicar código</button>
+                        </form>
+
+                        <hr>
+                        <button class="btn btn-success w-100 mt-3">Finalizar compra</button>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    </div>
+
 </body>
 
 </html>
