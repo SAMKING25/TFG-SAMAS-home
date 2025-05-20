@@ -91,8 +91,6 @@ INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"arma
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Verano', 20);
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Invierno', 30);
 
-INSERT INTO proveedores(email_proveedor,nombre_proveedor,contrasena_proveedor,img_proveedor) VALUES ("proveedor@gmail.com","proveedor","Proveedor123","");
-
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario", 433.00, "Armarios", 7, "Armario con medidas adecuadas.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.webp", 1);
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Cama Moderna", 325.00, "Colchones", 11, "Cama viscoelástica.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "cama.jpg");
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Cama Vintage", 340.00, "Colchones", 5, "Cama viscoelástica retro.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "colchones.jpg", 2);
