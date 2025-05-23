@@ -106,13 +106,28 @@
             }
 
             if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
-                $sql = "INSERT INTO usuarios (email_usuario, nombre_usuario, contrasena_usuario, id_suscripcion, img_usuario) 
-                        VALUES ('$email_usuario','$nombre_usuario','$contrasena_usuario_cifrada',$id_suscripcion,'$img_usuario')";
-                $_conexion->query($sql);
-                header("location: iniciar_sesion_usuario.php");
+                // Generar código de verificación
+                $codigo_verificacion = rand(100000, 999999);
+
+                // Guardar datos temporales en sesión
+                session_start();
+                $_SESSION['registro_email'] = $email_usuario;
+                $_SESSION['registro_nombre'] = $nombre_usuario;
+                $_SESSION['registro_contrasena'] = $contrasena_usuario_cifrada;
+                $_SESSION['registro_id_suscripcion'] = $id_suscripcion;
+                $_SESSION['registro_img_usuario'] = $img_usuario;
+                $_SESSION['registro_codigo'] = $codigo_verificacion;
+
+                // Enviar email con el código
+                $asunto = "Código de verificación SAMAS home";
+                $mensaje = "Tu código de verificación es: $codigo_verificacion";
+                $cabeceras = "From: no-reply@samas-home.com\r\n";
+                mail($email_usuario, $asunto, $mensaje, $cabeceras);
+
+                // Redirigir a la página de verificación
+                header("Location: verificar_codigo");
                 exit;
             }
-            
         } 
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
