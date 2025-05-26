@@ -1,342 +1,204 @@
+/* Fuentes */
 @font-face {
   font-family: "TrebuchetMS";
   src: url("../fonts/TrebuchetMS.ttf");
-  font-weight: normal;
-  font-style: normal;
 }
-
 @font-face {
   font-family: "BebasNeue";
   src: url("../fonts/BebasNeue.otf");
-  font-weight: normal;
-  font-style: normal;
 }
-
-/* https://www.fontsquirrel.com/fonts/web-symbols */
 @font-face {
   font-family: "WebSymbolsRegular";
   src: url("../fonts/websymbols-regular-webfont.eot");
-  src: url("../fonts/websymbols-regular-webfont.eot?#iefix")
-      format("embedded-opentype"),
-    url("../fonts/websymbols-regular-webfont.woff") format("woff"),
-    url("../fonts/websymbols-regular-webfont.ttf") format("truetype"),
-    url("../fonts/websymbols-regular-webfont.svg#WebSymbolsRegular")
-      format("svg");
-  font-weight: normal;
-  font-style: normal;
+  src: url("../fonts/websymbols-regular-webfont.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/websymbols-regular-webfont.woff") format("woff"),
+       url("../fonts/websymbols-regular-webfont.ttf") format("truetype"),
+       url("../fonts/websymbols-regular-webfont.svg#WebSymbolsRegular") format("svg");
 }
 
-html {
-  font-family: "TrebuchetMS" !important;
-}
-
-body {
-  background-color: rgb(247, 229, 203);
-}
-
-/* Iniciamos estilos personalizados  */
-/* Definición Variables, definimos familia de fuente que voy a utilizar */
+/* Variables */
 :root {
-  --mx-width: 1500px;
-  --mx-width-tablet: 1024px;
-  --mx-width-movil: 600px;
-  --color-primary: #37bcf9;
-  --color-secondary: #fff;
-  --color-background: #ccc;
-  --color-bg: black;
-  --color-text-white: white;
-  --color-text-title: #00538c;
-  --color-grey: gray;
-  --color-box-shadow: #ddd;
-  --color-box-shadow2: #393d3f;
-  --color-focus: #555;
-  /*Colores propios*/
-  --color1: #381d12;
-  --color1-2: #381d12;
-  --color2: #5d3720;
-  --color3: #8d5d33;
-  --color4: #c8904a;
-  --color5: #ffd368;
+  --max-width: 1500px;
+  --max-width-tablet: 1024px;
+  --max-width-mobile: 600px;
+
+  --color-primary: #007acc;
+  --color-secondary: #ffffff;
+  --color-accent: #ffb74d;
+  --color-dark: #2e1a12;
+  --color-medium: #5d3720;
+  --color-light: #8d5d33;
+  --color-highlight: #ffd368;
+
+  --color-bg: #f4f4f4;
+  --color-navbar: #3b2418;
+  --color-text: #333;
+  --color-title: #00538c;
+  --color-shadow: rgba(0, 0, 0, 0.1);
 }
 
-/* Estilos personalizados */
+html, body {
+  font-family: "TrebuchetMS", sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
 .navbar {
-  background-color: var(--color1);
-  font-family: "TrebuchetMS" !important;
-}
-
-.nav-img {
-  width: 200px;
-  height: 250px;
+  background-color: var(--color-navbar);
+  padding: 10px 20px;
 }
 
 .navbar-brand {
-  display: grid;
-  transition: all 200ms;
+  color: var(--color-highlight);
+  font-family: "BebasNeue", sans-serif;
+  text-shadow: 2px 2px 3px #000;
   transition: transform 0.3s ease;
-  transform-origin: center;
-  text-shadow: 2px 2px 3px rgb(2, 2, 2);
-  color: var(--color3);
 }
 
 .navbar-brand:hover {
-  transform: translateX(0px) scale(1.3);
-  color: var(--color2);
-}
-
-.nav-bar {
-  display: grid;
-  grid-template-columns: 7fr 1fr;
+  transform: scale(1.2);
+  color: var(--color-light);
 }
 
 .nav-link {
-  /* position */
-  color: white !important;
-  position: relative;
-  line-height: 6rem;
-  font-weight: 500;
-  text-shadow: 2px 2px 3px rgb(2, 2, 2);
-  /* efecto */
-  transition: all 300ms ease-in-out;
+  color: var(--color-secondary) !important;
+  text-shadow: 1px 1px 2px #000;
+  transition: transform 0.3s ease, color 0.3s ease;
 }
 
 .nav-link:hover {
-  color: var(--color3);
   transform: scale(1.1);
-}
-
-.separar {
-  display: grid;
-  grid-template-columns: 1fr 5fr;
-}
-
-.subraya {
-  margin-top: 1px;
+  color: var(--color-accent);
 }
 
 .subraya::before {
   content: "";
   position: absolute;
-  height: 0.2rem;
-  background-color: var(--color3);
-  bottom: 2.2rem;
-  left: 0px;
+  bottom: 2rem;
+  left: 0;
   width: 0%;
-  opacity: 0;
-  transition: all 350ms linear;
+  height: 2px;
+  background-color: var(--color-accent);
+  transition: width 0.3s ease;
 }
 
 .subraya:hover::before {
   width: 100%;
-  opacity: 1;
 }
 
-.nav-link:hover {
-  transform: scale(1.1);
-}
-
-.bar-icons {
-  font-size: 20px;
-  margin-top: 5px;
-}
-
-.search-bar {
-  width: 400px;
-  margin: auto auto;
-}
-
-.search-bar .input-group {
-  border-radius: 30px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.search-bar .form-control {
-  border: none;
-  padding-left: 20px;
-}
-
-.search-bar .btn {
-  border: none;
-  padding: 10px 20px;
-}
-/*Iconos*/
-.icono-personalizado {
-  color: white;
-  font-size: 6rem; /* Opcional: ajustar tamaño */
-  margin-left: 10px;
-}
-
-/*Carrusel imagenes*/
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-  background-color: black;
-}
-.small-image {
-  width: 350px !important;
-  height: 250px !important;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-}
-
-h3 {
-  color: rgb(255, 255, 255);
-  text-shadow: 2px 2px 4px rgb(0, 0, 0);
-}
-
+/* Banner */
 .index-section {
   background-image: url("../img/productos/portada-samas.png");
   background-size: cover;
-  background-position: 50%;
-  padding: 50px 0;
-  text-align: center;
-  padding: 0;
-  margin-bottom: 20px;
-  /* Espacio entre la imagen y el contenido siguiente */
-  width: 100%;
+  background-position: center;
   height: 87vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .section-banner {
-  padding: 170px;
-  padding-top: 320px;
-  color: var(--color3);
-  font-weight: bold;
-  font-family: "BebasNeue" !important;
-  text-shadow: 2px 2px 3px rgb(2, 2, 2);
-  letter-spacing: 2px;
-  font-size: 25px;
-  width: 100%;
-  height: 150px;
+  font-family: "BebasNeue", sans-serif;
+  font-size: 2rem;
   text-align: center;
+  color: var(--color-accent);
+  text-shadow: 2px 2px 3px #000;
 }
 
 .banner-subtext {
-  color: #ce9c6e;
+  color: var(--color-light);
 }
 
-.banner-btn {
-  background-color: #33210f;
+/* Carrusel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: #000;
 }
 
-.bi {
-  font-size: 20px;
-}
-
+/* Cards */
 .product-card {
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px var(--color-shadow);
   border-radius: 10px;
+  overflow: hidden;
 }
+
 .card-img-top {
   height: 200px;
   object-fit: cover;
 }
 
+/* Footer */
 footer {
-  background-color: var(--color1);
-  color: #fff;
-  padding: 20px 0;
+  background-color: var(--color-navbar);
+  color: var(--color-secondary);
   text-align: center;
-  font-family: "Arial";
+  padding: 20px 0;
 }
 
 .footer-link {
-  display: grid;
-  line-height: 2rem;
-  font-weight: 500;
+  color: var(--color-secondary);
   text-decoration: none;
   transition: transform 0.3s ease;
-  transform-origin: left center;
-  color: white;
-  position: relative;
 }
 
 .footer-link:hover {
-  transform: translateX(-20px) scale(1.2);
-  background: linear-gradient(360deg, white, var(--color4));
-  background-size: 200%;
-  background-clip: text;
+  transform: translateX(-10px) scale(1.1);
+  background: linear-gradient(360deg, white, var(--color-light));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: simpleGradient 2s ease infinite;
-}
-
-@keyframes simpleGradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
-  }
 }
 
 .footer-title {
-  font-size: large;
-  color: var(--color3);
-  text-shadow: 2px 2px 3px rgb(2, 2, 2);
+  color: var(--color-accent);
+  font-family: "BebasNeue", sans-serif;
+  text-shadow: 1px 1px 2px #000;
 }
 
-.card-img-top {
-  height: 200px;
-  object-fit: cover;
-}
-
-.card-btn {
-  display: flex;
-  justify-content: flex-end;
-  justify-content: right;
-}
-
-/*Categorias*/
-@import url("https://fonts.googleapis.com/css?family=Muli&display=swap");
-
+/* Categorías */
 .containerr {
   display: flex;
   width: 90vw;
+  flex-wrap: wrap;
 }
 
 .panel {
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 45vh;
-  border-radius: 50px;
-  color: #fff;
-  cursor: pointer;
   flex: 0.5;
-  margin: 10px;
+  height: 45vh;
+  border-radius: 20px;
+  background-position: center;
+  background-size: cover;
+  transition: all 0.5s ease-in-out;
   position: relative;
-  transition: all 700ms ease-in;
-}
-
-.panel h3 {
-  font-size: 24px;
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  margin: 0;
-  opacity: 0;
+  color: white;
+  margin: 10px;
 }
 
 .panel.active {
   flex: 5;
 }
 
+.panel h3 {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease-in 0.4s;
+}
+
 .panel.active h3 {
   opacity: 1;
-  transition: opacity 0.3s ease-in 0.4s;
 }
 
 @media (max-width: 480px) {
   .containerr {
     width: 100vw;
+    flex-direction: column;
   }
 
-  .panel:nth-of-type(4),
-  .panel:nth-of-type(5) {
+  .panel:nth-of-type(n+4) {
     display: none;
   }
 }
