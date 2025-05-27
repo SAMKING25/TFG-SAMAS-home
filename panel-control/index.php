@@ -15,7 +15,7 @@
     require('../util/conexion.php');
 
     session_start();
-    if (!isset($_SESSION["proveedor"])) { 
+    if (!isset($_SESSION["proveedor"])) {
         header("location: ../login/usuario/iniciar_sesion_usuario.php");
         exit;
     }
@@ -23,6 +23,12 @@
     <style>
         body {
             background-color: #F7E5CB;
+        }
+
+        .card-img-top {
+            height: 350px;
+            object-fit: cover;
+            width: 100%;
         }
     </style>
 </head>
@@ -43,33 +49,32 @@
     $resultado = $_conexion->query($sql);
     ?>
 
-    <div class="container-fluid py-5" style="margin-left: 280px;">
+    <div class="container-fluid py-5">
         <h1 class="text-center mb-4">Mis productos</h1>
-
         <div class="cards row">
             <?php
             while ($fila = $resultado->fetch_assoc()) { ?>
 
-            <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-4">
-                <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
-                    class="text-decoration-none">
-                    <div class="card h-100 shadow-sm">
-                        <img src="../img/productos/<?php echo $fila['img_producto']; ?>" class="card-img-top"
-                            alt="<?php echo $fila['nombre']; ?>">
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <?php echo $fila['nombre']; ?>
-                            </h5>
-                            <p class="card-text">
-                                <?php echo $fila['descripcion']; ?>
-                            </p>
-                            <p class="card-text"><strong>
-                                    <?php echo number_format($fila['precio'], 2); ?>€
-                                </strong></p>
+                <div class="col-12 col-md-6 col-lg-4 col-xl-4 col-xxl-3 mb-4">
+                    <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
+                        class="text-decoration-none">
+                        <div class="card h-100 shadow-sm">
+                            <img src="../img/productos/<?php echo $fila['img_producto']; ?>" class="card-img-top"
+                                alt="<?php echo $fila['nombre']; ?>">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <?php echo $fila['nombre']; ?>
+                                </h5>
+                                <p class="card-text">
+                                    <?php echo $fila['descripcion']; ?>
+                                </p>
+                                <p class="card-text"><strong>
+                                        <?php echo number_format($fila['precio'], 2); ?>€
+                                    </strong></p>
+                            </div>
                         </div>
-                    </div>
-                </a>
-            </div>
+                    </a>
+                </div>
             <?php } ?>
 
         </div>

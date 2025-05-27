@@ -25,8 +25,8 @@
 ?>
 
 <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar"
-        style="width: 280px; position: fixed; top: 0; left: 0; height: 100vh; overflow-y: auto;">
+    <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar offcanvas offcanvas-start"  id="offcanvasExample"
+        style="width: 280px;overflow-y: auto;">
         <a href="/index.php" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
             <img src="/img/logos/logo-negro-nobg.png" class="w-50" alt="SAMAS home">
             <span class="fs-4">SAMAS home</span>
