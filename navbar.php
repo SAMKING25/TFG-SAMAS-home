@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <?php
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
@@ -26,6 +27,23 @@ if (isset($_SESSION['usuario'])) {
 }
 ?>
 
+<style>
+    .dropdown-menu {
+        background-color: #fff !important;
+        color: #000 !important;
+    }
+
+    .dropdown-menu .dropdown-item {
+        color: #000 !important;
+    }
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #f1f1f1 !important;
+        color: #000 !important;
+    }
+
+</style>
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top">
     <div class="container-fluid">
@@ -36,10 +54,11 @@ if (isset($_SESSION['usuario'])) {
         </a>
 
         <!-- Botón hamburguesa para responsive -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <i class="fas fa-bars fa-lg"></i>
         </button>
+
 
         <!-- Menú centrado -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
