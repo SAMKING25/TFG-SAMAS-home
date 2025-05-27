@@ -13,15 +13,18 @@ define('FUNCIONES', '/util/funciones/')
 
 ?>
 
-<header class="p-3 text-white row" style="background-color:#381D12;">
+<header class="p-3 text-white row align-items-center" style="background-color:#381D12;">
   <div class="col-2 col-sm-2  col-lg-1 d-flex align-items-center justify-content-center">
     <a class="btn btn-outline-light col-10" data-bs-toggle="offcanvas" href="#offcanvasExample" aria-controls="offcanvasExample">
       <i class="bi bi-list"></i>
     </a>
   </div>
-  <div class="col-4 col-sm-5 col-lg-8 h4">
-    Panel de control
-  </div>
+  <a href="/" class="text-decoration-none col-4 col-sm-5 col-lg-8 h4 align-items-center d-flex">
+    <div class="d-flex align-items-center">
+      <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
+      <span>Panel de control</span>
+    </div>
+  </a>
   <div class="dropdown text-end col-6 col-sm-5 col-lg-3 justify-content-center">
     <a href="#" class=" align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
