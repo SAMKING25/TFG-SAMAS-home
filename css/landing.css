@@ -59,10 +59,10 @@ html, body {
 
 /* Navbar */
 .navbar {
-  /*background-color: var(--color-navbar);
-  */padding: 6px 16px;
-  min-height: 48px;
-  height: 48px;
+  /*background-color: var(--color-navbar);*/
+  padding: 6px 16px;
+  min-height: 60px;
+  height: 60px;
   transition: background 0.8s ease-in-out, box-shadow 0.8s ease-in-out;
 }
 
