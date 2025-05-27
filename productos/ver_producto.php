@@ -71,6 +71,36 @@ if ($hayOferta) {
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        .img-fija {
+            width: 550px !important;
+            height: 450px !important;
+            object-fit: fill !important;
+            display: block;
+        }
+
+        .img-similar {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+            background-color: #f8f8f8;
+            padding: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .img-similar-wrapper {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+    </style>
 </head>
 
 <body>
@@ -90,7 +120,7 @@ if ($hayOferta) {
         <div class="container py-5">
             <div class="row g-5 align-items-center">
                 <div class="col-md-6 position-relative">
-                    <img src="../../img/productos/<?php echo $producto["img_producto"]; ?>"
+                    <img class="img-fija" src="../../img/productos/<?php echo $producto["img_producto"]; ?>"
                         class="img-fluid rounded shadow"
                         style="object-fit: contain; max-height: 500px; background-color: #f9f9f9; padding: 20px;">
 
@@ -146,6 +176,68 @@ if ($hayOferta) {
         </div>
     </div>
 </body>
+<!-- Productos similares -->
+<div class="container mt-5">
+    <h3 class="mb-4">Productos similares</h3>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+        <?php
+        $categoria = $producto["categoria"];
+        $id_actual = $producto["id_producto"];
+
+        $sql_similares = "SELECT p.*, o.porcentaje 
+                          FROM productos p 
+                          LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta 
+                          WHERE p.categoria = ? AND p.id_producto != ?";
+
+        $stmt_similares = $_conexion->prepare($sql_similares);
+        $stmt_similares->bind_param("si", $categoria, $id_actual);
+        $stmt_similares->execute();
+        $result_similares = $stmt_similares->get_result();
+
+        while ($sim = $result_similares->fetch_assoc()):
+            $hayOfertaSim = !is_null($sim["porcentaje"]);
+            $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
+        ?>
+            <div class="col">
+                <a href="ver_producto.php?id_producto=<?php echo $sim["id_producto"]; ?>" class="text-decoration-none text-dark">
+                    <div class="card h-100 shadow-sm border-0 rounded-4 position-relative">
+                        <?php if ($hayOfertaSim): ?>
+                            <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
+                                -<?php echo $sim["porcentaje"]; ?>%
+                            </span>
+                        <?php endif; ?>
+
+                        <div class="img-similar-wrapper">
+                            <img src="../../img/productos/<?php echo $sim["img_producto"]; ?>"
+                                class="img-similar"
+                                alt="Producto similar">
+                        </div>
+
+
+                        <div class="card-body text-center">
+                            <h6 class="card-title fw-bold mb-2"><?php echo $sim["nombre"]; ?></h6>
+                            <div class="card-text fs-6">
+                                <?php if ($hayOfertaSim): ?>
+                                    <span class="text-muted text-decoration-line-through me-2">
+                                        <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
+                                    </span>
+                                    <span class="text-success fw-semibold">
+                                        <?php echo number_format($precioFinalSim, 2, ',', '.'); ?> €
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-success fw-semibold">
+                                        <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        <?php endwhile; ?>
+        <?php $stmt_similares->close(); ?>
+    </div>
+</div>
 
 </html>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
