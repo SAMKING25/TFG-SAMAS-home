@@ -48,7 +48,7 @@
 		}
 
 		body {
-			background-color: #f7e5cb;
+			background-color: #f4f4f4;
 		}
 
 		.contact-item:hover {
