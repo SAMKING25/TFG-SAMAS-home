@@ -19,13 +19,23 @@ session_start();
     <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
     <link rel="stylesheet" href="/css/landing.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+
+    <style>
+        .img-fija {
+            width: 450px !important;
+            height: 350px !important;
+            object-fit: fill !important;
+            display: block;
+        }
+    </style>
+
 </head>
 
 <body>
     <?php include('../navbar.php'); ?>
 
     <div class="container">
-        <h1 class="text-center mb-4">Productos</h1>
+        <h1 class="text-center mt-4 mb-4">Productos</h1>
 
         <!-- Buscador -->
         <form method="GET" class="row g-2 mb-4 justify-content-center">
@@ -79,7 +89,7 @@ session_start();
                                     </span>
                                 <?php endif; ?>
 
-                                <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
+                                <img class="img-fluid img-fija" src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
                                     class="card-img-top img-fluid"
                                     style="object-fit: contain; height: 300px; background-color: #f8f8f8; padding: 10px;"
                                     alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
@@ -121,13 +131,13 @@ session_start();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-    // Si la URL tiene ?focus=1, enfoca el input de búsqueda
-    if (new URLSearchParams(window.location.search).get('focus') === '1') {
-        const input = document.getElementById('input-busqueda');
-        if (input) input.focus();
-    }
+        // Si la URL tiene ?focus=1, enfoca el input de búsqueda
+        if (new URLSearchParams(window.location.search).get('focus') === '1') {
+            const input = document.getElementById('input-busqueda');
+            if (input) input.focus();
+        }
     </script>
 </body>
 

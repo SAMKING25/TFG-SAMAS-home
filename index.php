@@ -64,9 +64,9 @@
 														echo 'active';
 														$primero = false;
 													} ?>">
-							<img src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
-								alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
-								style="object-fit: cover; height: 100%; width: 100%;">
+							<a href="./productos/ver_producto.php?id_producto= <?php echo $producto["id_producto"]; ?>"><img src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
+									alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
+									style="object-fit: cover; height: 100%; width: 100%;"></a>
 							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
 								<h5 class="fs-2">
 									<?php echo htmlspecialchars($producto['nombre']); ?>
