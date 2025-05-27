@@ -238,6 +238,7 @@ if ($hayOferta) {
     </div>
     <?php include('../cookies.php'); ?>
     <?php include('../footer.php'); ?>
+    <?php include('../udify-bot.php'); ?>
 </body>
 
 </html>
