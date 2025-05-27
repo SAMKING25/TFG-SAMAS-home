@@ -5,20 +5,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>paypal</title>
-
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+	<link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
+  <link rel="stylesheet" href="../css/landing.css" />
   <script src="https://www.paypal.com/sdk/js?client-id=AZiNIbkuxCM_s2y_iYwPg7V4zhQKzZbSJhN_y0P7_Pl5hDT7l3bAdsy8VoRzicjIA7r3JnzwT8e_TTJK&currency=EUR"></script>
 
   <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: #f5f5f5;
-      font-family: Arial, sans-serif;
-    }
-
     #paypal-buttom-conteiner {
       padding: 40px;
       background: white;
@@ -31,11 +24,30 @@
     #paypal-buttom-conteiner:hover {
       transform: scale(1.45);
     }
+
+    .main-content {
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 60vh; /* Ajusta según el tamaño del footer/navbar */
+      width: 100%;
+      background: transparent;
+    }
+
+    footer {
+      flex-shrink:0;
+    }
   </style>
 </head>
 
 <body>
-  <div id="paypal-buttom-conteiner"></div>
+  <?php include('../navbar.php'); ?>
+  <div class="main-content">
+    <div id="paypal-buttom-conteiner"></div>
+  </div>
+  <?php include('../footer.php'); ?>
+  <?php include('../cookies.php'); ?>
 
   <!--
     Esta creado para hacer prueba con sandbox el cual paypal te da para poder hacer pruebas de pagos para los

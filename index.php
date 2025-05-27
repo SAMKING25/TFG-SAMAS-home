@@ -11,9 +11,10 @@
 	<link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
 	<!-- Archivo CSS personalizado -->
 	<link rel="stylesheet" href="/css/landing.css" />
-	<!--search-->
+	<!--Search-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-	<!--conexion con BD-->
+
+	<!--Conexion con BD-->
 	<?php
 	error_reporting(E_ALL);
 	ini_set("display_errors", 1);
@@ -25,6 +26,7 @@
 </head>
 
 <body>
+	<!-- Navbar incluido -->
 	<?php include('navbar.php'); ?>
 	<!-- Sección para la imagen de portada -->
 	<div class="col">
@@ -59,12 +61,13 @@
 						$precio_original = $producto['precio'];
 						$porcentaje_descuento = $producto['porcentaje'];
 						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
-					?>
+						?>
 						<div class="carousel-item <?php if ($primero) {
-														echo 'active';
-														$primero = false;
-													} ?>">
-							<a href="./productos/ver_producto.php?id_producto= <?php echo $producto["id_producto"]; ?>"><img src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
+							echo 'active';
+							$primero = false;
+						} ?>">
+							<a href="./productos/ver_producto.php?id_producto= <?php echo $producto["id_producto"]; ?>"><img
+									src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
 									alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
 									style="object-fit: cover; height: 100%; width: 100%;"></a>
 							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
@@ -129,8 +132,6 @@
 				border-radius: 8px;
 			}
 		</style>
-
-
 
 		<!-- Categorias -->
 		<div class="text-center mt-5">
@@ -262,6 +263,8 @@
 				<a href="#" class="text-white">SAMAS home</a>
 			</div>
 	</footer>
+	<!-- Pop-up de cookies incluido-->
+	<?php /* include('cookies.php');  */?>
 	<script>
 		window.difyChatbotConfig = {
 			token: 'B4keNRHr22WXJT38',
@@ -277,6 +280,7 @@
 		#dify-chatbot-bubble-button {
 			background-color: #1C64F2 !important;
 			position: fixed !important;
+			z-index: 9999
 		}
 
 		#dify-chatbot-bubble-window {
@@ -307,18 +311,18 @@
 			});
 		}
 	</script>
-	
+
 	</div>
 	<script>
-		document.addEventListener("DOMContentLoaded", function() {
-		const navbar = document.querySelector('.navbar');
-		window.addEventListener('scroll', function() {
-			if (window.scrollY > 30) {
-			navbar.classList.add('scrolled');
-			} else {
-			navbar.classList.remove('scrolled');
-			}
-		});
+		document.addEventListener("DOMContentLoaded", function () {
+			const navbar = document.querySelector('.navbar');
+			window.addEventListener('scroll', function () {
+				if (window.scrollY > 30) {
+					navbar.classList.add('scrolled');
+				} else {
+					navbar.classList.remove('scrolled');
+				}
+			});
 		});
 	</script>
 

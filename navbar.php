@@ -136,3 +136,5 @@ if (isset($_SESSION['usuario'])) {
         </div>
     </div>
 </nav>
+<!-- Pop-up de cookies incluido-->
+<?php include('cookies.php'); ?>
