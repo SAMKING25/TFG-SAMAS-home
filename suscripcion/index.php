@@ -1,3 +1,11 @@
+    <?php
+        error_reporting(E_ALL);
+        ini_set("display_errors", 1);
+
+        require('../util/conexion.php');
+
+        session_start();
+        ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +35,7 @@
         }
 
         body {
-            background-color: rgb(247, 229, 203);
+            background-color: #f4f4f4;
         }
 
         .pricing-card {
@@ -44,6 +52,19 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
+        .pricing-card.básica {
+            box-shadow: 0 4px 20px rgba(163, 144, 130, 1);
+        }
+
+        .pricing-card.premium {
+            box-shadow: 0 4px 20px rgba(146, 116, 71, 1);
+        }
+
+        .pricing-card.vip {
+            box-shadow: 0 4px 20px rgba(165, 125, 49, 1);
+        }
+
+
         .pricing-header {
             border-radius: 15px 15px 0 0;
             padding: 2rem;
@@ -56,7 +77,7 @@
             text-overflow: ellipsis;
         }
 
-        .pricing-header.basica {
+        .pricing-header.básica {
             background-color: rgba(163, 144, 130, 1);
         }
 
@@ -110,15 +131,40 @@
             height: 20px;
             margin-right: 10px;
         }
+
+        .btn-custom.Básica {
+            background-color: rgba(163, 144, 130, 1);
+            color: white;
+        }
+
+        .btn-custom.Básica:hover,
+        .btn-custom.Básica:focus {
+            background-color: rgba(143, 124, 110, 1);
+            color: white;
+        }
+
+        .btn-custom.Premium {
+            background-color: rgba(146, 116, 71, 1);
+            color: white;
+        }
+
+        .btn-custom.Premium:hover,
+        .btn-custom.Premium:focus {
+            background-color: rgba(126, 96, 51, 1);
+            color: white;
+        }
+
+        .btn-custom.VIP {
+            background-color: rgba(165, 125, 49, 1);
+            color: white;
+        }
+
+        .btn-custom.VIP:hover,
+        .btn-custom.VIP:focus {
+            background-color: rgba(145, 105, 29, 1);
+            color: white;
+        }
     </style>
-    <?php
-        error_reporting(E_ALL);
-        ini_set("display_errors", 1);
-
-        require('../util/conexion.php');
-
-        session_start();
-        ?>
 </head>
 
 <body>
@@ -136,7 +182,7 @@
         <div class="row justify-content-center g-4">
             <?php while ($suscripcion = $suscripciones->fetch_assoc()): ?>
                 <div class="col-12 col-md-6 col-lg-4 d-flex">
-                    <div class="card h-100 pricing-card w-100">
+                    <div class="card h-100 pricing-card <?= strtolower($suscripcion['nombre']) ?> w-100">
                         <div class="pricing-header <?php echo $suscripcion['nombre'] ?> text-white text-center">
                             <h3 class="mb-0"><?php echo $suscripcion['nombre'] ?></h3>
                             <div class="display-4 fw-bold my-3"><?php echo $suscripcion['precio'] ?>€</div>
