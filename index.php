@@ -30,7 +30,7 @@
 	<div class="col">
 		<section class="index-section">
 			<div class="section-banner">
-				<h1 class="banner-text">Tu hogar comienza aquí</h1>
+				<h1 class="cardo-title">Tu hogar comienza aquí</h1>
 				<p class="banner-subtext">
 					Encuentra los mejores muebles para tu hogar
 				</p>
@@ -307,7 +307,20 @@
 			});
 		}
 	</script>
+	
 	</div>
+	<script>
+		document.addEventListener("DOMContentLoaded", function() {
+		const navbar = document.querySelector('.navbar');
+		window.addEventListener('scroll', function() {
+			if (window.scrollY > 30) {
+			navbar.classList.add('scrolled');
+			} else {
+			navbar.classList.remove('scrolled');
+			}
+		});
+		});
+	</script>
 
 </body>
 
