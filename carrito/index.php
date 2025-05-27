@@ -132,7 +132,9 @@ while ($fila = $resultado->fetch_assoc()) {
             </div>
         </div>
     </div>
-
+    <!-- Pop-up de cookies incluido-->
+	<?php include('../cookies.php'); ?>
+    <?php include('../footer.php'); ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
