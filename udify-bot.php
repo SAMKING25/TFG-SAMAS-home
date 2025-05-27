@@ -10,8 +10,10 @@
 <script src="https://udify.app/embed.min.js" id="B4keNRHr22WXJT38" defer>
 </script>
 <style>
+
+
     #dify-chatbot-bubble-button {
-        background-color: #1C64F2 !important;
+        background-color:#1C64F2 !important;
         position: fixed !important;
         z-index: 10000 !important;
     }
