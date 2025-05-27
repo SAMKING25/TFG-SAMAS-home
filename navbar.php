@@ -31,7 +31,8 @@ if (isset($_SESSION['usuario'])) {
     <div class="container-fluid">
         <!-- Logo a la izquierda -->
         <a class="navbar-brand d-flex align-items-center" href="/">
-            <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" />
+            <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
+            <span class="fw-bold" style="font-size: 1.3rem; letter-spacing: 2px;">SAMAS HOME</span>
         </a>
 
         <!-- Botón hamburguesa para responsive -->
