@@ -279,6 +279,7 @@
 	</script>
 	<?php include('../footer.php'); ?>
 	<?php include('../cookies.php'); ?>
+	<?php include('../udify-bot.php'); ?>
 
 </body>
 

@@ -48,6 +48,7 @@
   </div>
   <?php include('../footer.php'); ?>
   <?php include('../cookies.php'); ?>
+  <?php include('../udify-bot.php'); ?>
 
   <!--
     Esta creado para hacer prueba con sandbox el cual paypal te da para poder hacer pruebas de pagos para los

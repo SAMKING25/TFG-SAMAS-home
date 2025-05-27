@@ -179,6 +179,7 @@
         </div>
     </div>
     <?php include('../footer.php'); ?>
+    <?php include('../udify-bot.php'); ?>
 
     <script src="JS/funcionalidades.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

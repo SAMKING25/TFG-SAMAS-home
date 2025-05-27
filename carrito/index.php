@@ -135,6 +135,7 @@ while ($fila = $resultado->fetch_assoc()) {
     <!-- Pop-up de cookies incluido-->
 	<?php include('../cookies.php'); ?>
     <?php include('../footer.php'); ?>
+    <?php include('../udify-bot.php'); ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
