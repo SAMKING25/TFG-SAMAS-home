@@ -41,20 +41,19 @@ if (isset($_SESSION['usuario'])) {
         background-color: #f1f1f1 !important;
         color: #000 !important;
     }
-
 </style>
 
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container-fluid">
+    <div class="container">
         <!-- Logo a la izquierda -->
         <a class="navbar-brand d-flex align-items-center" href="/">
-        <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
-        <span class="fw-bold" style="font-size: 1.3rem; letter-spacing: 2px;">SAMAS HOME</span>
-    </a>
+            <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
+            <span class="fw-bold" style="font-size: 1.3rem; letter-spacing: 2px;">SAMAS HOME</span>
+        </a>
 
         <!-- Botón hamburguesa para responsive -->
-        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+        <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars fa-lg"></i>
         </button>
@@ -88,7 +87,7 @@ if (isset($_SESSION['usuario'])) {
             <!-- Iconos a la derecha -->
             <div class="d-flex align-items-center ms-auto">
                 <div class="me-3" style="font-size: 1rem;">
-                    <a href="/productos?focus=1" title="Ir a productos" class="text-white">
+                    <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link">
                         <i class="bi bi-search icono-personalizado"></i>
                     </a>
                 </div>
@@ -118,13 +117,17 @@ if (isset($_SESSION['usuario'])) {
                         <?php if ($tipo_sesion === 'usuario') { ?>
                             <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi Perfil</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar cuenta</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
                         <?php } elseif ($tipo_sesion === 'proveedor') { ?>
                             <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Mi Perfil</a></li>
                             <li><a class="dropdown-item" href="/panel-control/">Panel de control</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
-                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar Sesión</a></li>
                         <?php } else { ?>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar Sesión</a></li>

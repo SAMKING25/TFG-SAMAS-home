@@ -70,7 +70,7 @@
     $resultado = $_conexion->query($sql);
     ?>
 
-    <div class="container-fluid py-5" style="margin-left: 280px;">
+    <div class="container-fluid py-5">
         <h1 class="text-center mb-4">Gestión de Productos</h1>
 
         <!-- Buscador -->
@@ -96,7 +96,7 @@
                     <?php
                     $medidas = json_decode($fila["medidas"], true)
                     ?>
-                    <div class="col-12 col-md-6 col-xxl-4">
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
                         <div class="card h-100 shadow-sm">
                             <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
                                 class="text-decoration-none">

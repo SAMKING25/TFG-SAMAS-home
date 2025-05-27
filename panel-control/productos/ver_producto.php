@@ -67,49 +67,54 @@
     <div class="container mt-5">
         <div class="row">
             <?php while ($fila = $resultado->fetch_assoc()) { ?>
-            <!-- Imagen del producto -->
-            <div class="col-md-6 mb-4 bg-white">
-                <img src="/img/productos/<?php echo $fila['img_producto'] ?>" alt="Product"
-                    class="img-fluid rounded mb-3 product-image">
-            </div>
+                <!-- Imagen del producto -->
+                <div class="col-md-6 mb-4">
+                    <img src="/img/productos/<?php echo $fila['img_producto'] ?>" alt="Product"
+                        class="img-fluid rounded mb-3 product-image">
 
-            <!-- Detalles del producto -->
-            <div class="col-md-6">
-                <h2 class="mb-3">
-                    <?php echo $fila['nombre'] ?>
-                </h2>
-                <p class="text-muted mb-4">ID:
-                    <?php echo $fila['id_producto'] ?>
-                </p>
-                <div class="mb-3">
-                    <span class="h4 me-2">
-                        <?php echo $fila['precio'] ?>€
-                    </span>
+                    <a href="../index.php" class="btn
+                btn-secondary rounded-circle btn-lg mb-3 me-2">
+                        <i class="bi bi-arrow-return-left "></i>
+                    </a>
                 </div>
 
-                <p class="mb-4">
-                    <?php echo $fila['descripcion'] ?>
-                </p>
-
-                <div class="mb-4">
-                    <label for="quantity" class="form-label">Cantidad:</label>
-                    <input type="number" class="form-control" id="quantity" value="<?php echo $fila['stock'] ?>"
-                        style="width: 80px;" disabled>
-                </div>
-
-                <div class="mb-4">
-                    <label for="dimensions" class="form-label">Dimensiones (largo,ancho,alto):</label>
-                    <p id="dimensions">
-                        <?php $medidas = json_decode($fila["medidas"], true); ?>    
-                        <?php echo $medidas['largo'] ?>cm x
-                        <?php echo $medidas['ancho'] ?>cm x
-                        <?php echo $medidas['alto'] ?>cm
+                <!-- Detalles del producto -->
+                <div class="col-md-6">
+                    <h2 class="mb-3">
+                        <?php echo $fila['nombre'] ?>
+                    </h2>
+                    <p class="text-muted mb-4"><b>ID:</b>
+                        <?php echo $fila['id_producto'] ?>
                     </p>
-                </div>
+                    <div class="mb-3">
+                        <span class="h4 me-2">
+                            <?php echo $fila['precio'] ?>€
+                        </span>
+                    </div>
 
-                <div class="mb-4">
-                    <label for="dimensions" class="form-label">Oferta:</label>
-                    <?php
+                    <p class="mb-4">
+                        <?php echo $fila['descripcion'] ?>
+                    </p>
+
+                    <div class="mb-4">
+                        <label for="quantity" class="form-label"><b>Cantidad:</b></label>
+                        <input type="number" class="form-control" id="quantity" value="<?php echo $fila['stock'] ?>"
+                            style="width: 80px;" disabled>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="dimensions" class="form-label"><b>Dimensiones (largo,ancho,alto):</b></label>
+                        <p id="dimensions">
+                            <?php $medidas = json_decode($fila["medidas"], true); ?>
+                            <?php echo $medidas['largo'] ?>cm x
+                            <?php echo $medidas['ancho'] ?>cm x
+                            <?php echo $medidas['alto'] ?>cm
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <span><b>Oferta:</b></span>
+                        <?php
                         // Suponiendo que ya tienes $fila['id_oferta'] disponible
                         $idOferta = $fila['id_oferta'];
 
@@ -127,23 +132,27 @@
                             $nombreOferta = "Sin oferta";
                         }
                         ?>
-                    <p id="dimensions">
-                        <?php echo $nombreOferta; ?>
-                    </p>
-                </div>
+                        <span>
+                            <?php echo $nombreOferta; ?>
+                        </span>
+                    </div>
 
-                <form action="" method="post">
-                    <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn
-                        btn-primary btn-lg mb-3 me-2">
-                        <i class=""></i> Editar
-                    </a>
-                    <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i
-                            class="bi bi-trash3-fill"></i> Borrar</button>
-                    <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"] ?>">
-                </form>
-            </div>
+                    <form action="" method="post">
+                        <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>" class="btn
+                    btn-primary btn-lg mb-3 me-2">
+                            <i class=""></i> Editar
+                        </a>
+
+                        <button class="btn btn-outline-danger btn-lg mb-3 me-2" type="submit"><i
+                                class="bi bi-trash3-fill"></i> Borrar
+                        </button>
+
+                        <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"] ?>">
+                    </form>
+                </div>
             <?php } ?>
         </div>
+
     </div>
     </div>
     <?php include('../../cookies.php'); ?>
