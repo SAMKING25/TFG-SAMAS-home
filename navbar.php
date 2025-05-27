@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <?php
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
@@ -31,7 +32,7 @@ if (isset($_SESSION['usuario'])) {
     <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <i class="bi bi-list" style="font-size: 1.5rem; color: white;"></i>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <div class="row w-100 align-items-center">
