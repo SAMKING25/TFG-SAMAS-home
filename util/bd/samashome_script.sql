@@ -84,7 +84,7 @@ CREATE TABLE detalle_pedidos (
 );
 
 UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
-UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 1 WHERE id_usuario = 1;
 
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
