@@ -1,11 +1,24 @@
-    <?php
-        error_reporting(E_ALL);
-        ini_set("display_errors", 1);
+<?php
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
 
-        require('../util/conexion.php');
+    require('../util/conexion.php');
+    session_start();
 
-        session_start();
-        ?>
+    // Obtén el id de suscripción del usuario actual
+    $id_usuario = $_SESSION['usuario'] ?? null;
+    $id_suscripcion_usuario = 1; // Por defecto básica
+
+    if ($id_usuario) {
+        $sql_user = $_conexion->prepare("SELECT id_suscripcion FROM usuarios WHERE id_usuario = ?");
+        $sql_user->bind_param("i", $id_usuario);
+        $sql_user->execute();
+        $res_user = $sql_user->get_result();
+        if ($row = $res_user->fetch_assoc()) {
+            $id_suscripcion_usuario = (int)$row['id_suscripcion'];
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -177,8 +190,11 @@
 
         <div class="row justify-content-center g-4">
             <?php while ($suscripcion = $suscripciones->fetch_assoc()): ?>
+                <?php
+                    $id_suscripcion = (int)$suscripcion['id_suscripcion'];
+                ?>
                 <div class="col-12 col-md-6 col-lg-4 d-flex">
-                    <div class="card h-100 pricing-card <?= strtolower($suscripcion['nombre']) ?> w-100">
+                    <div class="card h-100 pricing-card <?= strtolower($suscripcion['nombre']) ?> w-100 d-flex flex-column">
                         <div class="pricing-header <?php echo $suscripcion['nombre'] ?> text-white text-center">
                             <h3 class="mb-0"><?php echo $suscripcion['nombre'] ?></h3>
                             <div class="display-4 fw-bold my-3"><?php echo $suscripcion['precio'] ?>€</div>
@@ -235,12 +251,19 @@
                                     <?php endif; ?>
                                 </li>
                             </ul>
-                            <div class="text-center">
-                                <?php if ($i === 0): ?>
-                                    <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
-                                <?php else: ?>
-                                    <a href="/pasarela-pago/" class="btn btn-custom <?php echo $suscripcion['nombre'] ?>">Adquirir</a>
-                                <?php endif; ?>
+                            <div class="mt-auto text-center">
+                                <?php
+                                    if ($id_suscripcion_usuario === $id_suscripcion) {
+                                        // Botón "Activado" + enlace "Cancelar suscripción" debajo
+                                        echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
+                                        echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
+                                    } else {
+                                        // Botón "Activar" para los demás planes
+                                        echo '<a href="/pasarela-pago/" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                        // Espacio para alinear con las cartas que tienen el enlace de cancelar
+                                        echo '<div style="height:1.5em;"></div>';
+                                    }
+                                ?>
                             </div>
                         </div>
                     </div>

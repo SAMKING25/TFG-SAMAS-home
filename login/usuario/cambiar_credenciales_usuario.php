@@ -22,8 +22,6 @@
             exit;
         }
 
-
-
         $id_usuario = $_SESSION['usuario'];
 
         $sql = $_conexion-> prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
@@ -36,6 +34,7 @@
             $nombre_usuario_actual = $fila['nombre_usuario'];
             $contrasena_usuario_cifrada_actual = $fila['contrasena_usuario'];
             $img_usuario_actual = $fila['img_usuario'];
+            $id_suscripcion_actual = $fila['id_suscripcion'];
         } 
     ?>
     <style>
@@ -72,6 +71,7 @@
             filter: brightness(0.7);
             transition: filter 0.2s;
         }
+
     </style>
 </head>
 <body>
