@@ -58,7 +58,6 @@ if (isset($_SESSION['usuario'])) {
             <i class="fas fa-bars fa-lg"></i>
         </button>
 
-
         <!-- Menú centrado -->
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav mx-auto">
@@ -72,6 +71,8 @@ if (isset($_SESSION['usuario'])) {
                     <li class="nav-item">
                         <a class="nav-link" href="/plano">Plano</a>
                     </li>
+                <?php } ?>
+                <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/suscripcion">Suscripción</a>
                     </li>
@@ -142,3 +143,57 @@ if (isset($_SESSION['usuario'])) {
 </nav>
 <!-- Pop-up de cookies incluido-->
 <?php include('cookies.php'); ?>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<?php if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Detecta si la URL es exactamente /plano o termina con /plano/
+            if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
+                Swal.fire({
+                    title: "¿Estás seguro?",
+                    text: "¿Quieres ir al plano? Se perderá un uso del plano disponible.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Sí, ir al plano",
+                    cancelButtonText: "Cancelar"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('/util/funciones/sumar_uso_plano.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    // Permite el acceso, no hace nada porque ya está en /plano
+                                } else if (data.limit) {
+                                    Swal.fire("Límite alcanzado", "Has alcanzado el máximo de usos del plano para tu suscripción este mes.", "info")
+                                        .then(() => {
+                                            window.location.href = '/'; // Redirige a inicio u otra página
+                                        });
+                                } else {
+                                    Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
+                                        .then(() => {
+                                            window.location.href = '/';
+                                        });
+                                }
+                            })
+                            .catch(() => {
+                                Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
+                                    .then(() => {
+                                        window.location.href = '/';
+                                    });
+                            });
+                    } else {
+                        window.location.href = '/'; // Redirige si cancela
+                    }
+                });
+            }
+        });
+    </script>
+<?php } ?>

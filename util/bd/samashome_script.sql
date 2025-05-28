@@ -82,6 +82,10 @@ CREATE TABLE detalle_pedidos (
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
 
+ALTER TABLE usuarios ADD COLUMN usos_plano INT DEFAULT 0;
+UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
+
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"mesas.jpg");
