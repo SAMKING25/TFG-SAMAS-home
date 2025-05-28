@@ -56,7 +56,7 @@
         $resultado = $_conexion->query($sql);
 
         if ($resultado->num_rows == 0) {
-            $err_email_usuario = "El correo o la contraseña no coinciden";
+            $err_email_usuario = "El correo y la contraseña no coinciden";
         } else {
             $datos_usuario = $resultado->fetch_assoc();
             $acceso_concedido = password_verify($contrasena_usuario, $datos_usuario["contrasena_usuario"]);
@@ -81,7 +81,7 @@
                 }
                 exit();
             } else {
-                $err_email_usuario = "El correo o la contraseña no coinciden";
+                $err_email_usuario = "El correo y la contraseña no coinciden";
             }
         }
     }
