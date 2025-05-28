@@ -106,7 +106,7 @@ if ($hayOferta) {
 <body>
     <?php include('../navbar.php'); ?>
 
-    <div class="container">
+    <div class="container main-content">
         <?php
         if (isset($mensaje)) {
             if ($mensaje == "success") {

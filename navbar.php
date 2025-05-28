@@ -44,7 +44,7 @@ if (isset($_SESSION['usuario'])) {
 </style>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top">
+<nav class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
     <div class="container">
         <!-- Logo a la izquierda -->
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -62,27 +62,27 @@ if (isset($_SESSION['usuario'])) {
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/">Inicio</a>
+                    <a class="nav-link subraya" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/productos">Productos</a>
+                    <a class="nav-link subraya" href="/productos">Productos</a>
                 </li>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/plano">Plano</a>
+                        <a class="nav-link subraya" href="/plano">Plano</a>
                     </li>
                 <?php } ?>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/suscripcion">Suscripción</a>
+                        <a class="nav-link subraya" href="/suscripcion">Suscripción</a>
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/panel-control">Panel de control</a>
+                        <a class="nav-link subraya" href="/panel-control">Panel de control</a>
                     </li>
                 <?php } ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="/contacto">Contacto</a>
+                    <a class="nav-link subraya" href="/contacto">Contacto</a>
                 </li>
             </ul>
             <!-- Iconos a la derecha -->

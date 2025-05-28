@@ -25,8 +25,9 @@
 	?>
 </head>
 
-<body>
+<body class="navbar-home-body">
 	<!-- Navbar incluido -->
+	<?php $navbar_home = true; ?>
 	<?php include('navbar.php'); ?>
 	<!-- Sección para la imagen de portada -->
 	<div class="col">
@@ -244,12 +245,13 @@
 	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
-			const navbar = document.querySelector('.navbar');
+			const navbar = document.querySelector('.navbar-home');
+			if (!navbar) return;
 			window.addEventListener('scroll', function () {
 				if (window.scrollY > 30) {
-					navbar.classList.add('scrolled');
+				navbar.classList.add('scrolled');
 				} else {
-					navbar.classList.remove('scrolled');
+				navbar.classList.remove('scrolled');
 				}
 			});
 		});

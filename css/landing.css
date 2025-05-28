@@ -60,10 +60,30 @@ html, body {
 /* Navbar */
 .navbar {
   /*background-color: var(--color-navbar);*/
+  background: rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
+  backdrop-filter: blur(4px);
   padding: 6px 16px;
   min-height: 60px;
   height: 60px;
   transition: background 0.8s ease-in-out, box-shadow 0.8s ease-in-out;
+}
+
+.navbar.navbar-home {
+  background: transparent !important;
+  box-shadow: none !important;
+  backdrop-filter: none;
+  transition: background 0.8s, box-shadow 0.8s;
+}
+
+/* Para TODAS las páginas excepto la principal */
+body:not(.navbar-home-body) .main-content {
+  margin-top: 80px; /* Igual a la altura del navbar normal */
+}
+
+/* Para la principal, menos espacio */
+body.navbar-home-body .main-content {
+  margin-top: 60px; /* Igual a la altura del navbar-home */
 }
 
 .navbar,
@@ -100,11 +120,10 @@ html, body {
 .nav-link {
   padding-top: 2px;
   padding-bottom: 2px;
-  font-size: 1rem;      /* Opcional: tamaño de fuente más pequeño */
+  font-size: 1rem;     /* Opcional: tamaño de fuente más pequeño */
 }
 
 .nav-link:hover {
-  transform: scale(1.1);
   color: var(--color-accent);
 }
 
@@ -114,19 +133,32 @@ html, body {
   backdrop-filter: blur(4px);
 }
 
+.subraya {
+  position: relative;
+  overflow: hidden;
+  transition: color 0.3s;
+}
+
 .subraya::before {
   content: "";
   position: absolute;
-  bottom: 2rem;
-  left: 0;
+  left: 10%;              /* Centra la línea (100%-80%)/2 = 10% */
+  bottom: 0;
   width: 0%;
   height: 2px;
-  background-color: var(--color-accent);
-  transition: width 0.3s ease;
+  background-color: var(--color-accent, #ffb74d);
+  transition: width 0.3s;
+  z-index: 1;
 }
 
-.subraya:hover::before {
-  width: 100%;
+.subraya:hover::before,
+.subraya.active::before {
+  width: 80%;             /* Solo 80% del ancho */
+}
+
+.subraya:hover {
+  color: var(--color-accent, #ffb74d) !important;
+  transform: none;
 }
 
 /* Banner */
