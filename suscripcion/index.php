@@ -17,25 +17,21 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <link rel="shortcut icon" href="/img/logos/logo-marron-nobg.ico" />
-    <!-- Archivo CSS personalizado -->
-    <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Archivo CSS personalizado -->
+    <link rel="stylesheet" href="/css/landing.css" />
     <style>
-        @font-face {
-            font-family: "TrebuchetMS";
-            src: url("/fonts/TrebuchetMS.ttf");
-            font-weight: normal;
-            font-style: normal;
-        }
-
-        html {
-            font-family: "TrebuchetMS";
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 
         body {
+            font-family: 'Inter', sans-serif;
             background-color: #f4f4f4;
+        }
+
+        .cardo-title {
+            font-family: 'Inter', sans-serif;
         }
 
         .pricing-card {
@@ -170,8 +166,8 @@
 <body>
     <?php include('../navbar.php'); ?>
 
-    <div class="container py-5">
-        <h2 class="text-center mb-5">¡Escoge el plan perfecto para ti!</h2>
+    <div class="container py-5 main-content">
+        <h2 class="cardo-title text-center mb-5">¡Escoge el plan perfecto para ti!</h2>
 
         <?php
             $sql = "SELECT * FROM suscripciones ORDER BY id_suscripcion ASC";

@@ -60,15 +60,15 @@ while ($fila = $resultado->fetch_assoc()) {
 <head>
     <meta charset="UTF-8" />
     <title>Mi Carrito</title>
-    <link rel="stylesheet" href="/css/landing.css" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/landing.css" />
 </head>
 
 <body style="background-color: #f4e5cc;">
     <?php include('../navbar.php'); ?>
 
-    <div class="container py-5">
+    <div class="container py-5 main-content">
         <div class="row">
             <!-- Productos a la izquierda -->
             <div class="col-md-7">

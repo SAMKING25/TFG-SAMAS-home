@@ -93,7 +93,7 @@
 
     ?>
     <!-- Contenedor principal -->
-    <div class="d-flex productos-sidebar">
+    <div class="d-flex productos-sidebar main-content">
         <!-- Sidebar de productos -->
         <div id="sidebar" class="p-3">
             <h5>Productos</h5>
