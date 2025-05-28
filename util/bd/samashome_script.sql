@@ -131,5 +131,5 @@ DROP TABLE usuarios;
 DROP TABLE suscripciones;
 DROP TABLE categorias;
 
-DELETE FROM usuarios WHERE id_usuario = 1;
+DELETE FROM usuarios WHERE id_usuario = 2;
 DELETE FROM categorias WHERE categoria = "Sillas";
