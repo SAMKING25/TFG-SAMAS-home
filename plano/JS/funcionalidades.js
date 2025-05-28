@@ -16,6 +16,12 @@ window.addEventListener('resize', () => {
     canvas.setHeight(window.innerHeight - 230);
 });
 
+const rotateIcon =
+    "/img/plano/voltear.png";
+
+const rotateImg = document.createElement('img');
+rotateImg.src = rotateIcon;
+
 function agregarProducto(imagenURL, medidas) {
     medidas = JSON.parse(medidas);
 
@@ -42,6 +48,17 @@ function agregarProducto(imagenURL, medidas) {
             lockRotation: false,
         });
 
+        img.controls.rotateControl = new fabric.Control({
+            x: 0.5,
+            y: -0.5,
+            offsetY: -16,
+            offsetX: 16,
+            cursorStyle: 'pointer',
+            mouseUpHandler: rotarImagen,
+            render: renderIcon(rotateImg),
+            cornerSize: 24,
+        });
+
         canvas.add(img);
         canvas.setActiveObject(img);
         img.setControlsVisibility({
@@ -57,6 +74,26 @@ function agregarProducto(imagenURL, medidas) {
         });
         canvas.renderAll();
     });
+}
+
+function rotarImagen(eventData, transform) {
+    const target = transform.target;
+    if (target) {
+        target.flipX = !target.flipX; // Voltea horizontalmente
+        target.canvas.requestRenderAll();
+    }
+    return false;
+}
+
+function renderIcon(icon) {
+  return function (ctx, left, top, _styleOverride, fabricObject) {
+    const size = this.cornerSize;
+    ctx.save();
+    ctx.translate(left, top);
+    ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+    ctx.drawImage(icon, -size / 2, -size / 2, size, size);
+    ctx.restore();
+  };
 }
 
 function borrarObjeto() {
@@ -220,8 +257,19 @@ function agregarPuerta() {
         originY: 'center',
     });
 
+    puerta.controls.rotateControl = new fabric.Control({
+        x: 0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: 16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: rotarImagen,
+        render: renderIcon(rotateImg),
+        cornerSize: 24,
+    });
+
     // Carga la imagen de la puerta y crea el grupo
-    fabric.Image.fromURL("../../img/plano/Puerta.png", function(img_puerta) {
+    fabric.Image.fromURL("../../img/plano/Puerta.png", function (img_puerta) {
         img_puerta.set({
             left: 0,
             top: 0,
@@ -427,7 +475,7 @@ canvas.on('object:moving', function (e) {
     canvas.requestRenderAll();
 });
 
-canvas.on('object:moving', function(e) {
+canvas.on('object:moving', function (e) {
     const obj = e.target;
     // No restringir la escala ni la regla gráfica
     if (obj.text && obj.text.startsWith('Escala:')) return;
@@ -855,7 +903,7 @@ document.getElementById('move-mode-btn').addEventListener('click', function () {
 });
 
 // Pan con el ratón cuando el modo mover está activo
-canvas.on('mouse:down', function(opt) {
+canvas.on('mouse:down', function (opt) {
     if (!moveMode) return;
     if (canvas.getZoom() === ZOOM_MIN) {
         canvas.isDragging = false;
@@ -867,7 +915,7 @@ canvas.on('mouse:down', function(opt) {
     canvas.defaultCursor = 'grabbing';
 });
 
-canvas.on('mouse:move', function(opt) {
+canvas.on('mouse:move', function (opt) {
     if (!moveMode || !canvas.isDragging) return;
     if (canvas.getZoom() === ZOOM_MIN) return;
     const e = opt.e;
@@ -892,7 +940,7 @@ canvas.on('mouse:move', function(opt) {
     lastPan = { x: e.clientX, y: e.clientY };
 });
 
-canvas.on('mouse:up', function() {
+canvas.on('mouse:up', function () {
     if (!moveMode) return;
     canvas.isDragging = false;
     canvas.selection = false;
@@ -913,11 +961,11 @@ document.getElementById('reset-view-btn').addEventListener('click', function () 
 let clipboard = null;
 
 // Copiar (Ctrl+C)
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
         const activeObject = canvas.getActiveObject();
         if (activeObject) {
-            activeObject.clone(function(cloned) {
+            activeObject.clone(function (cloned) {
                 clipboard = cloned;
             });
             e.preventDefault();
@@ -926,10 +974,10 @@ document.addEventListener('keydown', function(e) {
 });
 
 // Pegar (Ctrl+V)
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
         if (clipboard) {
-            clipboard.clone(function(clonedObj) {
+            clipboard.clone(function (clonedObj) {
                 canvas.discardActiveObject();
                 clonedObj.set({
                     left: clonedObj.left + 20,
@@ -939,7 +987,7 @@ document.addEventListener('keydown', function(e) {
                 if (clonedObj.type === 'activeSelection') {
                     // Multi-selection
                     clonedObj.canvas = canvas;
-                    clonedObj.forEachObject(function(obj) {
+                    clonedObj.forEachObject(function (obj) {
                         canvas.add(obj);
                     });
                     // Group to selection
