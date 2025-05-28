@@ -65,6 +65,11 @@
                 border-bottom-right-radius: .3rem;
             }
         }
+
+        .foto-perfil-editable:hover img {
+            filter: brightness(0.7);
+            transition: filter 0.2s;
+        }
     </style>
 </head>
 <body>
@@ -163,12 +168,13 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
-                                            <div style="width: 185px; height: 185px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
-                                                <img src="<?php echo IMG_USUARIO.$img_proveedor_actual ?>" 
-                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" 
-                                                     alt="logo" class="img-fluid" />
+                                            <div id="foto-perfil-wrapper" style="width: 185px; height: 185px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+                                                <img id="foto-perfil" src="<?php echo IMG_USUARIO.$img_proveedor_actual ?>"
+                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ccc;"
+                                                    alt="Foto de perfil" class="img-fluid" />
                                             </div>
-                                            <input type="file" disabled hidden name="nueva_img_proveedor" id="nueva_img_proveedor" class="form-control mb-4" accept="image/*"/>
+                                            <input type="file" name="nueva_img_proveedor" id="nueva_img_proveedor" class="form-control mb-4" accept="image/*" style="display: none;" />
+                                            <?php if(isset($err_img_proveedor)) echo "<span class='error'>$err_img_proveedor</span>"; ?>
                                         </div>
                                     
                                         <div data-mdb-input-init class="form-outline mb-4">
@@ -303,6 +309,53 @@
                 }
             });
         });
+    </script>
+    <script>
+    // Foto de perfil: click para cambiar imagen
+    document.addEventListener('DOMContentLoaded', function () {
+        const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
+        const fotoPerfil = document.getElementById('foto-perfil');
+        const inputFile = document.getElementById('nueva_img_proveedor');
+        const botonCambiar = document.getElementById('cambiar_datos');
+
+        // Cambia el cursor según el modo
+        function actualizarCursor() {
+            if (typeof modo_edicion !== 'undefined' && modo_edicion) {
+                fotoPerfilWrapper.style.cursor = 'pointer';
+                fotoPerfilWrapper.classList.add('foto-perfil-editable');
+            } else {
+                fotoPerfilWrapper.style.cursor = 'default';
+                fotoPerfilWrapper.classList.remove('foto-perfil-editable');
+            }
+        }
+        actualizarCursor();
+
+        // Permitir click en la foto SOLO si modo_edicion es true
+        fotoPerfilWrapper.addEventListener('click', function () {
+            if (typeof modo_edicion !== 'undefined' && modo_edicion) {
+                inputFile.click();
+            }
+        });
+
+        // Actualiza el cursor cuando cambie el modo
+        if (botonCambiar) {
+            botonCambiar.addEventListener('click', function () {
+                setTimeout(actualizarCursor, 10);
+            });
+        }
+
+        // Previsualización de la imagen seleccionada
+        inputFile.addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (ev) {
+                    fotoPerfil.src = ev.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    });
     </script>
 </body>
 
