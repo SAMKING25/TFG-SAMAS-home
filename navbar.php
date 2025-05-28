@@ -59,8 +59,7 @@ if (isset($_SESSION['usuario'])) {
         </button>
 
         <!-- Menú centrado -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
+            <div class="collapse navbar-collapse rounded-bottom" id="navbarNav">            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link subraya" href="/">Inicio</a>
                 </li>
