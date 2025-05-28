@@ -163,7 +163,11 @@
                                 <div class="card-body p-md-5 mx-md-4">
                                     <form method="post" enctype="multipart/form-data">
                                         <div class="text-center">
-                                            <img src="<?php echo IMG_USUARIO.$img_proveedor_actual ?>" style="width: 185px;" alt="logo" class="rounded-circle img-fluid" />
+                                            <div style="width: 185px; height: 185px; margin: 0 auto; display: flex; align-items: center; justify-content: center;">
+                                                <img src="<?php echo IMG_USUARIO.$img_proveedor_actual ?>" 
+                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;" 
+                                                     alt="logo" class="img-fluid" />
+                                            </div>
                                             <input type="file" disabled hidden name="nueva_img_proveedor" id="nueva_img_proveedor" class="form-control mb-4" accept="image/*"/>
                                         </div>
                                     

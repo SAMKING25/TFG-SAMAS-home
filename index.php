@@ -218,30 +218,6 @@
 
 	<?php include('footer.php'); ?>
 	<?php include('udify-bot.php'); ?>
-	<!-- <script>
-		window.difyChatbotConfig = {
-			token: 'B4keNRHr22WXJT38',
-			systemVariables: {
-				// user_id: 'YOU CAN DEFINE USER ID HERE',
-				// conversation_id: 'YOU CAN DEFINE CONVERSATION ID HERE, IT MUST BE A VALID UUID',
-			},
-		}
-	</script>
-	<script src="https://udify.app/embed.min.js" id="B4keNRHr22WXJT38" defer>
-	</script>
-	<style>
-		#dify-chatbot-bubble-button {
-			background-color: #1C64F2 !important;
-			position: fixed !important;
-			z-index: 9999
-		}
-
-		#dify-chatbot-bubble-window {
-			width: 24rem !important;
-			height: 40rem !important;
-			position: fixed !important;
-		}
-	</style> -->
 	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>

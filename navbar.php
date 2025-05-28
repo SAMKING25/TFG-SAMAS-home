@@ -105,7 +105,8 @@ if (isset($_SESSION['usuario'])) {
                             <img src="<?php echo $tipo_sesion === 'usuario'
                                             ? IMG_USUARIO . $datos['img_usuario']
                                             : IMG_USUARIO . $datos['img_proveedor']; ?>"
-                                alt="" width="32" height="32" class="rounded-circle me-2">
+                                alt="" width="32" height="32" class="rounded-circle me-2"
+                                style="object-fit: cover; aspect-ratio: 1 / 1;">
                             <strong>
                                 <?php echo $tipo_sesion === 'usuario'
                                     ? $datos['nombre_usuario']

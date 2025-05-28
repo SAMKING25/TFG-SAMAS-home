@@ -30,7 +30,7 @@ define('FUNCIONES', '/util/funciones/')
       data-bs-toggle="dropdown" aria-expanded="false">
       <?php while ($fila = $resultado->fetch_assoc()) { ?>
         <img src="<?php echo IMG_USUARIO . $fila['img_proveedor'] ?>" alt="" width="32" height="32"
-          class="rounded-circle me-2">
+          class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
         <strong>
           <?php echo $fila['nombre_proveedor'] ?>
         </strong>
