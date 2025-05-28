@@ -108,7 +108,7 @@
             if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
                 // Generar código de verificación
                 $codigo_verificacion = rand(100000, 999999);
-
+                
                 // Guardar datos temporales en sesión
                 session_start();
                 $_SESSION['registro_email'] = $email_usuario;
