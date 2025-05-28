@@ -6,7 +6,7 @@
 	}
 	
 	footer {
-		margin-top: 7vh;
+		margin-top: auto;
 		text-align: center;
 	}
 </style>
