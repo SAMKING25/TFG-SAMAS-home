@@ -161,6 +161,17 @@ body.navbar-home-body .main-content {
   transform: none;
 }
 
+.icon-grow {
+  transition: transform 0.3s;
+  display: inline-flex;
+  align-items: center;
+}
+
+.icon-grow:hover,
+.icon-grow:focus {
+  transform: scale(1.15);
+}
+
 /* Banner */
 .index-section {
   background-image: url("../img/productos/portada-samas.png");
