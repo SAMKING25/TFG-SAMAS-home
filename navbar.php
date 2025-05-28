@@ -88,12 +88,12 @@ if (isset($_SESSION['usuario'])) {
             <!-- Iconos a la derecha -->
             <div class="d-flex align-items-center ms-auto">
                 <div class="me-3" style="font-size: 1rem;">
-                    <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link">
+                    <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link icon-grow">
                         <i class="bi bi-search icono-personalizado"></i>
                     </a>
                 </div>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
-                    <a href="/carrito" class="nav-link me-3">
+                    <a href="/carrito" class="nav-link me-3 icon-grow">
                         <i class="bi bi-cart2 icono-personalizado"></i>
                     </a>
                 <?php } ?>
