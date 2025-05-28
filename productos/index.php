@@ -34,7 +34,7 @@ session_start();
 <body>
     <?php include('../navbar.php'); ?>
 
-    <div class="container">
+    <div class="container mb-4">
         <h1 class="text-center mt-4 mb-4">Productos</h1>
 
         <!-- Buscador -->
