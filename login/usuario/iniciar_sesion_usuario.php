@@ -104,16 +104,22 @@
                                     <form method="post" enctype="multipart/form-data">
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="email_usuario">Email</label>
-                                            <input type="email_usuario" id="email_usuario" name="email_usuario"
-                                                class="form-control" placeholder="Inserte su correo electrónico" />
-                                            <?php if (isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                                            <input type="text" id="email_usuario" name="email_usuario"
+                                                class="form-control" placeholder="Inserte su correo electrónico"
+                                                value="<?php echo isset($_POST['email_usuario']) ? htmlspecialchars($_POST['email_usuario']) : ''; ?>" />
+                                            <span class="error" id="email-error">
+                                                <?php if (isset($err_email_usuario)) echo $err_email_usuario; ?>
+                                            </span>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="contrasena_usuario">Contraseña</label>
                                             <input type="password" id="contrasena_usuario" name="contrasena_usuario"
-                                                class="form-control" />
-                                            <?php if (isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                                                class="form-control"
+                                                value="<?php echo isset($_POST['contrasena_usuario']) ? htmlspecialchars($_POST['contrasena_usuario']) : ''; ?>" />
+                                            <span class="error" id="password-error">
+                                                <?php if (isset($err_contrasena_usuario)) echo $err_contrasena_usuario; ?>
+                                            </span>
                                         </div>
 
                                         <div class="pt-1 mb-5 pb-1">
@@ -163,19 +169,13 @@
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_usuario');
             const passwordInput = document.getElementById('contrasena_usuario');
-
-            // Para mostrar errores
-            const emailError = document.createElement('span');
-            emailError.classList.add('error');
-            emailInput.parentNode.appendChild(emailError);
-
-            const passwordError = document.createElement('span');
-            passwordError.classList.add('error');
-            passwordInput.parentNode.appendChild(passwordError);
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
 
             form.addEventListener('submit', function(event) {
                 let valid = true;
 
+                // Limpia los errores previos (incluyendo los de PHP)
                 emailError.textContent = '';
                 passwordError.textContent = '';
 
