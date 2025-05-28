@@ -60,7 +60,7 @@
             $resultado = $_conexion->query($sql);
             
             if ($resultado->num_rows == 1) {
-                $err_email_proveedor = "El email $tmp_email_proveedor ya existe";
+                $err_email_proveedor = "Este correo electrónico ya se encuentra registrado";
             } else {
                 if (filter_var($tmp_email_proveedor, FILTER_VALIDATE_EMAIL) === false) {
                     $err_email_proveedor = "El email no es válido";
@@ -77,7 +77,7 @@
             $resultado = $_conexion->query($sql);
 
             if ($resultado->num_rows == 1) {
-                $err_nombre_proveedor = "El nombre $tmp_nombre_proveedor ya existe";
+                $err_nombre_proveedor = "El nombre de usuario ya está en uso";
             } else {
                 $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
                 if (!preg_match($patron, $tmp_nombre_proveedor)) {
@@ -130,22 +130,31 @@
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nombre_proveedor">Nombre</label>
                                             <input type="text" id="nombre_proveedor" name="nombre_proveedor"
-                                                class="form-control" placeholder="Inserte su nombre" />
-                                            <?php if (isset($err_nombre_proveedor)) echo "<span class='error'>$err_nombre_proveedor</span>"; ?>
+                                                class="form-control" placeholder="Inserte su nombre"
+                                                value="<?php echo isset($_POST['nombre_proveedor']) ? htmlspecialchars($_POST['nombre_proveedor']) : ''; ?>" />
+                                            <span class="error" id="nombre-error">
+                                                <?php if (isset($err_nombre_proveedor)) echo $err_nombre_proveedor; ?>
+                                            </span>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="email_proveedor">Email</label>
-                                            <input type="email" id="email_proveedor" name="email_proveedor"
-                                                class="form-control" placeholder="Inserte su correo electrónico" />
-                                            <?php if (isset($err_email_proveedor)) echo "<span class='error'>$err_email_proveedor</span>"; ?>
+                                            <input type="text" id="email_proveedor" name="email_proveedor"
+                                                class="form-control" placeholder="Inserte su correo electrónico"
+                                                value="<?php echo isset($_POST['email_proveedor']) ? htmlspecialchars($_POST['email_proveedor']) : ''; ?>" />
+                                            <span class="error" id="email-error">
+                                                <?php if (isset($err_email_proveedor)) echo $err_email_proveedor; ?>
+                                            </span>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="contrasena_proveedor">Contraseña</label>
                                             <input type="password" id="contrasena_proveedor" name="contrasena_proveedor"
-                                                class="form-control" />
-                                            <?php if (isset($err_contrasena_proveedor)) echo "<span class='error'>$err_contrasena_proveedor</span>"; ?>
+                                                class="form-control"
+                                                value="<?php echo isset($_POST['contrasena_proveedor']) ? htmlspecialchars($_POST['contrasena_proveedor']) : ''; ?>" />
+                                            <span class="error" id="password-error">
+                                                <?php if (isset($err_contrasena_proveedor)) echo $err_contrasena_proveedor; ?>
+                                            </span>
                                         </div>
 
                                         <div class="pt-1 mb-5 pb-1">

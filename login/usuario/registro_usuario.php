@@ -62,7 +62,7 @@
                 $resultado = $_conexion->query($sql);
                 
                 if ($resultado->num_rows == 1) {
-                    $err_email_usuario = "El email $tmp_email_usuario ya existe";
+                    $err_email_usuario = "Este correo electrónico ya se encuentra registrado";
                 } else {
                     if (filter_var($tmp_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
                         $err_email_usuario = "El email no es válido";
@@ -79,7 +79,7 @@
                 $resultado = $_conexion->query($sql);
     
                 if ($resultado->num_rows == 1) {
-                    $err_nombre_usuario = "El nombre $tmp_nombre_usuario ya existe";
+                    $err_nombre_usuario = "El nombre de usuario ya está en uso";
                 } else {
                     $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
                     if (!preg_match($patron, $tmp_nombre_usuario)) {
@@ -146,22 +146,31 @@
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nombre_usuario">Nombre</label>
                                             <input type="text" id="nombre_usuario" name="nombre_usuario"
-                                                class="form-control" placeholder="Inserte su nombre" />
-                                            <?php if (isset($err_nombre_usuario)) echo "<span class='error'>$err_nombre_usuario</span>"; ?>
+                                                class="form-control" placeholder="Inserte su nombre"
+                                                value="<?php echo isset($_POST['nombre_usuario']) ? htmlspecialchars($_POST['nombre_usuario']) : ''; ?>" />
+                                            <span class="error" id="nombre-error">
+                                                <?php if (isset($err_nombre_usuario)) echo $err_nombre_usuario; ?>
+                                            </span>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="email_usuario">Email</label>
-                                            <input type="email_usuario" id="email_usuario" name="email_usuario"
-                                                class="form-control" placeholder="Inserte su correo electrónico" />
-                                            <?php if(isset($err_email_usuario)) echo "<span class='error'>$err_email_usuario</span>"; ?>
+                                            <input type="text" id="email_usuario" name="email_usuario"
+                                                class="form-control" placeholder="Inserte su correo electrónico"
+                                                value="<?php echo isset($_POST['email_usuario']) ? htmlspecialchars($_POST['email_usuario']) : ''; ?>" />
+                                            <span class="error" id="email-error">
+                                                <?php if (isset($err_email_usuario)) echo $err_email_usuario; ?>
+                                            </span>
                                         </div>
 
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="contrasena_usuario">Contraseña</label>
                                             <input type="password" id="contrasena_usuario" name="contrasena_usuario"
-                                                class="form-control" />
-                                            <?php if(isset($err_contrasena_usuario)) echo "<span class='error'>$err_contrasena_usuario</span>"; ?>
+                                                class="form-control"
+                                                value="<?php echo isset($_POST['contrasena_usuario']) ? htmlspecialchars($_POST['contrasena_usuario']) : ''; ?>" />
+                                            <span class="error" id="password-error">
+                                                <?php if (isset($err_contrasena_usuario)) echo $err_contrasena_usuario; ?>
+                                            </span>
                                         </div>
 
                                         <div class="pt-1 mb-5 pb-1">
