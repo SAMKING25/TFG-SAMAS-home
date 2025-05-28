@@ -1,3 +1,17 @@
+<style>
+	body {
+		position: relative;
+		padding-bottom: 30em;
+	}
+	
+	footer {
+		position: absolute;
+		bottom: 0;
+		width: 100%;
+		text-align: center;
+	}
+</style>
+
 <!-- Footer -->
 	<footer class="text-white pt-5 pb-4">
 		<div class="container">
