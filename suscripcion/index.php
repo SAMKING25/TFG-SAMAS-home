@@ -252,18 +252,21 @@
                                 </li>
                             </ul>
                             <div class="mt-auto text-center">
-                                <?php
+                                <form action="../pasarela-pago/" method="post">
+                                <input type="hidden" name="importe" value="<?php echo number_format((float)$suscripcion['precio'], 2, '.', ''); ?>">
+                                    <?php
                                     if ($id_suscripcion_usuario === $id_suscripcion) {
                                         // Botón "Activado" + enlace "Cancelar suscripción" debajo
-                                        echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
+                                        echo '<button type="submit" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</button>';
                                         echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
                                     } else {
                                         // Botón "Activar" para los demás planes
-                                        echo '<a href="/pasarela-pago/" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                        echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
                                         // Espacio para alinear con las cartas que tienen el enlace de cancelar
                                         echo '<div style="height:1.5em;"></div>';
                                     }
-                                ?>
+                                    ?>
+                                </form>
                             </div>
                         </div>
                     </div>
