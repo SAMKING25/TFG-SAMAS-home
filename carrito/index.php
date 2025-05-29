@@ -6,7 +6,7 @@ require('../util/conexion.php');
 session_start();
 
 if (!isset($_SESSION["usuario"])) {
-    header("Location: /login/usuario/iniciar_sesion_usuario.php");
+    header("Location: /login/usuario/iniciar_sesion_usuario");
     exit;
 }
 
