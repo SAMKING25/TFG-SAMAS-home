@@ -327,6 +327,14 @@ footer {
     margin-top: 1rem;
     gap: 1rem;
   }
+
+  .carousel-control-prev {
+    display: none !important;
+  }
+
+  .carousel-control-next {
+    display: none !important;
+  }
 }
 
 @media (max-width: 600px) {
