@@ -65,6 +65,8 @@ CREATE TABLE carrito (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
+ALTER TABLE carrito ADD UNIQUE (id_usuario, id_producto);
+
 CREATE TABLE pedidos (
 	id_pedido INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     id_usuario INT,
