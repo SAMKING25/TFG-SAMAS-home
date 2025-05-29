@@ -183,9 +183,21 @@
         <h2 class="cardo-title text-center mb-5">¡Escoge el plan perfecto para ti!</h2>
 
         <?php
+            $hay_usuarios = false;
+            $sql_check = "SELECT COUNT(*) as total FROM usuarios";
+            $res_check = $_conexion->query($sql_check);
+            if ($res_check && $row_check = $res_check->fetch_assoc()) {
+                $hay_usuarios = $row_check['total'] > 0;
+            }
+        ?>
+        
+        <?php
             $sql = "SELECT * FROM suscripciones ORDER BY id_suscripcion ASC";
             $suscripciones = $_conexion->query($sql);
             $i = 0;
+        ?>
+        <?php
+            $usuario_no_logueado = !isset($_SESSION['usuario']);
         ?>
 
         <div class="row justify-content-center g-4">
@@ -253,19 +265,21 @@
                             </ul>
                             <div class="mt-auto text-center">
                                 <form action="../pasarela-pago/" method="post">
-                                <input type="hidden" name="importe" value="<?php echo number_format((float)$suscripcion['precio'], 2, '.', ''); ?>">
-                                    <?php
-                                    if ($id_suscripcion_usuario === $id_suscripcion) {
-                                        // Botón "Activado" + enlace "Cancelar suscripción" debajo
-                                        echo '<button type="submit" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</button>';
-                                        echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
-                                    } else {
-                                        // Botón "Activar" para los demás planes
-                                        echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
-                                        // Espacio para alinear con las cartas que tienen el enlace de cancelar
-                                        echo '<div style="height:1.5em;"></div>';
-                                    }
-                                    ?>
+                                    <input type="hidden" name="importe" value="<?php echo number_format((float)$suscripcion['precio'], 2, '.', ''); ?>">
+                                    <?php if (!$hay_usuarios || $usuario_no_logueado): ?>
+                                        <a href="/login/usuario/registro_usuario.php" class="btn btn-custom <?php echo $suscripcion['nombre']; ?> w-100" style="max-width:220px;">Activar</a>
+                                        <div style="height:1.5em;"></div>
+                                    <?php else: ?>
+                                        <?php
+                                            if ($id_suscripcion_usuario === $id_suscripcion) {
+                                                echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
+                                                echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
+                                            } else {
+                                                echo '<a href="/pasarela-pago/" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                                echo '<div style="height:1.5em;"></div>';
+                                            }
+                                        ?>
+                                    <?php endif; ?>
                                 </form>
                             </div>
                         </div>
