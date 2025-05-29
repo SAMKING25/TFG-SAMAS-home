@@ -169,7 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 
                         <hr>
                         <!-- Formulario para aplicar código de descuento -->
-                        <form action="" method="post">
+                        <form action="" method="">
                             <div class="mb-3">
                                 <label for="codigo_descuento" class="form-label">Código de descuento</label>
                                 <input type="text" class="form-control" name="codigo_descuento" id="codigo_descuento" placeholder="Introduce tu código">

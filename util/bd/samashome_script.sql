@@ -75,6 +75,8 @@ CREATE TABLE pedidos (
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
 
+ALTER TABLE pedidos ADD COLUMN datos_usuario JSON;
+
 CREATE TABLE detalle_pedidos (
     id_detalle INT PRIMARY KEY AUTO_INCREMENT,
     id_pedido INT,

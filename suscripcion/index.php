@@ -275,7 +275,7 @@
                                                 echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
                                                 echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
                                             } else {
-                                                echo '<a href="/pasarela-pago/" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                                echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
                                                 echo '<div style="height:1.5em;"></div>';
                                             }
                                         ?>

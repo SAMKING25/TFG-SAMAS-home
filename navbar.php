@@ -59,55 +59,56 @@ if (isset($_SESSION['usuario'])) {
         </button>
 
         <!-- Menú centrado -->
-            <div class="collapse navbar-collapse rounded-bottom" id="navbarNav">            <ul class="navbar-nav mx-auto">
+        <div class="collapse navbar-collapse rounded-bottom" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link subraya" href="/">Inicio</a>
+                    <a class="nav-link subraya util-nav-icons" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link subraya" href="/productos">Productos</a>
+                    <a class="nav-link subraya util-nav-icons" href="/productos">Productos</a>
                 </li>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link subraya" href="/plano">Plano</a>
+                        <a class="nav-link subraya util-nav-icons" href="/plano">Plano</a>
                     </li>
                 <?php } ?>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link subraya" href="/suscripcion">Suscripción</a>
+                        <a class="nav-link subraya util-nav-icons" href="/suscripcion">Suscripción</a>
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
-                        <a class="nav-link subraya" href="/panel-control">Panel de control</a>
+                        <a class="nav-link subraya util-nav-icons" href="/panel-control">Panel de control</a>
                     </li>
                 <?php } ?>
                 <li class="nav-item">
-                    <a class="nav-link subraya" href="/contacto">Contacto</a>
+                    <a class="nav-link subraya util-nav-icons" href="/contacto">Contacto</a>
                 </li>
             </ul>
             <!-- Iconos a la derecha -->
-            <div class="d-flex align-items-center ms-auto">
+            <div class="d-flex align-items-center ms-auto navbar-icons">
                 <div class="me-3" style="font-size: 1rem;">
                     <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link icon-grow">
-                        <i class="bi bi-search icono-personalizado"></i>
+                        <i class="bi bi-search util-nav-icons"></i>
                     </a>
                 </div>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <a href="/carrito" class="nav-link me-3 icon-grow">
-                        <i class="bi bi-cart2 icono-personalizado"></i>
+                        <i class="bi bi-cart2 util-nav-icons"></i>
                     </a>
                 <?php } ?>
                 <div class="dropdown">
                     <a class="dropdown-toggle text-light text-decoration-none" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <?php if (!$datos) { ?>
-                            <i class="bi bi-person-circle icono-personalizado"></i>
+                            <i class="bi bi-person-circle util-nav-icons"></i>
                         <?php } else { ?>
                             <img src="<?php echo $tipo_sesion === 'usuario'
                                             ? IMG_USUARIO . $datos['img_usuario']
                                             : IMG_USUARIO . $datos['img_proveedor']; ?>"
                                 alt="" width="32" height="32" class="rounded-circle me-2"
                                 style="object-fit: cover; aspect-ratio: 1 / 1;">
-                            <strong>
+                            <strong class="util-nav-icons">
                                 <?php echo $tipo_sesion === 'usuario'
                                     ? $datos['nombre_usuario']
                                     : $datos['nombre_proveedor']; ?>
@@ -196,55 +197,55 @@ if (isset($_SESSION['usuario'])) {
         });
 
         document.addEventListener('DOMContentLoaded', function() {
-        // Solo si estamos en /plano o /plano/
-        if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
-            let confirmandoSalida = false; // Para evitar bucles
+            // Solo si estamos en /plano o /plano/
+            if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
+                let confirmandoSalida = false; // Para evitar bucles
 
-            // 1. Aviso al recargar, cerrar o navegar fuera (navegación estándar)
-            window.addEventListener('beforeunload', function (e) {
-                if (!confirmandoSalida) {
-                    e.preventDefault();
-                    e.returnValue = ''; // Chrome requiere esto para mostrar el aviso nativo
-                    return '';
-                }
-            });
+                // 1. Aviso al recargar, cerrar o navegar fuera (navegación estándar)
+                window.addEventListener('beforeunload', function(e) {
+                    if (!confirmandoSalida) {
+                        e.preventDefault();
+                        e.returnValue = ''; // Chrome requiere esto para mostrar el aviso nativo
+                        return '';
+                    }
+                });
 
-            // 2. Aviso personalizado al pulsar cualquier enlace del navbar
-            document.querySelectorAll('a.nav-link, .dropdown-item').forEach(function(link) {
-                // Ignora enlaces que abren en nueva pestaña
-                if (link.target === '_blank') return;
+                // 2. Aviso personalizado al pulsar cualquier enlace del navbar
+                document.querySelectorAll('a.nav-link, .dropdown-item').forEach(function(link) {
+                    // Ignora enlaces que abren en nueva pestaña
+                    if (link.target === '_blank') return;
 
-                link.addEventListener('click', function(e) {
-                    // Si ya estamos confirmando, deja pasar
-                    if (confirmandoSalida) return;
+                    link.addEventListener('click', function(e) {
+                        // Si ya estamos confirmando, deja pasar
+                        if (confirmandoSalida) return;
 
-                    // Si el enlace es a la misma página, recarga, o a otra, muestra el modal
-                    e.preventDefault();
-                    Swal.fire({
-                        title: "¿Quieres salir del plano?",
-                        text: "Si sales del plano, podrías perder los cambios no guardados.",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "Sí, salir",
-                        cancelButtonText: "Cancelar"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            confirmandoSalida = true;
-                            window.removeEventListener('beforeunload', () => {}); // Evita doble aviso
-                            // Si es recarga (href actual), recarga, si no, navega
-                            if (link.href === window.location.href) {
-                                window.location.reload();
-                            } else {
-                                window.location.href = link.href;
+                        // Si el enlace es a la misma página, recarga, o a otra, muestra el modal
+                        e.preventDefault();
+                        Swal.fire({
+                            title: "¿Quieres salir del plano?",
+                            text: "Si sales del plano, podrías perder los cambios no guardados.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Sí, salir",
+                            cancelButtonText: "Cancelar"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                confirmandoSalida = true;
+                                window.removeEventListener('beforeunload', () => {}); // Evita doble aviso
+                                // Si es recarga (href actual), recarga, si no, navega
+                                if (link.href === window.location.href) {
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = link.href;
+                                }
                             }
-                        }
-                        // Si cancela, no hace nada
+                            // Si cancela, no hace nada
+                        });
                     });
                 });
-            });
-        }
-    });
+            }
+        });
     </script>
 <?php } ?>
