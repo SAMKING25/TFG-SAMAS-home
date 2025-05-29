@@ -222,7 +222,7 @@ if (!isset($_SESSION["usuario"])) {
             const esMobileUA = /android|iphone|ipod|blackberry|iemobile|opera mini/.test(ua);
             const esPantallaPequena = window.innerWidth < 768;
             // Puedes ajustar el ancho según tus necesidades
-            return esMobileUA || esPantallaPequena;
+            return  esMobileUA && esPantallaPequena;
         }
 
         if (esMovil()) {
