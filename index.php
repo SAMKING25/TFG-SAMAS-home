@@ -166,7 +166,7 @@
 								<div class="col-12 col-lg-6">
 									<div class="card h-100 shadow oferta-card rounded-4 border-0">
 										<div class="position-relative">
-											<a href="./productos/ver_producto.php?id_producto=<?php echo $producto["id_producto"]; ?>">
+											<a href="./productos/ver_producto?id_producto=<?php echo $producto["id_producto"]; ?>">
 												<img src="img/productos/<?php echo $producto['img_producto']; ?>" class="card-img-top rounded-top-4" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" style="height: 200px; object-fit: cover;">
 											</a>
 											<span class="badge bg-danger position-absolute top-0 start-0 m-2 fs-6 rounded-pill px-3 py-2 shadow">
@@ -184,7 +184,7 @@
 													<?php echo number_format($precio_final, 2, ',', '.'); ?> €
 												</span>
 											</div>
-											<a href="./productos/ver_producto.php?id_producto=<?php echo $producto["id_producto"]; ?>" class="btn btn-dark btn-sm mt-3 w-100 rounded-pill">
+											<a href="./productos/ver_producto?id_producto=<?php echo $producto["id_producto"]; ?>" class="btn btn-dark btn-sm mt-3 w-100 rounded-pill">
 												Ir a la oferta
 												<i class="bi bi-arrow-right ms-2"></i>
 											</a>
@@ -285,7 +285,7 @@
 				while ($producto = $productos->fetch_assoc()) { ?>
 					<div class="col">
 						<div class="card h-100 shadow-sm">
-							<a href="./productos/ver_producto.php?id_producto=<?php echo $producto['id_producto']; ?>">
+							<a href="./productos/ver_producto?id_producto=<?php echo $producto['id_producto']; ?>">
 								<img src="./img/productos/<?php echo $producto['img_producto'] ?>" class="card-img-top"
 									alt="Producto <?php echo $productos->field_count ?>" />
 							</a>
