@@ -137,28 +137,28 @@
 	<div class="container">
 		<!-- Ofertas -->
 		<!-- Carrusel Mejorado de Ofertas -->
+
 		<div class="container mt-5">
 			<h2 class="mb-4 text-start fw-bold" style="font-size:2rem;">Últimas Ofertas</h2>
 			<?php
 			$sql = "SELECT p.*, o.porcentaje
 					FROM productos p
 					INNER JOIN ofertas o ON p.id_oferta = o.id_oferta
-					ORDER BY RAND() LIMIT 8"; // Puedes aumentar el LIMIT si tienes más ofertas
+					ORDER BY RAND() LIMIT 8";
 			$resultado = $_conexion->query($sql);
 
-			// Agrupar productos en arrays de 2 para cada slide
 			$ofertas = [];
 			while ($producto = $resultado->fetch_assoc()) {
 				$ofertas[] = $producto;
 			}
-			$ofertas_por_slide = array_chunk($ofertas, 2);
 			?>
 			<div id="carruselOfertas" class="carousel slide" data-bs-ride="carousel">
 				<div class="carousel-inner">
-					<?php foreach ($ofertas_por_slide as $i => $grupo): ?>
+					<?php for ($i = 0; $i < count($ofertas); $i += 2): ?>
 						<div class="carousel-item <?php if ($i === 0) echo 'active'; ?>">
 							<div class="row g-4 justify-content-center">
-								<?php foreach ($grupo as $producto): 
+								<?php for ($j = $i; $j < $i + 2 && $j < count($ofertas); $j++): 
+									$producto = $ofertas[$j];
 									$precio_original = $producto['precio'];
 									$porcentaje_descuento = $producto['porcentaje'];
 									$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
@@ -191,10 +191,10 @@
 										</div>
 									</div>
 								</div>
-								<?php endforeach; ?>
+								<?php endfor; ?>
 							</div>
 						</div>
-					<?php endforeach; ?>
+					<?php endfor; ?>
 				</div>
 				<!-- Controles personalizados -->
 				<button class="carousel-control-prev custom-carousel-btn" type="button" data-bs-target="#carruselOfertas" data-bs-slide="prev">
@@ -207,7 +207,7 @@
 
 		<!-- Categorías con scroll horizontal -->
 		<div class="container my-5">
-			<h2 class="fw-bold mb-4">Categorías</h2>
+			<h2 class="fw-bold mb-4 text-start" style="font-size:2rem;">Categorías</h2>
 			<div class="categorias-scroll d-flex flex-row gap-4 overflow-auto pb-3">
 				<?php
 				$sql = "SELECT * FROM categorias";
@@ -246,7 +246,7 @@
 		?>
 		<!-- Productos -->
 		<div class="container py-5 mt-5">
-			<h2 id="productos" class="text-start fw-bold mb-4">Productos Nuevos</h2>
+			<h2 id="productos" class="text-start fw-bold mb-4" style="font-size:2rem;">Productos Nuevos</h2>
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
 			<!-- SweetAlert2 para mostrar el mensaje toast -->
