@@ -1,3 +1,16 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../util/conexion.php');
+
+session_start();
+if (!isset($_SESSION["usuario"])) {
+    header("location: ../suscripcion/");
+    exit;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -8,7 +21,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
@@ -21,9 +34,29 @@
 
         #sidebar {
             width: 400px;
+            min-width: 400px;
+            max-width: 400px;
             height: 100vh;
             overflow-y: auto;
             background: #f8f9fa;
+            transition: width 0.3s, min-width 0.3s, padding 0.3s;
+        }
+
+        #sidebar.collapsed {
+            width: 0 !important;
+            min-width: 0 !important;
+            max-width: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+            overflow: hidden;
+        }
+
+        .productos-sidebar {
+            display: flex;
+            flex-direction: row;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
         }
 
         #productos .list-group-item {
@@ -42,7 +75,14 @@
 
         #canvas-container {
             flex-grow: 1;
+            width: 100%;
+            transition: none;
             position: relative;
+            /* Elimina margin-left si lo tienes */
+        }
+
+        #sidebar.collapsed+#canvas-container {
+            margin-left: 0 !important;
         }
 
         canvas {
@@ -50,6 +90,47 @@
             width: 100%;
             height: 60vh;
         }
+
+        /* Ajusta el botón de toggle */
+        #toggle-sidebar-btn {
+            /* Ya está en position: absolute y left: 400px por defecto */
+            transition: left 0.3s;
+            /* Puedes ajustar el tamaño si quieres */
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin-right: 56px;
+        }
+
+        #sidebar.collapsed+#canvas-container {
+            margin-left: 0 !important;
+        }
+
+        #sidebar.collapsed~canvas {
+            width: 100vw !important;
+            height: 100vh !important;
+        }
+
+        #sidebar:not(collapse)~canvas {
+            width: 80vw !important;
+            height: 80vh !important;
+        }
+
+        #canvas-buttons {
+            margin-left: 56px !important;
+            transition: margin-left 0.3s;
+            
+        }
+
+        #canvas-buttons-2 {
+            margin-right: 36px !important;
+            transition: margin-right 0.3s;
+        }
+
+
 
         /* Anula el hover cuando el botón está en outline (seleccionado) */
         #add-wall-button.btn-outline-primary:hover,
@@ -70,18 +151,6 @@
             cursor: pointer;
         }
     </style>
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    require('../util/conexion.php');
-
-    session_start();
-    if (!isset($_SESSION["usuario"])) {
-        header("location: ../suscripcion/");
-        exit;
-    }
-    ?>
 </head>
 
 <body>
@@ -114,10 +183,18 @@
 
     ?>
     <!-- Contenedor principal -->
-    <div class="d-flex productos-sidebar main-content">
+    <div class="d-flex productos-sidebar main-content" style="height: 100vh; position: relative;">
         <!-- Sidebar de productos -->
         <div id="sidebar" class="p-3">
-            <h5>Productos</h5>
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <h5 class="mb-0">Productos</h5>
+                <!-- Botón para ocultar/mostrar sidebar SIEMPRE visible -->
+                <button id="toggle-sidebar-btn" class="btn btn-outline-secondary btn-sm"
+                    style="position: absolute; top: 24px; left: 400px; z-index: 1050; transition: left 0.3s;"
+                    title="Ocultar barra">
+                    <i class="bi bi-chevron-left" id="toggle-sidebar-icon"></i>
+                </button>
+            </div>
             <div id="productos" class="list-group">
                 <?php if (empty($productos)): ?>
                     <div class="text-center py-5">
@@ -133,7 +210,8 @@
                                 alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
                             <span>
                                 <?php echo htmlspecialchars($producto['nombre']); ?><br>
-                                <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
+                                <small class="text-muted cantidad-label">Cantidad: <span
+                                        class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
                             </span>
                         </div>
                     <?php endforeach; ?>
@@ -146,17 +224,17 @@
         </div>
 
         <!-- Contenedor del canvas -->
-        <div id="canvas-container" class="p-3">
+        <div id="canvas-container" class="p-3 flex-grow-1">
             <div class="d-flex justify-content-between mb-3">
-                <div class="d-flex text-start me-2">
+                <div id="canvas-buttons" class="d-flex text-start me-2">
                     <!-- Botón de agregar pared -->
                     <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
                         style="width: 60px; height: 60px;" title="Agregar pared">
                         <i class="bi bi-square" style="font-size: 24px;"></i>
                     </button>
                     <!-- Botón de agregar puerta -->
-                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2" onclick="agregarPuerta()"
-                        style="width: 60px; height: 60px;" title="Agregar puerta">
+                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2"
+                        onclick="agregarPuerta()" style="width: 60px; height: 60px;" title="Agregar puerta">
                         <i class="bi bi-door-open" style="font-size: 24px;"></i>
                     </button>
                     <!-- Botón de modo ratón -->
@@ -181,18 +259,20 @@
                     </button>
                 </div>
 
-                <div class="d-flex text-end me-2">
+                <div id="canvas-buttons-2" class="d-flex text-end me-2">
                     <!-- <button id="save-design" class="btn btn-success rounded-circle shadow me-2"
                         onclick="guardarCanvas()" style="width: 60px; height: 60px;">
                         <i class="bi bi-save" style="font-size: 24px;"></i>
                     </button> -->
 
-                    <button id="import-json-btn" class="btn btn-info rounded-circle shadow me-2" style="width: 60px; height: 60px;" title="Importar JSON">
+                    <button id="import-json-btn" class="btn btn-info rounded-circle shadow me-2"
+                        style="width: 60px; height: 60px;" title="Importar JSON">
                         <i class="bi bi-upload" style="font-size: 24px;"></i>
                     </button>
                     <div class="btn-group me-2">
-                        <button id="export-dropdown" type="button" class="btn btn-success rounded-circle shadow dropdown-toggle"
-                            data-bs-toggle="dropdown" aria-expanded="false" style="width: 60px; height: 60px;">
+                        <button id="export-dropdown" type="button"
+                            class="btn btn-success rounded-circle shadow dropdown-toggle" data-bs-toggle="dropdown"
+                            aria-expanded="false" style="width: 60px; height: 60px;">
                             <i class="bi bi-save" style="font-size: 24px;"></i>
                         </button>
                         <ul class="dropdown-menu">
@@ -208,16 +288,37 @@
                     </button>
                 </div>
             </div>
+
             <canvas id="canvas"></canvas>
         </div>
     </div>
-    
+
     <?php include('../udify-bot.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <script src="JS/funcionalidades.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggleBtn = document.getElementById('toggle-sidebar-btn');
+        const icon = document.getElementById('toggle-sidebar-icon');
+        const canvasButtons = document.getElementById('canvas-buttons');
+
+        toggleBtn.addEventListener('click', function () {
+            sidebar.classList.toggle('collapsed');
+            if (sidebar.classList.contains('collapsed')) {
+                toggleBtn.style.left = '10px';
+                icon.classList.remove('bi-chevron-left');
+                icon.classList.add('bi-chevron-right');
+                canvasButtons.style.marginLeft = '56px'; // Ajusta según el ancho del botón
+            } else {
+                toggleBtn.style.left = '400px';
+                icon.classList.remove('bi-chevron-right');
+                icon.classList.add('bi-chevron-left');
+                canvasButtons.style.marginLeft = '0';
+            }
+        });
+    </script>
 </body>
-<?php include('../footer.php'); ?>
 
 </html>
