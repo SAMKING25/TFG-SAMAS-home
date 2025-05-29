@@ -1,68 +1,139 @@
+
 <?php
 if (!isset($_POST['importe'])) {
   echo "No se recibió el importe. <a href='/carrito/index.php'>Volver al carrito</a>";
   exit;
 }
-
 $importe = floatval($_POST['importe']);
 ?>
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>paypal</title>
+  <title>Completa tu compra | SAMAS HOME</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-  <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/> 
+  <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
   <link rel="stylesheet" href="../css/landing.css" />
-  <script src="https://www.paypal.com/sdk/js?client-id=AdqsJ63fSAtdJRDBbE-PH4NKFJuBJAnnTMG1NQUIu22PoUhSnYKQrBGPWBzg0ZFk6DAYOROp5g3zTkZu&currency=EUR"></script>
-
+  <script src="https://www.paypal.com/sdk/js?client-id=AZiNIbkuxCM_s2y_iYwPg7V4zhQKzZbSJhN_y0P7_Pl5hDT7l3bAdsy8VoRzicjIA7r3JnzwT8e_TTJK&currency=EUR"></script>
   <style>
-    #paypal-buttom-conteiner {
-      padding: 40px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-      transform: scale(1.4);
-      /* Aumenta el tamaño visual del botón */
-      transition: transform 0.3s ease;
+    body {
+      background: #f6f6f6;
     }
-
-    #paypal-buttom-conteiner:hover {
-      transform: scale(1.45);
-    }
-
     .main-content {
-      flex: 1 0 auto;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .form-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(60,60,120,0.12);
+      padding: 2.5rem 2rem 2rem 2rem;
+      max-width: 420px;
+      width: 100%;
+      margin: 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .paypal-section {
+      border-top: 1px solid #eee;
+      padding-top: 1.5rem;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #paypal-buttom-conteiner {
+      width: 100%;
+      padding: 0;
+      background: none;
+      border-radius: 0;
+      box-shadow: none;
+      transform: none;
+      transition: none;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 60vh;
-      /* Ajusta según el tamaño del footer/navbar */
-      width: 100%;
-      background: transparent;
     }
-
-    footer {
-      flex-shrink: 0;
+    @media (max-width: 576px) {
+      .form-card {
+        padding: 1.2rem 0.5rem 1.5rem 0.5rem;
+        max-width: 98vw;
+      }
     }
   </style>
 </head>
-
 <body>
   <?php include('../navbar.php'); ?>
   <div class="main-content">
-    <div id="paypal-buttom-conteiner"></div>
+    <div class="form-card">
+      <h3 class="mb-4 text-center">Datos para la compra</h3>
+      <form id="datosForm" novalidate>
+        <div class="mb-3">
+          <label for="nombre" class="form-label">Nombre</label>
+          <input type="text" class="form-control" id="nombre" name="nombre" required>
+          <div class="invalid-feedback">Introduce tu nombre.</div>
+        </div>
+        <div class="mb-3">
+          <label for="apellidos" class="form-label">Apellidos</label>
+          <input type="text" class="form-control" id="apellidos" name="apellidos" required>
+          <div class="invalid-feedback">Introduce tus apellidos.</div>
+        </div>
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+          <div class="invalid-feedback">Introduce un correo válido.</div>
+        </div>
+        <div class="mb-3">
+          <label for="telefono" class="form-label">Teléfono</label>
+          <input type="tel" class="form-control" id="telefono" name="telefono" required>
+          <div class="invalid-feedback">Introduce tu teléfono.</div>
+        </div>
+        <div class="mb-3">
+          <label for="direccion" class="form-label">Dirección</label>
+          <input type="text" class="form-control" id="direccion" name="direccion" required>
+          <div class="invalid-feedback">Introduce tu dirección.</div>
+        </div>
+        <div class="mb-3 text-center">
+          <strong>Total a pagar: <?php echo number_format($importe, 2, ',', '.'); ?> €</strong>
+        </div>
+        <div class="paypal-section">
+          <div id="paypal-buttom-conteiner"></div>
+        </div>
+      </form>
+    </div>
   </div>
   <?php include('../footer.php'); ?>
   <?php include('../cookies.php'); ?>
   <?php include('../udify-bot.php'); ?>
 
   <script>
+    // Bootstrap validation visual feedback
+    (function () {
+      'use strict';
+      var form = document.getElementById('datosForm');
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      }, false);
+    })();
+
     paypal.Buttons({
       createOrder: function(data, actions) {
+        var form = document.getElementById('datosForm');
+        // Validación 
+        if (!form.checkValidity()) {
+          form.classList.add('was-validated');
+          form.reportValidity();
+          return false;
+        }
         return actions.order.create({
           purchase_units: [{
             amount: {
@@ -73,7 +144,17 @@ $importe = floatval($_POST['importe']);
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(detalles) {
-          window.location.href = "completado.html";
+          var form = document.getElementById('datosForm');
+          var formData = new FormData(form);
+          formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
+          formData.append('paypal_email', detalles.payer.email_address);
+
+          fetch('enviar_correo.php', {
+            method: 'POST',
+            body: formData
+          }).then(() => {
+            window.location.href = "completado.html";
+          });
         });
       },
       onCancel: function(data) {
@@ -83,5 +164,4 @@ $importe = floatval($_POST['importe']);
     }).render("#paypal-buttom-conteiner");
   </script>
 </body>
-
 </html>
