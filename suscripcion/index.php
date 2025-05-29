@@ -1,11 +1,24 @@
-    <?php
-        error_reporting(E_ALL);
-        ini_set("display_errors", 1);
+<?php
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
 
-        require('../util/conexion.php');
+    require('../util/conexion.php');
+    session_start();
 
-        session_start();
-        ?>
+    // Obtén el id de suscripción del usuario actual
+    $id_usuario = $_SESSION['usuario'] ?? null;
+    $id_suscripcion_usuario = 1; // Por defecto básica
+
+    if ($id_usuario) {
+        $sql_user = $_conexion->prepare("SELECT id_suscripcion FROM usuarios WHERE id_usuario = ?");
+        $sql_user->bind_param("i", $id_usuario);
+        $sql_user->execute();
+        $res_user = $sql_user->get_result();
+        if ($row = $res_user->fetch_assoc()) {
+            $id_suscripcion_usuario = (int)$row['id_suscripcion'];
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,7 +29,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="shortcut icon" href="/img/logos/logo-marron-nobg.ico" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>	
     <!--search-->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -170,15 +183,30 @@
         <h2 class="cardo-title text-center mb-5">¡Escoge el plan perfecto para ti!</h2>
 
         <?php
+            $hay_usuarios = false;
+            $sql_check = "SELECT COUNT(*) as total FROM usuarios";
+            $res_check = $_conexion->query($sql_check);
+            if ($res_check && $row_check = $res_check->fetch_assoc()) {
+                $hay_usuarios = $row_check['total'] > 0;
+            }
+        ?>
+        
+        <?php
             $sql = "SELECT * FROM suscripciones ORDER BY id_suscripcion ASC";
             $suscripciones = $_conexion->query($sql);
             $i = 0;
         ?>
+        <?php
+            $usuario_no_logueado = !isset($_SESSION['usuario']);
+        ?>
 
         <div class="row justify-content-center g-4">
             <?php while ($suscripcion = $suscripciones->fetch_assoc()): ?>
+                <?php
+                    $id_suscripcion = (int)$suscripcion['id_suscripcion'];
+                ?>
                 <div class="col-12 col-md-6 col-lg-4 d-flex">
-                    <div class="card h-100 pricing-card <?= strtolower($suscripcion['nombre']) ?> w-100">
+                    <div class="card h-100 pricing-card <?= strtolower($suscripcion['nombre']) ?> w-100 d-flex flex-column">
                         <div class="pricing-header <?php echo $suscripcion['nombre'] ?> text-white text-center">
                             <h3 class="mb-0"><?php echo $suscripcion['nombre'] ?></h3>
                             <div class="display-4 fw-bold my-3"><?php echo $suscripcion['precio'] ?>€</div>
@@ -235,12 +263,24 @@
                                     <?php endif; ?>
                                 </li>
                             </ul>
-                            <div class="text-center">
-                                <?php if ($i === 0): ?>
-                                    <a href="#" class="btn btn-outline-secondary btn-custom disabled">Plan Actual</a>
-                                <?php else: ?>
-                                    <a href="/pasarela-pago/" class="btn btn-custom <?php echo $suscripcion['nombre'] ?>">Adquirir</a>
-                                <?php endif; ?>
+                            <div class="mt-auto text-center">
+                                <form action="../pasarela-pago/" method="post">
+                                    <input type="hidden" name="importe" value="<?php echo number_format((float)$suscripcion['precio'], 2, '.', ''); ?>">
+                                    <?php if (!$hay_usuarios || $usuario_no_logueado): ?>
+                                        <a href="/login/usuario/registro_usuario.php" class="btn btn-custom <?php echo $suscripcion['nombre']; ?> w-100" style="max-width:220px;">Activar</a>
+                                        <div style="height:1.5em;"></div>
+                                    <?php else: ?>
+                                        <?php
+                                            if ($id_suscripcion_usuario === $id_suscripcion) {
+                                                echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
+                                                echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
+                                            } else {
+                                                echo '<a href="/pasarela-pago/" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                                echo '<div style="height:1.5em;"></div>';
+                                            }
+                                        ?>
+                                    <?php endif; ?>
+                                </form>
                             </div>
                         </div>
                     </div>

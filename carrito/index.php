@@ -6,7 +6,7 @@ require('../util/conexion.php');
 session_start();
 
 if (!isset($_SESSION["usuario"])) {
-    header("Location: /login/usuario/iniciar_sesion_usuario.php");
+    header("Location: /login/usuario/iniciar_sesion_usuario");
     exit;
 }
 
@@ -43,6 +43,7 @@ while ($fila = $resultado->fetch_assoc()) {
     $total += $subtotal;
 
     $productos[] = [
+        "id_producto" => $fila["id_producto"], // Añadido
         "nombre" => $fila["nombre"],
         "cantidad" => $cantidad,
         "img" => $fila["img_producto"],
@@ -51,6 +52,15 @@ while ($fila = $resultado->fetch_assoc()) {
         "precio_final" => $precio_final,
         "subtotal" => $subtotal
     ];
+}
+
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"])) {
+    $id_producto = intval($_POST["eliminar_producto"]);
+    $stmt = $_conexion->prepare("DELETE FROM carrito WHERE id_usuario = ? AND id_producto = ?");
+    $stmt->bind_param("ii", $id_usuario, $id_producto);
+    $stmt->execute();
+    header("Location: index.php");
+    exit;
 }
 ?>
 
@@ -62,6 +72,7 @@ while ($fila = $resultado->fetch_assoc()) {
     <title>Mi Carrito</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>		
     <link rel="stylesheet" href="/css/landing.css" />
 </head>
 
@@ -83,23 +94,32 @@ while ($fila = $resultado->fetch_assoc()) {
                                     <img src="/img/productos/<?php echo $producto["img"]; ?>" class="img-fluid rounded" style="max-height: 150px; object-fit: contain;">
                                 </div>
                                 <div class="col-md-8">
-                                    <div class="card-body">
-                                        <h5 class="card-title fw-bold"><?php echo $producto["nombre"]; ?></h5>
-                                        <p class="card-text mb-1">Cantidad: <?php echo $producto["cantidad"]; ?></p>
-                                        <?php if (!is_null($producto["porcentaje"])): ?>
-                                            <p class="card-text text-danger mb-1">
-                                                Descuento del <?php echo $producto["porcentaje"]; ?>%
-                                            </p>
-                                            <p class="card-text">
-                                                <span class="text-muted text-decoration-line-through me-2"><?php echo number_format($producto["precio"], 2, ',', '.'); ?> €</span>
-                                                <span class="text-success fw-semibold"><?php echo number_format($producto["precio_final"], 2, ',', '.'); ?> €</span>
-                                            </p>
-                                        <?php else: ?>
-                                            <p class="card-text text-success fw-semibold">
-                                                <?php echo number_format($producto["precio"], 2, ',', '.'); ?> €
-                                            </p>
-                                        <?php endif; ?>
-                                        <p class="card-text"><strong>Subtotal:</strong> <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
+                                    <div class="card-body d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="card-title fw-bold"><?php echo $producto["nombre"]; ?></h5>
+                                            <p class="card-text mb-1">Cantidad: <?php echo $producto["cantidad"]; ?></p>
+                                            <?php if (!is_null($producto["porcentaje"])): ?>
+                                                <p class="card-text text-danger mb-1">
+                                                    Descuento del <?php echo $producto["porcentaje"]; ?>%
+                                                </p>
+                                                <p class="card-text">
+                                                    <span class="text-muted text-decoration-line-through me-2"><?php echo number_format($producto["precio"], 2, ',', '.'); ?> €</span>
+                                                    <span class="text-success fw-semibold"><?php echo number_format($producto["precio_final"], 2, ',', '.'); ?> €</span>
+                                                </p>
+                                            <?php else: ?>
+                                                <p class="card-text text-success fw-semibold">
+                                                    <?php echo number_format($producto["precio"], 2, ',', '.'); ?> €
+                                                </p>
+                                            <?php endif; ?>
+                                            <p class="card-text"><strong>Subtotal:</strong> <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
+                                        </div>
+                                        <!-- Botón de eliminar -->
+                                        <form method="post" action="" style="margin-left:10px;">
+                                            <input type="hidden" name="eliminar_producto" value="<?php echo $producto["id_producto"]; ?>">
+                                            <button type="submit" class="btn btn-link text-danger p-0" title="Eliminar producto" onclick="return confirm('¿Eliminar este producto del carrito?')">
+                                                <i class="bi bi-x-lg fs-4"></i>
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -117,7 +137,8 @@ while ($fila = $resultado->fetch_assoc()) {
                         <p class="card-text fs-5">Total: <span class="fw-bold text-success"><?php echo number_format($total, 2, ',', '.'); ?> €</span></p>
 
                         <hr>
-                        <form action="#" method="post">
+                        <!-- Formulario para aplicar código de descuento -->
+                        <form action="" method="post">
                             <div class="mb-3">
                                 <label for="codigo_descuento" class="form-label">Código de descuento</label>
                                 <input type="text" class="form-control" name="codigo_descuento" id="codigo_descuento" placeholder="Introduce tu código">
@@ -126,16 +147,24 @@ while ($fila = $resultado->fetch_assoc()) {
                         </form>
 
                         <hr>
-                        <button class="btn btn-success w-100 mt-3">Finalizar compra</button>
+                        <!-- Formulario para finalizar compra -->
+                        <form action="../pasarela-pago/" method="post">
+                            <input type="hidden" name="importe" value="<?php echo number_format((float)$total, 2, '.', ''); ?>">
+                            <button type="submit" class="btn btn-secondary w-100 mt-3" <?php echo ($total <= 0) ? 'disabled' : ''; ?>>
+                                Finalizar compra
+                            </button>
+                        </form>
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Pop-up de cookies incluido-->
-	<?php include('../cookies.php'); ?>
+
+    <?php include('../cookies.php'); ?>
     <?php include('../footer.php'); ?>
     <?php include('../udify-bot.php'); ?>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

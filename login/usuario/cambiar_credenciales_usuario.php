@@ -7,6 +7,7 @@
     <title>Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>	
     <?php
         error_reporting( E_ALL );
         ini_set("display_errors", 1 );    
@@ -22,8 +23,6 @@
             exit;
         }
 
-
-
         $id_usuario = $_SESSION['usuario'];
 
         $sql = $_conexion-> prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
@@ -36,11 +35,16 @@
             $nombre_usuario_actual = $fila['nombre_usuario'];
             $contrasena_usuario_cifrada_actual = $fila['contrasena_usuario'];
             $img_usuario_actual = $fila['img_usuario'];
+            $id_suscripcion_actual = $fila['id_suscripcion'];
         } 
     ?>
     <style>
         .error {
             color: red;
+        }
+
+        html {
+            background: #F7E5CB;
         }
 
         .gradient-custom-2 {
@@ -72,6 +76,7 @@
             filter: brightness(0.7);
             transition: filter 0.2s;
         }
+
     </style>
 </head>
 <body>

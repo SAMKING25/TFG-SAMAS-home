@@ -8,8 +8,7 @@
 	<!-- Bootstrap CSS -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-	<link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
-	<!-- Archivo CSS personalizado -->
+	<link id="favicon" rel="shortcut icon" href="./img/logos/loguito_gris.png"/>	<!-- Archivo CSS personalizado -->
 	<link rel="stylesheet" href="/css/landing.css" />
 	<!--Search-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
@@ -45,98 +44,124 @@
 	</div>
 	<div class="container">
 		<!-- Ofertas -->
-		<!-- Carrusel -->
+		<!-- Carrusel Mejorado de Ofertas -->
 		<div class="container mt-5">
-			<h2 class="text-center mb-4">Últimas Ofertas</h2>
+			<h2 class="mb-4 text-start fw-bold" style="font-size:2rem;">Últimas Ofertas</h2>
 			<?php
 			$sql = "SELECT p.*, o.porcentaje
-            FROM productos p
-            INNER JOIN ofertas o ON p.id_oferta = o.id_oferta";
+					FROM productos p
+					INNER JOIN ofertas o ON p.id_oferta = o.id_oferta
+					ORDER BY RAND() LIMIT 8"; // Puedes aumentar el LIMIT si tienes más ofertas
 			$resultado = $_conexion->query($sql);
+
+			// Agrupar productos en arrays de 2 para cada slide
+			$ofertas = [];
+			while ($producto = $resultado->fetch_assoc()) {
+				$ofertas[] = $producto;
+			}
+			$ofertas_por_slide = array_chunk($ofertas, 2);
 			?>
 			<div id="carruselOfertas" class="carousel slide" data-bs-ride="carousel">
-				<div class="carousel-inner carrusel-inner">
-					<?php
-					$primero = true;
-					while ($producto = $resultado->fetch_assoc()) {
-						$precio_original = $producto['precio'];
-						$porcentaje_descuento = $producto['porcentaje'];
-						$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
-						?>
-						<div class="carousel-item <?php if ($primero) {
-							echo 'active';
-							$primero = false;
-						} ?>">
-							<a href="./productos/ver_producto.php?id_producto= <?php echo $producto["id_producto"]; ?>"><img
-									src="img/productos/<?php echo $producto['img_producto']; ?>" class="d-block w-100"
-									alt="<?php echo htmlspecialchars($producto['nombre']); ?>"
-									style="object-fit: cover; height: 100%; width: 100%;"></a>
-							<div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-3">
-								<h5 class="fs-2">
-									<?php echo htmlspecialchars($producto['nombre']); ?>
-								</h5>
-								<p class="fs-5">¡
-									<?php echo $producto['porcentaje']; ?>% de descuento!
-								</p>
-								<p class="fs-6">
-									<span style="text-decoration:line-through; color:grey;">
-										<?php echo number_format($precio_original, 2, ',', '.'); ?> €
-									</span>
-								</p>
-								<p class="fs-1 fw-bold">
-									<?php echo number_format($precio_final, 2, ',', '.'); ?> €
-								</p>
+				<div class="carousel-inner">
+					<?php foreach ($ofertas_por_slide as $i => $grupo): ?>
+						<div class="carousel-item <?php if ($i === 0) echo 'active'; ?>">
+							<div class="row g-4 justify-content-center">
+								<?php foreach ($grupo as $producto): 
+									$precio_original = $producto['precio'];
+									$porcentaje_descuento = $producto['porcentaje'];
+									$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
+								?>
+								<div class="col-12 col-lg-6">
+									<div class="card h-100 shadow oferta-card rounded-4 border-0">
+										<div class="position-relative">
+											<a href="./productos/ver_producto.php?id_producto=<?php echo $producto["id_producto"]; ?>">
+												<img src="img/productos/<?php echo $producto['img_producto']; ?>" class="card-img-top rounded-top-4" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" style="height: 200px; object-fit: cover;">
+											</a>
+											<span class="badge bg-danger position-absolute top-0 start-0 m-2 fs-6 rounded-pill px-3 py-2 shadow">
+												-<?php echo $producto['porcentaje']; ?>%
+											</span>
+										</div>
+										<div class="card-body d-flex flex-column">
+											<h5 class="card-title text-truncate"><?php echo htmlspecialchars($producto['nombre']); ?></h5>
+											<p class="card-text small text-muted text-truncate"><?php echo htmlspecialchars($producto['descripcion']); ?></p>
+											<div class="mt-auto">
+												<span class="text-decoration-line-through text-secondary me-2">
+													<?php echo number_format($precio_original, 2, ',', '.'); ?> €
+												</span>
+												<span class="fw-bold fs-5 text-success">
+													<?php echo number_format($precio_final, 2, ',', '.'); ?> €
+												</span>
+											</div>
+											<a href="./productos/ver_producto.php?id_producto=<?php echo $producto["id_producto"]; ?>" class="btn btn-dark btn-sm mt-3 w-100 rounded-pill">
+												Ir a ofertas
+											</a>
+										</div>
+									</div>
+								</div>
+								<?php endforeach; ?>
 							</div>
 						</div>
-					<?php } ?>
+					<?php endforeach; ?>
 				</div>
-
-				<!-- Controles -->
-				<button class="carousel-control-prev" type="button" data-bs-target="#carruselOfertas"
-					data-bs-slide="prev">
-					<span class="carousel-control-prev-icon"></span>
-					<span class="visually-hidden">Anterior</span>
+				<!-- Controles personalizados -->
+				<button class="carousel-control-prev custom-carousel-btn" type="button" data-bs-target="#carruselOfertas" data-bs-slide="prev">
+					<i class="bi bi-chevron-left fs-2"></i>
 				</button>
-				<button class="carousel-control-next" type="button" data-bs-target="#carruselOfertas"
-					data-bs-slide="next">
-					<span class="carousel-control-next-icon"></span>
-					<span class="visually-hidden">Siguiente</span>
+				<button class="carousel-control-next custom-carousel-btn" type="button" data-bs-target="#carruselOfertas" data-bs-slide="next">
+					<i class="bi bi-chevron-right fs-2"></i>
 				</button>
 			</div>
-		</div>
 
-		<!-- Estilos exclusivos para el carrusel -->
-		<style>
-			/* Aseguramos que solo el carrusel tenga altura y formato adecuado */
-			#carruselOfertas .carousel-inner {
-				height: 500px;
-				/* Fijamos la altura del carrusel */
+			<style>
+			.oferta-card {
+				border-radius: 1.2rem !important;
+				overflow: hidden;
+				transition: transform 0.2s, box-shadow 0.2s;
+				background: #fff;
 			}
-
-			#carruselOfertas .carousel-item {
-				height: 100%;
+			.oferta-card:hover {
+				transform: scale(0.96);
+				box-shadow: 0 4px 16px rgba(60,60,60,0.10);
+				border-radius: 1.2rem !important;
 			}
-
-			#carruselOfertas img {
-				object-fit: cover;
-				height: 100%;
-				width: 100%;
+			.carousel-inner {
+				padding-bottom: 30px;
 			}
-
-			/* Estilo específico para la descripción del carrusel */
-			#carruselOfertas .carousel-caption {
-				bottom: 20px;
-				/* Ajustamos la posición de la descripción */
-				padding: 10px;
-				background-color: rgba(0, 0, 0, 0.5);
-				/* Fondo oscuro y semitransparente */
-				border-radius: 8px;
+			.custom-carousel-btn {
+				width: 48px;
+				height: 48px;
+				top: 50%;
+				transform: translateY(-50%);
+				background: rgba(0, 0, 0, 0.25)!important;
+				border-radius: 50%;
+				border: 2px solid #e0e0e0;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+				opacity: 0.85;
+				transition: opacity 0.2s, box-shadow 0.2s;
+				z-index: 2;
 			}
-		</style>
+			.custom-carousel-btn:hover {
+				opacity: 1;
+				box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+			}
+			.carousel-control-prev {
+				left: -35px;
+			}
+			.carousel-control-next {
+				right: -35px;
+			}
+			@media (max-width: 600px) {
+				.carousel-control-prev, .carousel-control-next {
+					left: 0 !important;
+					right: 0 !important;
+				}
+				.oferta-card { border-radius: 0.8rem !important; }
+			}
+			</style>
 
 		<!-- Categorias -->
-		<div class="text-center mt-5">
-			<h2>Categorías</h2>
+		<div class="text-start mt-5">
+			<h2 class="fw-bold">Categorías</h2>
 		</div>
 		<!-- Pedimos a la BD todas las categorias -->
 		<?php
@@ -175,7 +200,7 @@
 		?>
 		<!-- Productos -->
 		<div class="container py-5 mt-5">
-			<h2 id="productos" class="text-center mb-4">Productos Nuevos</h2>
+			<h2 id="productos" class="text-start fw-bold mb-4">Productos Nuevos</h2>
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
 				<?php
@@ -216,6 +241,7 @@
 			</form>
 		</div>
 	</div>
+	</div>
 
 	<?php include('footer.php'); ?>
 	<?php include('udify-bot.php'); ?>
@@ -241,8 +267,6 @@
 			});
 		}
 	</script>
-
-	</div>
 	<script>
 		document.addEventListener("DOMContentLoaded", function () {
 			const navbar = document.querySelector('.navbar-home');
@@ -257,6 +281,26 @@
 		});
 	</script>
 
-</body>
+	<script>
+	function updateFavicon(theme) {
+		const favicon = document.getElementById('favicon');
+		if (theme === 'dark') {
+		favicon.href = './img/logos/loguito_gris.png';
+		} else {
+		favicon.href = './img/logos/loguito_negro.png';
+		}
+	}
 
+	// Detecta el tema del sistema
+	const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+	// Cambia el favicon según el tema actual
+	updateFavicon(darkModeMediaQuery.matches ? 'dark' : 'light');
+
+	// Escucha los cambios en el tema
+	darkModeMediaQuery.addEventListener('change', e => {
+		updateFavicon(e.matches ? 'dark' : 'light');
+	});
+	</script>
+</body>
 </html>

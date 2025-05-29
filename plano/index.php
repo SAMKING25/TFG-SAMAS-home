@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="shortcut icon" href="/img/logos/logo-marron-nobg.ico" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
@@ -78,7 +78,7 @@
 
     session_start();
     if (!isset($_SESSION["usuario"])) {
-        header("location: ../login/usuario/iniciar_sesion_usuario.php");
+        header("location: ../suscripcion/");
         exit;
     }
     ?>
@@ -88,8 +88,17 @@
     <?php
     include('../navbar.php');
 
-    $query = $_conexion->query('SELECT * FROM productos');
-    $productos = $query->fetch_all(MYSQLI_ASSOC);
+    $id_usuario = $_SESSION["usuario"];
+    $query = $_conexion->prepare('
+        SELECT p.*, c.cantidad 
+        FROM carrito c
+        JOIN productos p ON c.id_producto = p.id_producto
+        WHERE c.id_usuario = ?
+    ');
+    $query->bind_param('i', $id_usuario);
+    $query->execute();
+    $result = $query->get_result();
+    $productos = $result->fetch_all(MYSQLI_ASSOC);
 
     ?>
     <!-- Contenedor principal -->
@@ -100,12 +109,13 @@
             <div id="productos" class="list-group">
                 <?php foreach ($productos as $producto): ?>
                     <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
-                        onclick="agregarProducto('../../img/plano/<?php echo $producto['categoria']; ?>.png',
+                        onclick="agregarProductoSidebar(this, '../../img/plano/<?php echo $producto['categoria']; ?>.png',
                         <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
                         <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
                             alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
                         <span>
-                            <?php echo htmlspecialchars($producto['nombre']); ?>
+                            <?php echo htmlspecialchars($producto['nombre']); ?><br>
+                            <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
                         </span>
                     </div>
                 <?php endforeach; ?>
@@ -181,6 +191,7 @@
     
     <?php include('../udify-bot.php'); ?>
 
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
     <script src="JS/funcionalidades.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

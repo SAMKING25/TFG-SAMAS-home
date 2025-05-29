@@ -11,22 +11,31 @@ if (isset($_GET["id_producto"])) {
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_SESSION["usuario"])) {
-            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            header("Location: ../login/usuario/iniciar_sesion_usuario");
             exit;
         }
 
         $id_producto = intval($_GET["id_producto"]);
         $id_usuario = $_SESSION["usuario"];
-        $cantidad = $_POST["cantidad"];
+        $cantidad = intval($_POST["cantidad"]);
 
-        $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+        // Primero intenta actualizar la cantidad
+        $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = cantidad + ? WHERE id_usuario = ? AND id_producto = ?");
+        $stmt->bind_param("iii", $cantidad, $id_usuario, $id_producto);
+        $stmt->execute();
 
-        if ($stmt->execute()) {
-            $mensaje = "success";
-        } else {
+        if ($stmt->affected_rows === 0) {
+            // Si no existía, inserta una nueva fila
+            $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
+            $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+            $stmt->execute();
+        }
+
+        if ($stmt->error) {
             $mensaje = "error";
             $errorMsg = $stmt->error;
+        } else {
+            $mensaje = "success";
         }
 
         $stmt->close();
@@ -66,7 +75,7 @@ if ($hayOferta) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
@@ -182,22 +191,23 @@ if ($hayOferta) {
             <?php
             $categoria = $producto["categoria"];
             $id_actual = $producto["id_producto"];
-    
+
             $sql_similares = "SELECT p.*, o.porcentaje 
                               FROM productos p 
                               LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta 
-                              WHERE p.categoria = ? AND p.id_producto != ?";
-    
+                              WHERE p.categoria = ? AND p.id_producto != ?
+                              LIMIT 3";
+
             $stmt_similares = $_conexion->prepare($sql_similares);
             $stmt_similares->bind_param("si", $categoria, $id_actual);
             $stmt_similares->execute();
             $result_similares = $stmt_similares->get_result();
-    
+
             while ($sim = $result_similares->fetch_assoc()):
                 $hayOfertaSim = !is_null($sim["porcentaje"]);
                 $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
             ?>
-                <div class="col">
+                <div class="col mb-5">
                     <a href="ver_producto.php?id_producto=<?php echo $sim["id_producto"]; ?>" class="text-decoration-none text-dark">
                         <div class="card h-100 shadow-sm border-0 rounded-4 position-relative">
                             <?php if ($hayOfertaSim): ?>
@@ -205,13 +215,13 @@ if ($hayOferta) {
                                     -<?php echo $sim["porcentaje"]; ?>%
                                 </span>
                             <?php endif; ?>
-    
+
                             <div class="img-similar-wrapper">
                                 <img src="../../img/productos/<?php echo $sim["img_producto"]; ?>"
                                     class="img-similar"
                                     alt="Producto similar">
                             </div>
-    
+
                             <div class="card-body text-center">
                                 <h6 class="card-title fw-bold mb-2"><?php echo $sim["nombre"]; ?></h6>
                                 <div class="card-text fs-6">

@@ -15,7 +15,7 @@ $importe = floatval($_POST['importe']);
   <title>paypal</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-  <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
+  <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/> 
   <link rel="stylesheet" href="../css/landing.css" />
   <script src="https://www.paypal.com/sdk/js?client-id=AdqsJ63fSAtdJRDBbE-PH4NKFJuBJAnnTMG1NQUIu22PoUhSnYKQrBGPWBzg0ZFk6DAYOROp5g3zTkZu&currency=EUR"></script>
 

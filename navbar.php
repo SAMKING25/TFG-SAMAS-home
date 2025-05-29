@@ -59,8 +59,7 @@ if (isset($_SESSION['usuario'])) {
         </button>
 
         <!-- Menú centrado -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav mx-auto">
+            <div class="collapse navbar-collapse rounded-bottom" id="navbarNav">            <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link subraya" href="/">Inicio</a>
                 </li>
@@ -88,12 +87,12 @@ if (isset($_SESSION['usuario'])) {
             <!-- Iconos a la derecha -->
             <div class="d-flex align-items-center ms-auto">
                 <div class="me-3" style="font-size: 1rem;">
-                    <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link">
+                    <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link icon-grow">
                         <i class="bi bi-search icono-personalizado"></i>
                     </a>
                 </div>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
-                    <a href="/carrito" class="nav-link me-3">
+                    <a href="/carrito" class="nav-link me-3 icon-grow">
                         <i class="bi bi-cart2 icono-personalizado"></i>
                     </a>
                 <?php } ?>
@@ -195,5 +194,57 @@ if (isset($_SESSION['usuario'])) {
                 });
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+        // Solo si estamos en /plano o /plano/
+        if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
+            let confirmandoSalida = false; // Para evitar bucles
+
+            // 1. Aviso al recargar, cerrar o navegar fuera (navegación estándar)
+            window.addEventListener('beforeunload', function (e) {
+                if (!confirmandoSalida) {
+                    e.preventDefault();
+                    e.returnValue = ''; // Chrome requiere esto para mostrar el aviso nativo
+                    return '';
+                }
+            });
+
+            // 2. Aviso personalizado al pulsar cualquier enlace del navbar
+            document.querySelectorAll('a.nav-link, .dropdown-item').forEach(function(link) {
+                // Ignora enlaces que abren en nueva pestaña
+                if (link.target === '_blank') return;
+
+                link.addEventListener('click', function(e) {
+                    // Si ya estamos confirmando, deja pasar
+                    if (confirmandoSalida) return;
+
+                    // Si el enlace es a la misma página, recarga, o a otra, muestra el modal
+                    e.preventDefault();
+                    Swal.fire({
+                        title: "¿Quieres salir del plano?",
+                        text: "Si sales del plano, podrías perder los cambios no guardados.",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Sí, salir",
+                        cancelButtonText: "Cancelar"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            confirmandoSalida = true;
+                            window.removeEventListener('beforeunload', () => {}); // Evita doble aviso
+                            // Si es recarga (href actual), recarga, si no, navega
+                            if (link.href === window.location.href) {
+                                window.location.reload();
+                            } else {
+                                window.location.href = link.href;
+                            }
+                        }
+                        // Si cancela, no hace nada
+                    });
+                });
+            });
+        }
+    });
     </script>
 <?php } ?>

@@ -7,6 +7,7 @@
     <title>Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
     <?php
         error_reporting( E_ALL );
         ini_set("display_errors", 1 );    
@@ -108,7 +109,7 @@
             if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
                 // Generar código de verificación
                 $codigo_verificacion = rand(100000, 999999);
-
+                
                 // Guardar datos temporales en sesión
                 session_start();
                 $_SESSION['registro_email'] = $email_usuario;
