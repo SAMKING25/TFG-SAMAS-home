@@ -140,7 +140,8 @@
 												</span>
 											</div>
 											<a href="./productos/ver_producto.php?id_producto=<?php echo $producto["id_producto"]; ?>" class="btn btn-dark btn-sm mt-3 w-100 rounded-pill">
-												Ir a ofertas
+												Ir a la oferta
+												<i class="bi bi-arrow-right ms-2"></i>
 											</a>
 										</div>
 									</div>
@@ -185,17 +186,17 @@
 		</div>
 
 		<?php
-		$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 4;
+		$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 8;
 
 		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
 			$limite += 4;
 		}
 
 		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
-			$limite = max(4, $limite - 4); // Para que no baje de 4
+			$limite = max(8, $limite - 4); // Para que no baje de 8
 		}
 
-		$sql = "SELECT * FROM productos ORDER BY id_producto DESC LIMIT $limite";
+		$sql = "SELECT * FROM productos WHERE id_oferta IS NULL ORDER BY id_producto DESC LIMIT $limite";
 		$productos = $_conexion->query($sql);
 		?>
 		<!-- Productos -->
@@ -237,7 +238,7 @@
 				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
 
 				<!-- Botón "Ver menos productos" (quita 4 productos de la vista) -->
-				<?php if ($limite > 4): ?>
+				<?php if ($limite > 8): ?>
 					<button type="submit" name="ver_menos" class="btn btn-outline-dark mt-4">Ver menos productos</button>
 				<?php endif; ?>
 			</form>
