@@ -1,5 +1,28 @@
+
 const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
+});
+
+const tacto = new Hammer(document.getElementById('canvas'));
+
+// Habilita el reconocimiento de pinch
+tacto.get('pinch').set({ enable: true });
+
+let lastScale = 1;
+let lastZoom = canvas.getZoom();
+
+tacto.on("pinchstart", function(ev) {
+    lastScale = ev.scale;
+    lastZoom = canvas.getZoom();
+});
+
+tacto.on("pinchmove", function(ev) {
+    // Calcula el nuevo zoom relativo al zoom anterior
+    let newZoom = lastZoom * ev.scale / lastScale;
+    // Limita el zoom
+    newZoom = Math.max(0.6, Math.min(2, newZoom));
+    canvas.setZoom(newZoom);
+    canvas.requestRenderAll();
 });
 
 const zonaBloqueadaAltura = 100; // píxeles desde arriba
@@ -76,6 +99,30 @@ function agregarProducto(imagenURL, medidas) {
     });
 }
 
+function agregarProductoSidebar(element, imagenURL, medidas) {
+    agregarProducto(imagenURL, medidas);
+
+    // Restar cantidad visualmente
+    const cantidadNum = element.querySelector('.cantidad-num');
+    let cantidad = parseInt(cantidadNum.textContent, 10);
+    cantidad--;
+    // Guarda los datos del producto en el objeto fabric
+    const lastObj = canvas.getObjects().slice(-1)[0];
+    if (lastObj) {
+        lastObj.productoSidebarData = {
+            nombre: element.querySelector('span').childNodes[0].textContent.trim(),
+            img: element.querySelector('img').getAttribute('src'),
+            categoria: imagenURL.split('/').pop().split('.')[0],
+            medidas: medidas
+        };
+    }
+    if (cantidad <= 0) {
+        element.remove();
+    } else {
+        cantidadNum.textContent = cantidad;
+    }
+}
+
 function rotarImagen(eventData, transform) {
     const target = transform.target;
     if (target) {
@@ -100,6 +147,48 @@ function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
     if (activeObject) {
+        // Solo para productos (fabric.Image)
+        if (activeObject.type === 'image' && activeObject.productoSidebarData) {
+            const data = activeObject.productoSidebarData;
+            const productosSidebar = document.querySelectorAll('#productos .list-group-item');
+            let encontrado = false;
+
+            productosSidebar.forEach(item => {
+                // Compara por nombre e imagen (puedes ajustar si tienes un id único)
+                const img = item.querySelector('img');
+                const nombre = item.querySelector('span').childNodes[0].textContent.trim();
+                if (img && img.src === location.origin + data.img.replace('..', '') && nombre === data.nombre) {
+                    // Si ya está, suma 1 a la cantidad
+                    const cantidadNum = item.querySelector('.cantidad-num');
+                    let cantidad = parseInt(cantidadNum.textContent, 10);
+                    cantidadNum.textContent = cantidad + 1;
+                    encontrado = true;
+                }
+            });
+
+            // Si no está, crea el elemento en la barra lateral
+            if (!encontrado) {
+                const productosDiv = document.getElementById('productos');
+                const div = document.createElement('div');
+                div.className = "list-group-item list-group-item-action d-flex align-items-center";
+                div.style.cursor = "pointer";
+                div.onclick = function() {
+                    agregarProductoSidebar(this, '../../img/plano/' + data.categoria + '.png', data.medidas);
+                };
+                div.setAttribute('data-medidas', data.medidas);
+
+                div.innerHTML = `
+                    <img src="${data.img}" alt="${data.nombre}" class="me-2">
+                    <span>
+                        ${data.nombre}<br>
+                        <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num">1</span></small>
+                    </span>
+                `;
+                productosDiv.appendChild(div);
+            }
+        }
+
+        // Elimina del canvas
         if (activeObject.type === 'activeSelection') {
             activeObject.forEachObject(function (obj) {
                 canvas.remove(obj);
@@ -115,21 +204,6 @@ function borrarObjeto() {
             canvas.remove(activeObject);
         }
         canvas.requestRenderAll();
-    } else {
-        // No hay nada seleccionado: mostrar confirmación antes de borrar todo
-        if (confirm("No hay ningún objeto seleccionado. ¿Quieres borrar TODO el plano?")) {
-            canvas.getObjects().forEach(obj => {
-                // Borra todo excepto la escala gráfica y textos fijos
-                if (
-                    (!obj.excludeFromAlign && !obj.excludeFromExport) ||
-                    (obj.type === 'text' && obj.excludeFromExport)
-                ) {
-                    canvas.remove(obj);
-                }
-            });
-            canvas.discardActiveObject();
-            canvas.requestRenderAll();
-        }
     }
 }
 
