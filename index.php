@@ -21,7 +21,52 @@
 	require('util/conexion.php');
 
 	session_start();
-	?>
+
+	// --- PROCESAR AÑADIR AL CARRITO DESDE INDEX ---
+		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart"])) {
+			// Si el usuario no está logueado, redirige al login
+			if (!isset($_SESSION["usuario"])) {
+					header("Location: ./login/usuario/iniciar_sesion_usuario.php");
+					exit;
+				}
+				$id_producto = intval($_POST["id_producto"]);
+				$id_usuario = $_SESSION["usuario"];
+				$cantidad = isset($_POST["cantidad"]) ? intval($_POST["cantidad"]) : 1;
+
+				// Obtener stock del producto
+				$stmt_stock = $_conexion->prepare("SELECT stock FROM productos WHERE id_producto = ?");
+				$stmt_stock->bind_param("i", $id_producto);
+				$stmt_stock->execute();
+				$result_stock = $stmt_stock->get_result();
+				$stock = 0;
+				if ($row = $result_stock->fetch_assoc()) {
+					$stock = $row["stock"];
+				}
+				$stmt_stock->close();
+
+				if ($cantidad < 1) {
+					$mensaje = "error";
+					$errorMsg = "Cantidad no válida.";
+				} elseif ($cantidad > $stock) {
+					$mensaje = "error";
+					$errorMsg = "No hay suficiente stock disponible.";
+				} else {
+					$stmt = $_conexion->prepare(
+						"INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
+						ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)"
+					);
+					$stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+
+					if ($stmt->execute()) {
+						$mensaje = "success";
+					} else {
+						$mensaje = "error";
+						$errorMsg = $stmt->error;
+					}
+					$stmt->close();
+				}
+			}
+		?>
 
 				<style>
 			.oferta-card {
@@ -186,13 +231,13 @@
 		</div>
 
 		<?php
-		$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 8;
+		$limite = isset($_GET['limite']) ? intval($_GET['limite']) : 8;
 
-		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
+		if (isset($_GET['ver_mas'])) {
 			$limite += 4;
 		}
 
-		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
+		if (isset($_GET['ver_menos'])) {
 			$limite = max(8, $limite - 4); // Para que no baje de 8
 		}
 
@@ -204,7 +249,39 @@
 			<h2 id="productos" class="text-start fw-bold mb-4">Productos Nuevos</h2>
 			<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
 
-				<?php
+			<!-- SweetAlert2 para mostrar el mensaje toast -->
+			<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+			<script>
+			<?php if (isset($mensaje) && $mensaje == "success"): ?>
+				Swal.fire({
+					toast: true,
+					position: 'top-end',
+					icon: 'success',
+					title: 'Producto añadido al carrito',
+					showConfirmButton: false,
+					timer: 2000,
+					timerProgressBar: true,
+					background: '#f4e5cc',
+					color: '#333',
+					didOpen: (toast) => {
+						toast.addEventListener('mouseenter', Swal.stopTimer)
+						toast.addEventListener('mouseleave', Swal.resumeTimer)
+					}
+				});
+			<?php elseif (isset($mensaje) && $mensaje == "error"): ?>
+				Swal.fire({
+					toast: true,
+					position: 'top-end',
+					icon: 'error',
+					title: 'Error al añadir el producto al carrito',
+					text: '<?php echo addslashes($errorMsg); ?>',
+					showConfirmButton: false,
+					timer: 3000,
+					timerProgressBar: true
+				});
+			<?php endif; ?>
+			</script>
+			<?php
 				while ($producto = $productos->fetch_assoc()) { ?>
 					<div class="col">
 						<div class="card h-100 shadow-sm">
@@ -223,9 +300,14 @@
 									<span class="h5 mb-0">
 										<?php echo $producto['precio'] ?>€
 									</span>
-									<button class="btn btn-outline-secondary">
-										<i class="bi bi-cart-plus"></i> Añadir al carrito
-									</button>
+									<!-- Formulario para añadir al carrito -->
+									<form method="post" action="" class="m-0 p-0">
+										<input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
+										<input type="hidden" name="cantidad" value="1">
+										<button type="submit" name="add_to_cart" class="btn btn-outline-secondary">
+											<i class="bi bi-cart-plus"></i> Añadir al carrito
+										</button>
+									</form>
 								</div>
 							</div>
 						</div>
@@ -233,7 +315,7 @@
 				<?php } ?>
 			</div>
 			<!-- Botón "Ver más productos" (añade 4 productos mas a la vista) -->
-			<form method="post" action="#productos">
+			<form method="get" action="#productos">
 				<input type="hidden" name="limite" value="<?php echo $limite; ?>">
 				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
 
