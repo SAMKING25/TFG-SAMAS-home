@@ -3,6 +3,7 @@ const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
 });
 
+//Hammer.js para gestos táctiles
 // const tacto = new Hammer(document.getElementById('canvas'));
 
 // // Habilita el reconocimiento de pinch
