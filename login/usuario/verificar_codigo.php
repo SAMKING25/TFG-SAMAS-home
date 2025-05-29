@@ -39,6 +39,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
     <style>
+        html {
+            background: #fccb90;
+        }
+
         .error {
             color: red;
         }
