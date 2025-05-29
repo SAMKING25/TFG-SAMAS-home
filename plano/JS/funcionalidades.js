@@ -146,19 +146,16 @@ function renderIcon(icon) {
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
-    if (activeObject) {
-        // Solo para productos (fabric.Image)
-        if (activeObject.type === 'image' && activeObject.productoSidebarData) {
-            const data = activeObject.productoSidebarData;
+    function restaurarSidebar(obj) {
+        if (obj.type === 'image' && obj.productoSidebarData) {
+            const data = obj.productoSidebarData;
             const productosSidebar = document.querySelectorAll('#productos .list-group-item');
             let encontrado = false;
 
             productosSidebar.forEach(item => {
-                // Compara por nombre e imagen (puedes ajustar si tienes un id único)
                 const img = item.querySelector('img');
                 const nombre = item.querySelector('span').childNodes[0].textContent.trim();
                 if (img && img.src === location.origin + data.img.replace('..', '') && nombre === data.nombre) {
-                    // Si ya está, suma 1 a la cantidad
                     const cantidadNum = item.querySelector('.cantidad-num');
                     let cantidad = parseInt(cantidadNum.textContent, 10);
                     cantidadNum.textContent = cantidad + 1;
@@ -166,7 +163,6 @@ function borrarObjeto() {
                 }
             });
 
-            // Si no está, crea el elemento en la barra lateral
             if (!encontrado) {
                 const productosDiv = document.getElementById('productos');
                 const div = document.createElement('div');
@@ -187,22 +183,27 @@ function borrarObjeto() {
                 productosDiv.appendChild(div);
             }
         }
+    }
 
-        // Elimina del canvas
+    if (activeObject) {
+        let objetos = [];
         if (activeObject.type === 'activeSelection') {
-            activeObject.forEachObject(function (obj) {
-                canvas.remove(obj);
-                if (obj.relatedTexts) {
-                    obj.relatedTexts.forEach(txt => canvas.remove(txt));
-                }
-            });
-            canvas.discardActiveObject();
+            objetos = activeObject.getObjects().slice();
         } else {
-            if (activeObject.relatedTexts) {
-                activeObject.relatedTexts.forEach(txt => canvas.remove(txt));
-            }
-            canvas.remove(activeObject);
+            objetos = [activeObject];
         }
+
+        // Descarta la selección activa antes de eliminar objetos
+        canvas.discardActiveObject();
+
+        objetos.forEach(function (obj) {
+            restaurarSidebar(obj);
+            if (obj.relatedTexts) {
+                obj.relatedTexts.forEach(txt => canvas.remove(txt));
+            }
+            canvas.remove(obj);
+        });
+
         canvas.requestRenderAll();
     }
 }
