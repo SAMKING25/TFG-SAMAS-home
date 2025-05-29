@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Acceso solo desde tablet u ordenador</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fuente igual que en index (Bootstrap + landing.css) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/landing.css" />
     <style>
         html, body {
             height: 100%;
@@ -17,6 +20,7 @@
             align-items: center;
             justify-content: center;
             background: #f8f9fa;
+            font-family: 'Montserrat', 'Segoe UI', Arial, Helvetica, sans-serif; /* igual que index */
         }
         .aviso-container {
             display: flex;
@@ -38,16 +42,18 @@
             color: #333;
             margin-bottom: 12px;
             font-size: 1.5rem;
+            font-family: inherit;
         }
         p {
             color: #888;
             margin-bottom: 24px;
             font-size: 1.1rem;
+            font-family: inherit;
         }
         .btn-inicio {
             display: inline-block;
             padding: 12px 28px;
-            background: #007bff;
+            background: #7c5a3a; /* Marrón característico */
             color: #fff;
             border: none;
             border-radius: 8px;
@@ -55,9 +61,10 @@
             text-decoration: none;
             transition: background 0.2s;
             cursor: pointer;
+            font-family: inherit;
         }
         .btn-inicio:hover, .btn-inicio:focus {
-            background: #0056b3;
+            background: #5a3e28;
             color: #fff;
         }
         @media (max-width: 480px) {
