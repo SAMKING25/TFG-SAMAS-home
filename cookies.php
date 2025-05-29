@@ -1,3 +1,4 @@
+<!-- Archivo CSS personalizado -->
 <style>
     .aviso-cookies {
 		display: none;
@@ -112,3 +113,25 @@
         dataLayer.push({'event': 'cookies-aceptadas'});
     });
 </script>
+
+	<script>
+	function updateFavicon(theme) {
+		const favicon = document.getElementById('favicon');
+		if (theme === 'dark') {
+		favicon.href = '/img/logos/loguito_gris.png';
+		} else {
+		favicon.href = '/img/logos/loguito_negro.png';
+		}
+	}
+
+	// Detecta el tema del sistema
+	const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+	// Cambia el favicon según el tema actual
+	updateFavicon(darkModeMediaQuery.matches ? 'dark' : 'light');
+
+	// Escucha los cambios en el tema
+	darkModeMediaQuery.addEventListener('change', e => {
+		updateFavicon(e.matches ? 'dark' : 'light');
+	});
+	</script>
