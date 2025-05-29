@@ -3,39 +3,39 @@ const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
 });
 
-const tacto = new Hammer(document.getElementById('canvas'));
+// const tacto = new Hammer(document.getElementById('canvas'));
 
-// Habilita el reconocimiento de pinch
-tacto.get('pinch').set({ enable: true });
+// // Habilita el reconocimiento de pinch
+// tacto.get('pinch').set({ enable: true });
 
-let lastScale = 1;
-let lastZoom = canvas.getZoom();
+// let lastScale = 1;
+// let lastZoom = canvas.getZoom();
 
-tacto.on("pinchstart", function(ev) {
-    lastScale = ev.scale;
-    lastZoom = canvas.getZoom();
-});
+// tacto.on("pinchstart", function(ev) {
+//     lastScale = ev.scale;
+//     lastZoom = canvas.getZoom();
+// });
 
-tacto.on("pinchmove", function(ev) {
-    // Calcula el nuevo zoom relativo al zoom anterior
-    let newZoom = lastZoom * ev.scale / lastScale;
-    // Limita el zoom
-    newZoom = Math.max(0.6, Math.min(2, newZoom));
-    canvas.setZoom(newZoom);
-    canvas.requestRenderAll();
-});
+// tacto.on("pinchmove", function(ev) {
+//     // Calcula el nuevo zoom relativo al zoom anterior
+//     let newZoom = lastZoom * ev.scale / lastScale;
+//     // Limita el zoom
+//     newZoom = Math.max(0.6, Math.min(2, newZoom));
+//     canvas.setZoom(newZoom);
+//     canvas.requestRenderAll();
+// });
 
 const zonaBloqueadaAltura = 100; // píxeles desde arriba
 
 crearEscalaGrafica();
 
 // Hacer que el canvas ocupe todo el contenedor
-canvas.setWidth(window.innerWidth - 400); // 400px del sidebar
+canvas.setWidth(window.innerWidth);
 canvas.setHeight(window.innerHeight - 230);
 
 // Ajustar cuando cambie el tamaño de la ventana
 window.addEventListener('resize', () => {
-    canvas.setWidth(window.innerWidth - 400);
+    canvas.setWidth(window.innerWidth);
     canvas.setHeight(window.innerHeight - 230);
 });
 
