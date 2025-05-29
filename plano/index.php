@@ -90,15 +90,27 @@
 
     $id_usuario = $_SESSION["usuario"];
     $query = $_conexion->prepare('
-        SELECT p.*, c.cantidad 
+        SELECT p.*, c.cantidad, o.porcentaje 
         FROM carrito c
         JOIN productos p ON c.id_producto = p.id_producto
+        LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
         WHERE c.id_usuario = ?
     ');
     $query->bind_param('i', $id_usuario);
     $query->execute();
     $result = $query->get_result();
     $productos = $result->fetch_all(MYSQLI_ASSOC);
+
+    $total = 0;
+    foreach ($productos as $producto) {
+        // Si hay oferta y porcentaje > 0, aplica el descuento
+        if (isset($producto['porcentaje']) && $producto['porcentaje'] > 0) {
+            $precio = $producto['precio'] * (1 - ($producto['porcentaje'] / 100));
+        } else {
+            $precio = $producto['precio'];
+        }
+        $total += $precio * $producto['cantidad'];
+    }
 
     ?>
     <!-- Contenedor principal -->
@@ -107,18 +119,29 @@
         <div id="sidebar" class="p-3">
             <h5>Productos</h5>
             <div id="productos" class="list-group">
-                <?php foreach ($productos as $producto): ?>
-                    <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
-                        onclick="agregarProductoSidebar(this, '../../img/plano/<?php echo $producto['categoria']; ?>.png',
-                        <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
-                        <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
-                            alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
-                        <span>
-                            <?php echo htmlspecialchars($producto['nombre']); ?><br>
-                            <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
-                        </span>
+                <?php if (empty($productos)): ?>
+                    <div class="text-center py-5">
+                        <p class="mb-3 text-muted fs-5">Carrito vacío</p>
+                        <a href="/productos/" class="btn btn-primary">Añadir productos</a>
                     </div>
-                <?php endforeach; ?>
+                <?php else: ?>
+                    <?php foreach ($productos as $producto): ?>
+                        <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
+                            onclick="agregarProductoSidebar(this, '../../img/plano/<?php echo $producto['categoria']; ?>.png',
+                            <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
+                            <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
+                                alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
+                            <span>
+                                <?php echo htmlspecialchars($producto['nombre']); ?><br>
+                                <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
+                            </span>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+            <!-- Total abajo -->
+            <div class="mt-4 border-top pt-3 text-end">
+                <strong>Total: <?php echo number_format($total, 2, ',', '.'); ?>€</strong>
             </div>
         </div>
 
