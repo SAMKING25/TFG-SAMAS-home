@@ -147,6 +147,20 @@ if (!isset($_SESSION["usuario"])) {
 </head>
 
 <body>
+    <script>
+        // Detecta móviles (ancho menor a 768px o user agent típico de móvil)
+        function esMovil() {
+            const ua = navigator.userAgent.toLowerCase();
+            const esMobileUA = /android|iphone|ipod|blackberry|iemobile|opera mini/.test(ua);
+            const esPantallaPequena = window.innerWidth < 768;
+            // Puedes ajustar el ancho según tus necesidades
+            return esMobileUA || esPantallaPequena;
+        }
+
+        if (esMovil()) {
+            window.location.href = "aviso-movil";
+        }
+    </script>
     <?php
     include('../navbar.php');
 
@@ -183,7 +197,7 @@ if (!isset($_SESSION["usuario"])) {
                 <h5 class="mb-0">Productos</h5>
                 <!-- Botón para ocultar/mostrar sidebar SIEMPRE visible -->
                 <button id="toggle-sidebar-btn" class="btn btn-outline-secondary btn-sm"
-                    style="position: absolute; top: 24px; left: 400px; z-index: 1050; transition: left 0.3s;"
+                    style="position: absolute; top: 24px; left: 400px; z-index: 50; transition: left 0.3s;"
                     title="Ocultar barra">
                     <i class="bi bi-chevron-left" id="toggle-sidebar-icon"></i>
                 </button>
