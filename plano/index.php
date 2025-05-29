@@ -109,16 +109,9 @@ if (!isset($_SESSION["usuario"])) {
             margin-left: 0 !important;
         }
 
-        #sidebar.collapsed~canvas {
-            width: 100vw !important;
-            height: 100vh !important;
+        #sidebar.collapsed+#canvas {
+            transition: width 1s !important;
         }
-
-        #sidebar:not(collapse)~canvas {
-            width: 80vw !important;
-            height: 80vh !important;
-        }
-
         #canvas-buttons {
             margin-left: 56px !important;
             transition: margin-left 0.3s;
