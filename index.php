@@ -207,7 +207,7 @@
 
 		<!-- Categorías con scroll horizontal -->
 		<div class="container my-5">
-			<h2 class="fw-bold mb-4">Ver por categoría</h2>
+			<h2 class="fw-bold mb-4">Categorías</h2>
 			<div class="categorias-scroll d-flex flex-row gap-4 overflow-auto pb-3">
 				<?php
 				$sql = "SELECT * FROM categorias";
@@ -216,7 +216,7 @@
 					$nombre = htmlspecialchars($categoria['nombre_categoria']);
 					$img = htmlspecialchars($categoria['img_categoria']);
 				?>
-					<a href="productos/categoria.php?categoria=<?php echo urlencode($nombre); ?>" class="text-decoration-none flex-shrink-0">
+					<a href="productos?categoria=<?php echo urlencode($nombre); ?>" class="text-decoration-none flex-shrink-0">
 						<div class="card categoria-card-lg border-0 shadow-sm position-relative overflow-hidden">
 							<img src="img/categorias/<?php echo $img; ?>"
 								class="card-img-top w-100 h-100 object-fit-cover"
@@ -289,22 +289,22 @@
 								<img src="./img/productos/<?php echo $producto['img_producto'] ?>" class="card-img-top"
 									alt="Producto <?php echo $productos->field_count ?>" />
 							</a>
-							<div class="card-body">
+							<div class="card-body d-flex flex-column">
 								<h5 class="card-title">
 									<?php echo $producto['nombre'] ?>
 								</h5>
 								<p class="card-text">
 									<?php echo $producto['descripcion'] ?>
 								</p>
-								<div class="d-flex justify-content-between align-items-center">
+								<div class="d-flex flex-column align-items-start gap-2 mt-auto w-100">
 									<span class="h5 mb-0">
 										<?php echo $producto['precio'] ?>€
 									</span>
 									<!-- Formulario para añadir al carrito -->
-									<form method="post" action="" class="m-0 p-0">
+									<form method="post" action="" class="w-100">
 										<input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
 										<input type="hidden" name="cantidad" value="1">
-										<button type="submit" name="add_to_cart" class="btn btn-outline-secondary">
+										<button type="submit" name="add_to_cart" class="btn btn-outline-secondary w-100">
 											<i class="bi bi-cart-plus"></i> Añadir al carrito
 										</button>
 									</form>
