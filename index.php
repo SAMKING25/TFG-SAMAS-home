@@ -22,6 +22,53 @@
 
 	session_start();
 	?>
+
+				<style>
+			.oferta-card {
+				border-radius: 1.2rem !important;
+				overflow: hidden;
+				transition: transform 0.2s, box-shadow 0.2s;
+				background: #fff;
+			}
+			.oferta-card:hover {
+				transform: scale(0.96);
+				box-shadow: 0 4px 16px rgba(60,60,60,0.10);
+				border-radius: 1.2rem !important;
+			}
+			.carousel-inner {
+				padding-bottom: 30px;
+			}
+			.custom-carousel-btn {
+				width: 48px;
+				height: 48px;
+				top: 50%;
+				transform: translateY(-50%);
+				background: rgba(0, 0, 0, 0.25)!important;
+				border-radius: 50%;
+				border: 2px solid #e0e0e0;
+				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+				opacity: 0.85;
+				transition: opacity 0.2s, box-shadow 0.2s;
+				z-index: 2;
+			}
+			.custom-carousel-btn:hover {
+				opacity: 1;
+				box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+			}
+			.carousel-control-prev {
+				left: -35px;
+			}
+			.carousel-control-next {
+				right: -35px;
+			}
+			@media (max-width: 600px) {
+				.carousel-control-prev, .carousel-control-next {
+					left: 0 !important;
+					right: 0 !important;
+				}
+				.oferta-card { border-radius: 0.8rem !important; }
+			}
+			</style>
 </head>
 
 <body class="navbar-home-body">
@@ -112,53 +159,6 @@
 				</button>
 			</div>
 
-			<style>
-			.oferta-card {
-				border-radius: 1.2rem !important;
-				overflow: hidden;
-				transition: transform 0.2s, box-shadow 0.2s;
-				background: #fff;
-			}
-			.oferta-card:hover {
-				transform: scale(0.96);
-				box-shadow: 0 4px 16px rgba(60,60,60,0.10);
-				border-radius: 1.2rem !important;
-			}
-			.carousel-inner {
-				padding-bottom: 30px;
-			}
-			.custom-carousel-btn {
-				width: 48px;
-				height: 48px;
-				top: 50%;
-				transform: translateY(-50%);
-				background: rgba(0, 0, 0, 0.25)!important;
-				border-radius: 50%;
-				border: 2px solid #e0e0e0;
-				box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
-				opacity: 0.85;
-				transition: opacity 0.2s, box-shadow 0.2s;
-				z-index: 2;
-			}
-			.custom-carousel-btn:hover {
-				opacity: 1;
-				box-shadow: 0 4px 16px rgba(0,0,0,0.18);
-			}
-			.carousel-control-prev {
-				left: -35px;
-			}
-			.carousel-control-next {
-				right: -35px;
-			}
-			@media (max-width: 600px) {
-				.carousel-control-prev, .carousel-control-next {
-					left: 0 !important;
-					right: 0 !important;
-				}
-				.oferta-card { border-radius: 0.8rem !important; }
-			}
-			</style>
-
 		<!-- Categorias -->
 		<div class="text-start mt-5">
 			<h2 class="fw-bold">Categorías</h2>
@@ -207,8 +207,10 @@
 				while ($producto = $productos->fetch_assoc()) { ?>
 					<div class="col">
 						<div class="card h-100 shadow-sm">
-							<img src="./img/productos/<?php echo $producto['img_producto'] ?>" class="card-img-top"
-								alt="Producto <?php echo $productos->field_count ?>" />
+							<a href="./productos/ver_producto.php?id_producto=<?php echo $producto['id_producto']; ?>">
+								<img src="./img/productos/<?php echo $producto['img_producto'] ?>" class="card-img-top"
+									alt="Producto <?php echo $productos->field_count ?>" />
+							</a>
 							<div class="card-body">
 								<h5 class="card-title">
 									<?php echo $producto['nombre'] ?>

@@ -11,31 +11,22 @@ if (isset($_GET["id_producto"])) {
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_SESSION["usuario"])) {
-            header("Location: ../login/usuario/iniciar_sesion_usuario");
+            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
             exit;
         }
 
         $id_producto = intval($_GET["id_producto"]);
         $id_usuario = $_SESSION["usuario"];
-        $cantidad = intval($_POST["cantidad"]);
+        $cantidad = $_POST["cantidad"];
 
-        // Primero intenta actualizar la cantidad
-        $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = cantidad + ? WHERE id_usuario = ? AND id_producto = ?");
-        $stmt->bind_param("iii", $cantidad, $id_usuario, $id_producto);
-        $stmt->execute();
+        $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
 
-        if ($stmt->affected_rows === 0) {
-            // Si no existía, inserta una nueva fila
-            $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
-            $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
-            $stmt->execute();
-        }
-
-        if ($stmt->error) {
+        if ($stmt->execute()) {
+            $mensaje = "success";
+        } else {
             $mensaje = "error";
             $errorMsg = $stmt->error;
-        } else {
-            $mensaje = "success";
         }
 
         $stmt->close();
@@ -54,6 +45,42 @@ if (isset($_GET["id_producto"])) {
         $porcentaje = $producto["porcentaje"];
     } else {
         die("Producto no encontrado.");
+    }
+
+    // Ahora procesamos el POST
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (!isset($_SESSION["usuario"])) {
+            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            exit;
+        }
+
+        $id_producto = intval($_GET["id_producto"]);
+        $id_usuario = $_SESSION["usuario"];
+        $cantidad = isset($_POST["cantidad"]) ? intval($_POST["cantidad"]) : 0;
+
+        // Validar cantidad y stock
+        if ($cantidad < 1) {
+            $mensaje = "error";
+            $errorMsg = "Cantidad no válida.";
+        } elseif ($cantidad > $producto["stock"]) {
+            $mensaje = "error";
+            $errorMsg = "No hay suficiente stock disponible.";
+        } else {
+            // Insertar o actualizar cantidad en el carrito
+            $stmt = $_conexion->prepare(
+                "INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
+                ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)"
+            );
+            $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+
+            if ($stmt->execute()) {
+                $mensaje = "success";
+            } else {
+                $mensaje = "error";
+                $errorMsg = $stmt->error;
+            }
+            $stmt->close();
+        }
     }
 } else {
     die("ID no válido.");
@@ -75,7 +102,7 @@ if ($hayOferta) {
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <!--search-->
@@ -116,15 +143,38 @@ if ($hayOferta) {
     <?php include('../navbar.php'); ?>
 
     <div class="container main-content">
-        <?php
-        if (isset($mensaje)) {
-            if ($mensaje == "success") {
-                echo '<div class="alert alert-success mt-3" role="alert">Producto añadido al carrito.</div>';
-            } else {
-                echo '<div class="alert alert-danger mt-3" role="alert">Error al añadir el producto al carrito: ' . $errorMsg . '</div>';
-            }
-        }
-        ?>
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            <?php if (isset($mensaje) && $mensaje == "success"): ?>
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Producto añadido al carrito',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    background: '#f4e5cc',
+                    color: '#333',
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+            <?php elseif (isset($mensaje) && $mensaje == "error"): ?>
+                Swal.fire({
+                    toast: true,
+                    position: 'top-end',
+                    icon: 'error',
+                    title: 'Error al añadir el producto al carrito',
+                    text: '<?php echo addslashes($errorMsg); ?>',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            <?php endif; ?>
+        </script>
 
         <div class="container py-5">
             <div class="row g-5 align-items-center">
