@@ -205,29 +205,29 @@
 				</button>
 			</div>
 
-		<!-- Categorias -->
-		<div class="text-start mt-5">
-			<h2 class="fw-bold">Categorías</h2>
-		</div>
-		<!-- Pedimos a la BD todas las categorias -->
-		<?php
-		$sql = "SELECT * FROM categorias";
-		$categorias = $_conexion->query($sql);
-		?>
-		<!-- While de todas las categorias -->
-		<div class="container row mt-4">
-			<?php
-			// if (isset($_SESSION['usuario'])) {
-			while ($categoria = $categorias->fetch_assoc()) { ?>
-				<div class="panel active"
-					style="background-image: url('img/categorias/<?php echo $categoria['img_categoria'] ?>');">
-					<h3>
-						<?php echo $categoria['nombre_categoria'] ?>
-					</h3>
-				</div>
-			<?php } ?>
-			<?php //} 
-			?>
+		<!-- Categorías con scroll horizontal -->
+		<div class="container my-5">
+			<h2 class="fw-bold mb-4">Ver por categoría</h2>
+			<div class="categorias-scroll d-flex flex-row gap-4 overflow-auto pb-3">
+				<?php
+				$sql = "SELECT * FROM categorias";
+				$categorias = $_conexion->query($sql);
+				while ($categoria = $categorias->fetch_assoc()) {
+					$nombre = htmlspecialchars($categoria['nombre_categoria']);
+					$img = htmlspecialchars($categoria['img_categoria']);
+				?>
+					<a href="productos/categoria.php?categoria=<?php echo urlencode($nombre); ?>" class="text-decoration-none flex-shrink-0">
+						<div class="card categoria-card-lg border-0 shadow-sm position-relative overflow-hidden">
+							<img src="img/categorias/<?php echo $img; ?>"
+								class="card-img-top w-100 h-100 object-fit-cover"
+								alt="<?php echo $nombre; ?>">
+							<div class="categoria-label position-absolute start-50 bottom-0 translate-middle-x mb-3 px-4 py-3 rounded-pill fw-semibold text-dark">
+								<?php echo $nombre; ?>
+							</div>
+						</div>
+					</a>
+				<?php } ?>
+			</div>
 		</div>
 
 		<?php

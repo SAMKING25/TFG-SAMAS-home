@@ -234,50 +234,86 @@ footer {
   text-shadow: 1px 1px 2px #000;
 }
 
-/* Categorías */
-.containerr {
+/* Categorías con scroll horizontal y tarjetas grandes */
+.categorias-scroll {
   display: flex;
-  width: 90vw;
-  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 2rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb #eee;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.categorias-scroll::-webkit-scrollbar {
+  height: 12px;
+}
+.categorias-scroll::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 6px;
+}
+.categorias-scroll::-webkit-scrollbar-track {
+  background: #eee;
+  border-radius: 6px;
 }
 
-.panel {
-  flex: 0.5;
-  height: 45vh;
-  border-radius: 20px;
-  background-position: center;
-  background-size: cover;
-  transition: all 0.5s ease-in-out;
+/* Tarjeta de categoría grande */
+.categoria-card-lg {
+  width: 260px;
+  height: 320px;
+  min-width: 260px;
+  min-height: 320px;
+  max-width: 90vw;
+  background: #f8f8f8;
+  border-radius: 1.5rem;
+  box-shadow: 0 2px 12px rgba(60,60,60,0.10);
+  transition: transform 0.18s, box-shadow 0.18s;
+  display: flex;
+  align-items: flex-end;
   position: relative;
-  color: white;
-  margin: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+.categoria-card-lg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.categoria-card-lg:hover {
+  transform: translateY(-6px) scale(0.97);
+  box-shadow: 0 8px 24px rgba(60,60,60,0.13);
+  -webkit-transform: translateY(-6px) scale(0.97);
+  -moz-transform: translateY(-6px) scale(0.97);
+  -ms-transform: translateY(-6px) scale(0.97);
+  -o-transform: translateY(-6px) scale(0.97);
+}
+.categoria-label {
+  background: rgba(255,255,255,0.97);
+  color: #222;
+  font-size: 1.15rem;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  pointer-events: none;
+  min-width: 70%;
+  max-width: 90%;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
-.panel.active {
-  flex: 5;
-}
-
-.panel h3 {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease-in 0.4s;
-}
-
-.panel.active h3 {
-  opacity: 1;
-}
-
-@media (max-width: 991.98px) {
-  .navbar-collapse {
-    background-color: #fff !important;
-    color: #000 !important;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-    border-radius: 0 0 18px 18px;
-    transition: padding 0s;
-    transition: 0.3s;
+/* Responsive para móvil */
+@media (max-width: 600px) {
+  .categoria-card-lg {
+    width: 170px;
+    height: 180px;
+    min-width: 170px;
+    min-height: 180px;
   }
+  .categoria-label {
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+  }
+}
 
   .navbar-collapse.show {
     padding-bottom: 1.2rem;
