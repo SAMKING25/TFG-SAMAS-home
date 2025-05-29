@@ -29,15 +29,28 @@ const zonaBloqueadaAltura = 100; // píxeles desde arriba
 
 crearEscalaGrafica();
 
-// Hacer que el canvas ocupe todo el contenedor
-canvas.setWidth(window.innerWidth);
-canvas.setHeight(window.innerHeight - 230);
-
-// Ajustar cuando cambie el tamaño de la ventana
-window.addEventListener('resize', () => {
-    canvas.setWidth(window.innerWidth);
+function ajustarCanvasSegunSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const sidebarVisible = !sidebar.classList.contains('collapsed');
+    const sidebarWidth = sidebarVisible ? 440 : 40;
+    // Calcula el ancho disponible restando el sidebar si está visible
+    const ancho = window.innerWidth - sidebarWidth;
+    canvas.setWidth(ancho);
     canvas.setHeight(window.innerHeight - 230);
+    canvas.calcOffset && canvas.calcOffset();
+    canvas.requestRenderAll();
+}
+
+// Llama al ajustar tamaño de ventana
+window.addEventListener('resize', ajustarCanvasSegunSidebar);
+
+// Llama también cuando se colapsa o expande el sidebar
+document.getElementById('toggle-sidebar-btn').addEventListener('click', function () {
+    setTimeout(ajustarCanvasSegunSidebar); 
 });
+
+// Llama al cargar la página
+ajustarCanvasSegunSidebar();
 
 const rotateIcon =
     "/img/plano/voltear.png";
