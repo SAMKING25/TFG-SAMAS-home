@@ -231,13 +231,13 @@
 		</div>
 
 		<?php
-		$limite = isset($_POST['limite']) ? intval($_POST['limite']) : 8;
+		$limite = isset($_GET['limite']) ? intval($_GET['limite']) : 8;
 
-		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_mas'])) {
+		if (isset($_GET['ver_mas'])) {
 			$limite += 4;
 		}
 
-		if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ver_menos'])) {
+		if (isset($_GET['ver_menos'])) {
 			$limite = max(8, $limite - 4); // Para que no baje de 8
 		}
 
@@ -301,7 +301,7 @@
 										<?php echo $producto['precio'] ?>€
 									</span>
 									<!-- Formulario para añadir al carrito -->
-									<form method="post" action="#productos" class="m-0 p-0">
+									<form method="post" action="" class="m-0 p-0">
 										<input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
 										<input type="hidden" name="cantidad" value="1">
 										<button type="submit" name="add_to_cart" class="btn btn-outline-secondary">
@@ -315,7 +315,7 @@
 				<?php } ?>
 			</div>
 			<!-- Botón "Ver más productos" (añade 4 productos mas a la vista) -->
-			<form method="post" action="#productos">
+			<form method="get" action="#productos">
 				<input type="hidden" name="limite" value="<?php echo $limite; ?>">
 				<button type="submit" name="ver_mas" class="btn btn-dark mt-4">Ver más productos</button>
 
