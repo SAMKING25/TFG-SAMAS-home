@@ -42,6 +42,10 @@
             color: red;
         }
 
+        html {
+            background: #F7E5CB;
+        }
+
         .gradient-custom-2 {
             background: #fccb90;
             background: -webkit-linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
