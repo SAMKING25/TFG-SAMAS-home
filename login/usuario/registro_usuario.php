@@ -16,6 +16,10 @@
         require('../../util/funciones/utilidades.php');
     ?>
     <style>
+        html {
+            background: #fccb90;
+        }
+        
         .error {
             color: red;
         }
