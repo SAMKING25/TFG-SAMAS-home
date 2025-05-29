@@ -1,3 +1,15 @@
+<?php
+if (isset($_SESSION['proveedor'])) {
+    $id = $_SESSION['proveedor'];
+    $tipo_sesion = 'proveedor';
+    $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
+    $sql->bind_param("i", $id);
+    $sql->execute();
+    $resultado = $sql->get_result();
+    $datos = $resultado->fetch_assoc();
+}
+?>
+
 <style>
 	body {
 		display: flex;
@@ -38,8 +50,14 @@
 						Secciones
 					</h6>
 					<p><a href="/productos" class="footer-link">Productos</a></p>
-					<p><a href="/plano" class="footer-link">Plano</a></p>
-					<p><a href="/suscripcion" class="footer-link">Suscripción</a></p>
+					<?php if ($tipo_sesion !== 'proveedor') { ?>
+						<p><a href="/plano" class="footer-link">Plano</a></p>
+					<?php } ?>
+					<?php if ($tipo_sesion !== 'proveedor') { ?>
+						<p><a href="/suscripcion" class="footer-link">Suscripción</a></p>
+					<?php } else { ?>
+						<p><a href="/panel-control" class="footer-link">Panel de control</a></p>
+					<?php } ?>					
 					<p><a href="/contacto" class="footer-link">Contacto</a></p>
 					<p><a href="./util/archivos/politica-cookies" target="_blank" id="politica-cookies"
 							class="footer-link">Política de cookies</a></p>

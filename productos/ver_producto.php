@@ -258,7 +258,7 @@ if ($hayOferta) {
                 $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
             ?>
                 <div class="col mb-5">
-                    <a href="ver_producto.php?id_producto=<?php echo $sim["id_producto"]; ?>" class="text-decoration-none text-dark">
+                    <a href="ver_producto?id_producto=<?php echo $sim["id_producto"]; ?>" class="text-decoration-none text-dark">
                         <div class="card h-100 shadow-sm border-0 rounded-4 position-relative">
                             <?php if ($hayOfertaSim): ?>
                                 <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">

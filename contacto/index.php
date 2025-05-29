@@ -181,7 +181,7 @@
 									</div>
 									<div>
 										<h6 class="mb-0">Teléfono</h6>
-										<p class="mb-0">+34 699 99 99 99</p>
+										<p class="mb-0">+34 645 867 244</p>
 									</div>
 								</div>
 

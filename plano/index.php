@@ -112,18 +112,17 @@ if (!isset($_SESSION["usuario"])) {
         #sidebar.collapsed+#canvas {
             transition: width 1s !important;
         }
+
         #canvas-buttons {
             margin-left: 56px !important;
             transition: margin-left 0.3s;
-            
+
         }
 
         #canvas-buttons-2 {
             margin-right: 36px !important;
             transition: margin-right 0.3s;
         }
-
-
 
         /* Anula el hover cuando el botón está en outline (seleccionado) */
         #add-wall-button.btn-outline-primary:hover,
@@ -142,6 +141,75 @@ if (!isset($_SESSION["usuario"])) {
             outline: none !important;
             transition: none !important;
             cursor: pointer;
+        }
+
+        /* Tarjeta flotante de detalle de producto */
+        #detalle-producto-float {
+            min-width: 320px;
+            max-width: 350px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+            border: 1px solid #ddd;
+            overflow: hidden;
+            font-size: 1rem;
+            pointer-events: none;
+            transition: opacity 0.15s;
+        }
+
+        #detalle-producto-float .detalle-header {
+            background: #a97c50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px 0 8px 0;
+        }
+
+        #detalle-producto-float .detalle-header img {
+            max-width: 90px;
+            max-height: 90px;
+            object-fit: contain;
+        }
+
+        #detalle-producto-float .detalle-body {
+            padding: 16px 18px 12px 18px;
+        }
+
+        #detalle-producto-float .detalle-titulo {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        #detalle-producto-float .detalle-categoria {
+            color: #888;
+            font-size: 0.95em;
+            margin-bottom: 8px;
+        }
+
+        #detalle-producto-float .detalle-precio {
+            color: #198754;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+        }
+
+        #detalle-producto-float .detalle-stock {
+            color: #0d6efd;
+            font-size: 0.98em;
+            margin-bottom: 6px;
+        }
+
+        #detalle-producto-float .detalle-medidas {
+            color: #333;
+            font-size: 0.97em;
+            margin-bottom: 6px;
+        }
+
+        #detalle-producto-float .detalle-desc {
+            color: #444;
+            font-size: 0.97em;
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -211,7 +279,7 @@ if (!isset($_SESSION["usuario"])) {
                 <?php else: ?>
                     <?php foreach ($productos as $producto): ?>
                         <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
-                            onclick="agregarProductoSidebar(this, '../../img/plano/<?php echo $producto['categoria']; ?>.png',
+                            data-id="<?php echo $producto['id_producto']; ?>" onclick="agregarProductoSidebar(this, '../../img/plano/<?php echo $producto['categoria']; ?>.png',
                             <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
                             <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
                                 alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
@@ -224,6 +292,10 @@ if (!isset($_SESSION["usuario"])) {
                     <?php endforeach; ?>
                 <?php endif; ?>
             </div>
+            <!-- Tarjeta flotante de detalle de producto -->
+            <div id="detalle-producto-float" style="display:none; position:fixed; z-index:9999;"></div>
+            <!-- Nombre en el hover del producto del canvas-->
+            <div id="canvas-product-tooltip" style="display:none; position:fixed; z-index:10000; background:#222; color:#fff; padding:6px 14px; border-radius:8px; font-size:1rem; pointer-events:none; box-shadow:0 2px 8px rgba(0,0,0,0.18);"></div>
             <!-- Total abajo -->
             <div class="mt-4 border-top pt-3 text-end">
                 <strong>Total: <?php echo number_format($total, 2, ',', '.'); ?>€</strong>
@@ -306,6 +378,67 @@ if (!isset($_SESSION["usuario"])) {
     <script src="JS/funcionalidades.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Muestra la tarjeta de detalle del producto al pasar el mouse
+        document.querySelectorAll('#productos .list-group-item').forEach(function (item) {
+            item.addEventListener('mouseenter', function (e) {
+                const id = this.getAttribute('data-id');
+                const producto = <?php echo json_encode($productos); ?>.find(p =>
+                    String(p.id_producto) === String(id)
+                );
+                if (!producto) return;
+
+                let precio = Number(producto.precio);
+                if (producto.porcentaje && Number(producto.porcentaje) > 0) {
+                    precio = (Number(producto.precio) * (1 - Number(producto.porcentaje) / 100)).toFixed(2);
+                } else {
+                    precio = Number(producto.precio).toFixed(2);
+                }
+
+                let medidas = '';
+                try {
+                    const m = JSON.parse(producto.medidas);
+                    medidas = `${m.ancho} × ${m.largo} cm`;
+                } catch { medidas = '-'; }
+
+                const detalle = document.getElementById('detalle-producto-float');
+                detalle.innerHTML = `
+                    <div class="detalle-header">
+                        <img src="../img/productos/${producto.img_producto}" alt="${producto.nombre}">
+                    </div>
+                    <div class="detalle-body">
+                        <div class="detalle-titulo">${producto.nombre}</div>
+                        <div class="detalle-categoria"><i class="bi bi-tag"></i> ${producto.categoria}</div>
+                        <div class="detalle-precio">Precio: <span style="color:#198754;font-weight:bold;">${precio}€</span></div>
+                        <div class="detalle-medidas">Medidas: ${medidas}</div>
+                        <div class="detalle-desc">${producto.descripcion ?? ''}</div>
+                    </div>
+                `;
+                detalle.style.display = 'block';
+                detalle.style.opacity = '1';
+
+                function moveDetalle(ev) {
+                    const x = ev.clientX + 18;
+                    const y = ev.clientY - 10;
+                    detalle.style.left = x + 'px';
+                    detalle.style.top = y + 'px';
+                }
+                moveDetalle(e);
+                item._moveDetalleHandler = moveDetalle;
+                document.addEventListener('mousemove', moveDetalle);
+            });
+
+            item.addEventListener('mouseleave', function () {
+                const detalle = document.getElementById('detalle-producto-float');
+                detalle.style.display = 'none';
+                detalle.innerHTML = '';
+                if (item._moveDetalleHandler) {
+                    document.removeEventListener('mousemove', item._moveDetalleHandler);
+                    item._moveDetalleHandler = null;
+                }
+            });
+        });
+    </script>
+    <script>
         const sidebar = document.getElementById('sidebar');
         const toggleBtn = document.getElementById('toggle-sidebar-btn');
         const icon = document.getElementById('toggle-sidebar-icon');
@@ -324,6 +457,29 @@ if (!isset($_SESSION["usuario"])) {
                 icon.classList.add('bi-chevron-left');
                 canvasButtons.style.marginLeft = '0';
             }
+        });
+    </script>
+    <script>
+        // Tooltip para productos en el canvas
+        const tooltip = document.getElementById('canvas-product-tooltip');
+
+        canvas.on('mouse:over', function(opt) {
+            const target = opt.target;
+            if (target && target.productoSidebarData && target.productoSidebarData.nombre) {
+                tooltip.textContent = target.productoSidebarData.nombre;
+                tooltip.style.display = 'block';
+            }
+        });
+
+        canvas.on('mouse:move', function(opt) {
+            if (tooltip.style.display === 'block') {
+                tooltip.style.left = (opt.e.clientX + 16) + 'px';
+                tooltip.style.top = (opt.e.clientY - 10) + 'px';
+            }
+        });
+
+        canvas.on('mouse:out', function(opt) {
+            tooltip.style.display = 'none';
         });
     </script>
 </body>
