@@ -201,19 +201,140 @@ while ($fila = $resultado->fetch_assoc()) {
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
-        .error {
-            color: red;
-        }
-
         body {
-            background-color: #F7E5CB;
+            background: linear-gradient(135deg, #f7e5cb 0%, #f3f0e5 100%);
+            min-height: 100vh;
         }
 
-        /* Hover para la imagen */
-        .foto-perfil-editable:hover img {
-            filter: brightness(0.7);
-            transition: filter 0.2s;
+        .card-modern {
+            border-radius: 18px;
+            box-shadow: 0 6px 32px 0 rgba(80, 60, 30, 0.10);
+            border: none;
+            background: #fff;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #7a5c2e;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            border: 1.5px solid #e0c9a6;
+            background: #fdfaf6;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #bfa16b;
+            box-shadow: 0 0 0 0.15rem #e7d3b1;
+        }
+
+        .input-group-text {
+            background: #f7e5cb;
+            border: none;
+            color: #bfa16b;
+        }
+
+        .error {
+            color: #c0392b;
+            font-size: 0.95em;
+            margin-top: 3px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .error::before {
+            content: "\f071";
+            font-family: "Bootstrap-icons";
+            font-style: normal;
+            font-weight: normal;
+            font-size: 1.1em;
+            margin-right: 3px;
+            color: #c0392b;
+        }
+
+        .foto-producto-editable {
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e0c9a6;
+            transition: box-shadow 0.2s;
+            display: inline-block;
+            /* Quita width y height fijos */
+            background: #fdfaf6;
+            padding: 8px;
+            max-width: 100%;
+            text-align: center;
+        }
+
+        .foto-producto-editable img {
+            display: block;
+            max-width: 100%;
+            max-height: 300px;
+            /* O el alto máximo que prefieras */
+            margin: 0 auto;
+            border-radius: 8px;
+            object-fit: contain;
+            /* Para que no deforme la imagen */
+            background: #f7e5cb;
+        }
+
+        .foto-producto-editable:hover {
+            box-shadow: 0 0 0 3px #e7d3b1;
+        }
+
+        .foto-producto-editable .edit-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(220, 180, 120, 0.75);
+            color: #fff;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 1.05em;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+
+        .foto-producto-editable:hover .edit-overlay {
+            opacity: 1;
+        }
+
+        .btn-success {
+            background: linear-gradient(90deg, #bfa16b 0%, #7a5c2e 100%);
+            border: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-outline-secondary {
+            border-radius: 8px;
+            border: 1.5px solid #bfa16b;
+            color: #7a5c2e;
+            background: #fff;
+            font-weight: 500;
+        }
+
+        .btn-outline-secondary:hover {
+            background: #f7e5cb;
+            color: #bfa16b;
+        }
+
+        /* Fuente para los inputs */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+        .form-label,
+        .form-control,
+        .form-select {
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
         }
     </style>
 </head>
@@ -221,100 +342,70 @@ while ($fila = $resultado->fetch_assoc()) {
 <body>
     <div class="container py-5">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card shadow rounded-4">
+            <div class="col-lg-7 col-md-9">
+                <div class="card card-modern shadow">
                     <div class="card-body p-5">
-                        <h2 class="text-center mb-3">Nuevo producto</h2>
-                        <form action="" method="post" enctype="multipart/form-data">
-                            <div class="row g-3 mb-3">
-
-
-                                <div class="col-md-6">
-                                    <div id="foto-producto-wrapper"
-                                        style="width: 100%; height: 200px; margin: 0 auto 10px auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
-                                        <img id="foto-producto" src="/img/productos/placeholder.jpg"
-                                            style="height: 100%; width: 100%; object-fit: cover; border-radius: 10px; border: 2px solid #ccc;"
-                                            alt="Imagen producto" class="card-img-top img-fluid" />
+                        <h2 class="text-center mb-4" style="color:#7a5c2e;font-weight:700;">Nuevo producto</h2>
+                        <form action="" method="post" enctype="multipart/form-data" autocomplete="off">
+                            <div class="mb-4 text-center">
+                                <div id="foto-producto-wrapper" class="foto-producto-editable mx-auto">
+                                    <img id="foto-producto" src="/img/productos/placeholder.jpg"
+                                        alt="Imagen producto" />
+                                    <div class="edit-overlay">
+                                        <i class="bi bi-camera"></i> Cambiar imagen
                                     </div>
-                                    <input type="file" name="img_producto" id="img_producto" class="form-control mb-4"
-                                        accept="image/*" style="display: none;" />
-                                    <?php if (isset($err_imagen))
-                                        echo "<span class='error'>$err_imagen</span>"; ?>
                                 </div>
-
-                                <div class="col-md-6">
+                                <input type="file" name="img_producto" id="img_producto" class="form-control mt-2"
+                                    accept="image/*" style="display: none;" />
+                                <?php if (isset($err_imagen))
+                                    echo "<span class='error'>$err_imagen</span>"; ?>
+                            </div>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-7">
                                     <label class="form-label">Nombre</label>
-                                    <input class="form-control" type="text" name="nombre">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                        <input class="form-control" type="text" name="nombre" maxlength="50" required>
+                                    </div>
                                     <?php if (isset($err_nombre))
                                         echo "<span class='error'>$err_nombre</span>"; ?>
                                 </div>
-
-                                <div class="col-md-6">
-                                    <label class="form-label">Categorias</label>
-                                    <select class="form-select" name="categoria">
-                                        <option selected disabled hidden>--- Elige una categoria ---</option>
-                                        <?php
-                                        foreach ($categorias as $categoria) { ?>
-                                            <option value="<?php echo $categoria ?>">
-                                                <?php echo $categoria; ?>
-                                            </option>
+                                <div class="col-md-5">
+                                    <label class="form-label">Categoría</label>
+                                    <select class="form-select" name="categoria" required>
+                                        <option selected disabled hidden>--- Elige una categoría ---</option>
+                                        <?php foreach ($categorias as $categoria) { ?>
+                                            <option value="<?php echo $categoria ?>"><?php echo $categoria; ?></option>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_categoria))
                                         echo "<span class='error'>$err_categoria</span>"; ?>
                                 </div>
                             </div>
-
                             <div class="row g-3 mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label">Precio</label>
-                                    <input class="form-control" type="text" name="precio">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-currency-dollar"></i></span>
+                                        <input class="form-control" type="text" name="precio" maxlength="7" required>
+                                    </div>
                                     <?php if (isset($err_precio))
                                         echo "<span class='error'>$err_precio</span>"; ?>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <label class="form-label">Stock</label>
-                                    <input class="form-control" type="text" name="stock">
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-box-seam"></i></span>
+                                        <input class="form-control" type="number" min="0" name="stock">
+                                    </div>
                                     <?php if (isset($err_stock))
                                         echo "<span class='error'>$err_stock</span>"; ?>
                                 </div>
-                            </div>
-
-                            <div class="row g-3 mb-3">
                                 <div class="col-md-4">
-                                    <label class="form-label">Largo (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="largo">
-                                    <?php if (isset($err_largo))
-                                        echo "<span class='error'>$err_largo</span>"; ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Ancho (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="ancho">
-                                    <?php if (isset($err_ancho))
-                                        echo "<span class='error'>$err_ancho</span>"; ?>
-                                </div>
-                                <div class="col-md-4">
-                                    <label class="form-label">Alto (cm)</label>
-                                    <input class="form-control" type="number" min="0" name="alto">
-                                    <?php if (isset($err_alto))
-                                        echo "<span class='error'>$err_alto</span>"; ?>
-                                </div>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Descripcion</label>
-                                <textarea class="form-control" name="descripcion"></textarea>
-                                <?php if (isset($err_descripcion))
-                                    echo "<span class='error'>$err_descripcion</span>"; ?>
-                            </div>
-
-                            <div class="row g-3 mb-3">
-                                <div class="col-md-6">
                                     <label class="form-label">Oferta</label>
                                     <select class="form-select" name="oferta">
-                                        <option selected value="null">No tiene oferta</option>
-                                        <?php
-                                        foreach ($ofertas as $oferta) { ?>
+                                        <option selected value="null">Sin oferta</option>
+                                        <?php foreach ($ofertas as $oferta) { ?>
                                             <option value="<?php echo $oferta['id_oferta'] ?>">
                                                 <?php echo $oferta['nombre']; ?>
                                             </option>
@@ -324,11 +415,38 @@ while ($fila = $resultado->fetch_assoc()) {
                                         echo "<span class='error'>$err_oferta</span>"; ?>
                                 </div>
                             </div>
-
-                            <div class="d-flex justify-content-between">
-                                <input type="hidden" name="id_producto">
-                                <a href="./index.php" class="btn btn-outline-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-success">Confirmar cambio</button>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Largo (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="largo" required>
+                                    <?php if (isset($err_largo))
+                                        echo "<span class='error'>$err_largo</span>"; ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Ancho (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="ancho" required>
+                                    <?php if (isset($err_ancho))
+                                        echo "<span class='error'>$err_ancho</span>"; ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Alto (cm)</label>
+                                    <input class="form-control" type="number" min="0" name="alto" required>
+                                    <?php if (isset($err_alto))
+                                        echo "<span class='error'>$err_alto</span>"; ?>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" name="descripcion" maxlength="255" rows="3"
+                                    required></textarea>
+                                <?php if (isset($err_descripcion))
+                                    echo "<span class='error'>$err_descripcion</span>"; ?>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mt-4">
+                                <a href="./index.php" class="btn btn-outline-secondary px-4"><i
+                                        class="bi bi-arrow-left"></i> Cancelar</a>
+                                <button type="submit" class="btn btn-success px-4"><i class="bi bi-check-circle"></i>
+                                    Guardar producto</button>
                             </div>
                         </form>
                     </div>
@@ -346,14 +464,9 @@ while ($fila = $resultado->fetch_assoc()) {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');
             const inputFile = document.getElementById('img_producto');
-
-            fotoWrapper.style.cursor = 'pointer';
-            fotoWrapper.classList.add('foto-perfil-editable');
-
             fotoWrapper.addEventListener('click', function () {
                 inputFile.click();
             });
-
             inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {

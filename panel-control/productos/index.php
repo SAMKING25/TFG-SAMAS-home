@@ -9,20 +9,58 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
         body {
             background-color: #F7E5CB;
         }
 
-        .btn-outline-primary {
-            color: rgb(163, 112, 48) !important;
-            border: 1px solid rgb(163, 112, 48) !important;
+        .main-header {
+            background: rgba(120, 80, 40, 0.92);
+            color: #fff;
+            border-radius: 0 0 1rem 1rem;
+            box-shadow: 0 2px 8px rgba(120, 80, 40, 0.08);
         }
 
-        .btn-outline-primary:hover {
-            background-color: rgb(163, 112, 48);
-            color: white !important;
-            border: 1px solid white !important;
+        .btn-gold {
+            background: #a37030;
+            color: #fff;
+            border: none;
+        }
+
+        .btn-gold:hover {
+            background: #7c5522;
+            color: #fff;
+        }
+
+        .card-producto {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 2px 12px rgba(120, 80, 40, 0.10);
+            transition: transform 0.15s;
+        }
+
+        .card-producto:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 4px 20px rgba(120, 80, 40, 0.15);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .empty-state {
+            color: #a37030;
+        }
+
+        .list-unstyled li strong {
+            color: #a37030;
+        }
+
+        .valor-marron {
+            color:rgb(87, 86, 85);
         }
     </style>
     <?php
@@ -72,105 +110,101 @@
     $resultado = $_conexion->query($sql);
     ?>
 
-    <div class="container-fluid py-5">
+    <div class="container py-5">
+        <div class="main-header p-4 mb-5 text-center shadow-sm">
+            <h1 class="mb-1">Gestión de Productos</h1>
+            <p class="mb-0">Administra, busca y edita tus productos fácilmente</p>
+        </div>
+
+        <form method="GET" class="row g-2 mb-4 justify-content-center">
+            <div class="col-md-4">
+                <input type="text" class="form-control" name="busqueda" placeholder="Buscar por ID o nombre"
+                    value="<?php echo isset($_GET['busqueda']) ? htmlspecialchars($_GET['busqueda']) : ''; ?>">
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-gold">Buscar</button>
+            </div>
+            <div class="col-auto">
+                <a href="./" class="btn btn-outline-secondary">Ver todos</a>
+            </div>
+        </form>
+
+        <div class="text-end mb-4">
+            <a href="nuevo_producto" class="btn btn-gold px-4"><i class="bi bi-plus-circle"></i> Nuevo Producto</a>
+        </div>
+
         <?php if ($resultado->num_rows === 0): ?>
             <div class="d-flex flex-column align-items-center justify-content-center" style="height: 40vh;">
-                <p class="fs-4 mb-4 text-center">Todavía no has subido ningún producto, crea tu primer producto</p>
-                <a href="./nuevo_producto" class="btn btn-primary">
+                <p class="fs-4 mb-4 text-center empty-state">
+                    <i class="bi bi-box-seam fs-1 mb-2"></i><br>
+                    No se encontraron productos.<br>
+                    ¡Crea tu primer producto!
+                </p>
+                <a href="nuevo_producto" class="btn btn-gold px-4 py-2">
                     <i class="bi bi-plus-circle"></i> Nuevo producto
                 </a>
             </div>
         <?php else: ?>
-            <h1 class="text-center mb-4">Gestión de Productos</h1>
-
-            <!-- Buscador -->
-            <form method="GET" class="row g-2 mb-4 justify-content-center">
-                <div class="col-md-4">
-                    <input type="text" class="form-control" name="busqueda" placeholder="Buscar por ID o nombre">
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-outline-primary">Buscar</button>
-                </div>
-                <div class="col-auto">
-                    <a href="./" class="btn btn-outline-secondary">Ver todos</a>
-                </div>
-            </form>
-
-            <div class="text-end mb-4">
-                <a href="nuevo_producto" class="btn btn-success">+ Nuevo Producto</a>
-            </div>
-
-            <?php if ($resultado->num_rows > 0): ?>
-                <div class="row g-3">
-                    <?php while ($fila = $resultado->fetch_assoc()): ?>
-                        <?php
-                        $medidas = json_decode($fila["medidas"], true)
-                            ?>
-                        <div class="col-12 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
-                            <div class="card h-100 shadow-sm">
-                                <a href="./ver_producto/?id_producto=<?php echo $fila['id_producto'] ?>"
-                                    class="text-decoration-none">
-                                    <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
-                                        style="height: 260px; object-fit: cover;" alt="Imagen del producto">
-                                </a>
+            <div class="row g-4">
+                <?php while ($fila = $resultado->fetch_assoc()): ?>
+                    <?php $medidas = json_decode($fila["medidas"], true); ?>
+                    <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                        <div class="card card-producto h-100">
+                            <a href="./ver_producto/?id_producto=<?php echo $fila['id_producto'] ?>"
+                                class="text-decoration-none">
+                                <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
+                                    alt="Imagen del producto">
                                 <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title">
-                                        <?php echo $fila["nombre"]; ?>
-                                    </h5>
-                                    <p class="card-text text-muted">
-                                        <?php echo $fila["descripcion"]; ?>
-                                    </p>
+                                    <h5 class="card-title text-dark"><?php echo $fila["nombre"]; ?></h5>
+                                    <p class="card-text text-muted"><?php echo $fila["descripcion"]; ?></p>
                                     <ul class="list-unstyled mb-3">
-                                        <li><strong>Id:</strong>
-                                            <?php echo $fila["id_producto"]; ?>
-                                        </li>
-                                        <li><strong>Precio:</strong>
-                                            <?php echo $fila["precio"]; ?>€
-                                        </li>
-                                        <li><strong>Categoría:</strong>
-                                            <?php echo $fila["categoria"]; ?>
-                                        </li>
-                                        <li><strong>Stock:</strong>
-                                            <?php echo $fila["stock"]; ?>
-                                        </li>
+                                        <li><strong>ID:</strong> <span
+                                                class="valor-marron"><?php echo $fila["id_producto"]; ?></span></li>
+                                        <li><strong>Precio:</strong> <span
+                                                class="valor-marron"><?php echo $fila["precio"]; ?>€</span></li>
+                                        <li><strong>Categoría:</strong> <span
+                                                class="valor-marron"><?php echo $fila["categoria"]; ?></span></li>
+                                        <li><strong>Stock:</strong> <span
+                                                class="valor-marron"><?php echo $fila["stock"]; ?></span></li>
                                         <li><strong>Medidas:</strong>
-                                            <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
+                                            <span class="valor-marron">
+                                                <?php echo $medidas['largo'] . "×" . $medidas['ancho'] . "×" . $medidas['alto'] . "cm"; ?>
+                                            </span>
                                         </li>
                                         <li><strong>Oferta:</strong>
-                                            <?php
-                                            if (!empty($fila['id_oferta'])) {
-                                                $sql_oferta = "SELECT id_oferta, nombre FROM ofertas WHERE id_oferta = {$fila['id_oferta']} ORDER BY id_oferta";
-                                                $resultado_oferta = $_conexion->query($sql_oferta);
-                                                if ($resultado_oferta && $resultado_oferta->num_rows > 0) {
-                                                    $oferta = $resultado_oferta->fetch_assoc();
-                                                    echo $oferta["nombre"];
+                                            <span class="valor-marron">
+                                                <?php
+                                                if (!empty($fila['id_oferta'])) {
+                                                    $sql_oferta = "SELECT nombre FROM ofertas WHERE id_oferta = {$fila['id_oferta']}";
+                                                    $resultado_oferta = $_conexion->query($sql_oferta);
+                                                    if ($resultado_oferta && $resultado_oferta->num_rows > 0) {
+                                                        $oferta = $resultado_oferta->fetch_assoc();
+                                                        echo $oferta["nombre"];
+                                                    } else {
+                                                        echo "Sin oferta";
+                                                    }
                                                 } else {
                                                     echo "Sin oferta";
                                                 }
-                                            } else {
-                                                echo "Sin oferta";
-                                            }
-                                            ?>
+                                                ?>
+                                            </span>
                                         </li>
                                     </ul>
                                     <div class="mt-auto d-flex justify-content-between">
-                                        <a href="editar_producto?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
-                                btn-outline-primary ">Editar</a>
+                                        <a href="editar_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
+                                            class="btn btn-sm btn-gold">Editar</a>
                                         <form method="POST" class="d-inline">
                                             <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
-                                            <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i
+                                                    class="bi bi-trash"></i></button>
                                         </form>
                                     </div>
                                 </div>
-                            </div>
+                            </a>
                         </div>
-                    <?php endwhile; ?>
-                </div>
-            <?php else: ?>
-                <div class="alert alert-warning text-center" role="alert">
-                    No se encontraron productos con ese criterio.
-                </div>
-            <?php endif; ?>
+                    </div>
+                <?php endwhile; ?>
+            </div>
         <?php endif; ?>
     </div>
 
