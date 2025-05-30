@@ -4,6 +4,68 @@ ini_set("display_errors", 1);
 require('../util/conexion.php');
 session_start();
 
+// --- PROCESAR AÑADIR AL CARRITO ANTES DE CUALQUIER HTML ---
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart_id"])) {
+    $isAjax = (
+        isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+        strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+    );
+    if ($isAjax) {
+        header('Content-Type: application/json');
+    }
+
+    if (!isset($_SESSION["usuario"])) {
+        if ($isAjax) {
+            echo json_encode(['status' => 'login', 'url' => '../login/usuario/iniciar_sesion_usuario.php']);
+            exit;
+        } else {
+            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            exit;
+        }
+    }
+    $id_producto = intval($_POST["add_to_cart_id"]);
+    $id_usuario = $_SESSION["usuario"];
+    $cantidad = 1;
+
+    $resStock = $_conexion->query("SELECT stock FROM productos WHERE id_producto = $id_producto");
+    $rowStock = $resStock->fetch_assoc();
+    if ($rowStock && $rowStock["stock"] > 0) {
+        $stmt = $_conexion->prepare(
+            "INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
+            ON DUPLICATE KEY UPDATE cantidad = cantidad + VALUES(cantidad)"
+        );
+        $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
+
+        if ($stmt->execute()) {
+            if ($isAjax) {
+                echo json_encode(['status' => 'success']);
+                error_log("AJAX respuesta: " . json_encode(['status' => 'success']));
+                exit;
+            } else {
+                $mensaje = "success";
+            }
+        } else {
+            if ($isAjax) {
+                echo json_encode(['status' => 'error', 'message' => $stmt->error]);
+                exit;
+            } else {
+                $mensaje = "error";
+                $errorMsg = $stmt->error;
+            }
+        }
+        $stmt->close();
+    } else {
+        if ($isAjax) {
+            echo json_encode(['status' => 'error', 'message' => 'No hay suficiente stock disponible.']);
+            exit;
+        } else {
+            $mensaje = "error";
+            $errorMsg = "No hay suficiente stock disponible.";
+        }
+    }
+} // <-- ESTA LLAVE ES IMPORTANTE
+// --- FIN BLOQUE ---
+
 // Obtener valores únicos para los filtros y guardarlos en arrays
 function fetchAllValues($result, $key, $conexion)
 {
@@ -159,11 +221,10 @@ $filtros = [
         }
 
         .search-btn-yellow {
-            background: #ffc25a;
-            /* Color igual al hover del navbar */
-            color: #333 !important;
+            background: #bfa16a;
+            color: #fff !important;
             border: none;
-            box-shadow: 0 2px 8px 0 #fff3cd80;
+            box-shadow: 0 2px 8px 0 #cbbfae80;
             transition: background 0.2s, color 0.2s;
             font-weight: 600;
             letter-spacing: 0.5px;
@@ -171,9 +232,8 @@ $filtros = [
 
         .search-btn-yellow:hover,
         .search-btn-yellow:focus {
-            background: #ffb340;
-            /* Un poco más oscuro para el hover */
-            color: #222 !important;
+            background: #a88c54;
+            color: #fff !important;
         }
 
         .ver-todos-btn {
@@ -212,6 +272,77 @@ $filtros = [
             aside {
                 margin-bottom: 1.5rem;
             }
+        }
+
+        /* Hover en imágen de carta */
+        .card-img-container {
+            width: 100%;
+            height: 350px;
+            /* igual que .img-fija */
+            overflow: hidden;
+            border-top-left-radius: 1.5rem;
+            border-top-right-radius: 1.5rem;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-fija {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            transition: transform 0.35s cubic-bezier(.4, 2, .3, 1), filter 0.3s;
+        }
+
+        .card:hover .img-fija,
+        .card:focus-within .img-fija {
+            transform: scale(1.08);
+            filter: brightness(1.04) saturate(1.1);
+        }
+
+        .add-cart-btn {
+            right: 16px;
+            bottom: 16px;
+            width: 44px;
+            height: 44px;
+            background: #ffc25a;
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px 0 #fff3cd80;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+            z-index: 10;
+            padding: 0;
+        }
+
+        .add-cart-btn:hover,
+        .add-cart-btn:focus {
+            background: #ffb340;
+            color: #222;
+            transform: scale(1.08);
+            outline: none;
+        }
+
+        .card-img-container {
+            position: relative;
+        }
+
+        .btn-primary {
+            background-color: #bfa16a !important;
+            border-color: #bfa16a !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background-color: #a88c54 !important;
+            border-color: #a88c54 !important;
+            color: #fff !important;
         }
     </style>
 
@@ -317,13 +448,13 @@ $filtros = [
                                         value="<?php echo isset($_GET['busqueda']) ? ($_GET['busqueda']) : ''; ?>"
                                         style="font-size: 1.1rem; min-width: 200px;" autocomplete="off">
                                     <button type="button"
-                                        class="btn rounded-pill px-4 ms-2 fw-semibold text-dark search-btn-yellow"
+                                        class="btn rounded-pill px-4 ms-2 fw-semibold search-btn-yellow"
                                         data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltro"
                                         aria-controls="offcanvasFiltro">
                                         <i class="bi bi-funnel-fill me-2"></i>Filtrar
                                     </button>
                                     <button type="submit"
-                                        class="btn rounded-pill px-4 ms-2 fw-semibold text-dark search-btn-yellow">
+                                        class="btn rounded-pill px-4 ms-2 fw-semibold search-btn-yellow">
                                         Buscar
                                     </button>
                                     <a href="./index.php"
@@ -364,11 +495,10 @@ $filtros = [
                             }
 
                             .search-btn-yellow {
-                                background: #ffc25a;
-                                /* Color igual al hover del navbar */
-                                color: #333 !important;
+                                background: #bfa16a;
+                                color: #fff !important;
                                 border: none;
-                                box-shadow: 0 2px 8px 0 #fff3cd80;
+                                box-shadow: 0 2px 8px 0 #cbbfae80;
                                 transition: background 0.2s, color 0.2s;
                                 font-weight: 600;
                                 letter-spacing: 0.5px;
@@ -376,9 +506,8 @@ $filtros = [
 
                             .search-btn-yellow:hover,
                             .search-btn-yellow:focus {
-                                background: #ffb340;
-                                /* Un poco más oscuro para el hover */
-                                color: #222 !important;
+                                background: #a88c54;
+                                color: #fff !important;
                             }
 
                             .ver-todos-btn {
@@ -446,6 +575,50 @@ $filtros = [
                                 transform: scale(1.08);
                                 filter: brightness(1.04) saturate(1.1);
                             }
+
+                            .add-cart-btn {
+                                right: 16px;
+                                bottom: 16px;
+                                width: 44px;
+                                height: 44px;
+                                background: #ffc25a;
+                                color: #333;
+                                border: none;
+                                border-radius: 12px;
+                                box-shadow: 0 2px 8px 0 #fff3cd80;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                font-size: 1.4rem;
+                                transition: background 0.2s, color 0.2s, transform 0.15s;
+                                z-index: 10;
+                                padding: 0;
+                            }
+
+                            .add-cart-btn:hover,
+                            .add-cart-btn:focus {
+                                background: #ffb340;
+                                color: #222;
+                                transform: scale(1.08);
+                                outline: none;
+                            }
+
+                            .card-img-container {
+                                position: relative;
+                            }
+
+                            .btn-primary {
+                                background-color: #bfa16a !important;
+                                border-color: #bfa16a !important;
+                                color: #fff !important;
+                            }
+
+                            .btn-primary:hover,
+                            .btn-primary:focus {
+                                background-color: #a88c54 !important;
+                                border-color: #a88c54 !important;
+                                color: #fff !important;
+                            }
                         </style>
 
                         <?php
@@ -504,50 +677,53 @@ $filtros = [
                                     }
                                     ?>
                                     <div class="col">
-                                        <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
-                                            class="text-decoration-none text-dark">
-                                            <div
-                                                class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+                                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+                                            <?php if ($hayOferta): ?>
+                                                <span style="z-index:80;"
+                                                    class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
+                                                    -<?php echo $porcentaje; ?>%
+                                                </span>
+                                            <?php endif; ?>
 
-                                                <?php if ($hayOferta): ?>
-                                                    <span style="z-index:80;"
-                                                        class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
-                                                        -<?php echo $porcentaje; ?>%
-                                                    </span>
-                                                <?php endif; ?>
-
-                                                <div class="card-img-container">
+                                            <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
+                                                class="text-decoration-none text-dark">
+                                                <div class="card-img-container position-relative">
                                                     <img class="img-fija"
                                                         src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
                                                         alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
+                                                    <form method="post" class="add-to-cart-form">
+                                                        <input type="hidden" name="add_to_cart_id" value="<?php echo $fila["id_producto"]; ?>">
+                                                        <button type="submit" class="btn add-cart-btn position-absolute">
+                                                            <i class="bi bi-cart-plus"></i>
+                                                        </button>
+                                                    </form>
                                                 </div>
+                                            </a>
 
-                                                <div class="card-body text-center">
-                                                    <h5 class="card-title fw-bold fs-5 mb-2"><?php echo $fila["nombre"]; ?></h5>
-
-                                                    <div class="card-text fs-5">
-                                                        <?php
-                                                        if ($hayOferta) {
-                                                            ?>
-                                                            <span class="text-muted text-decoration-line-through me-2">
-                                                                <?php echo number_format($precio, 2, ',', '.'); ?> €
-                                                            </span>
-                                                            <span class="text-success fw-semibold">
-                                                                <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
-                                                            </span>
-                                                            <?php
-                                                        } else {
-                                                            ?>
-                                                            <span class="text-success fw-semibold">
-                                                                <?php echo number_format($precio, 2, ',', '.'); ?> €
-                                                            </span>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </div>
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title fw-bold fs-5 mb-2"><?php echo $fila["nombre"]; ?></h5>
+                                                <div class="card-text fs-5">
+                                                    <?php
+                                                    if ($hayOferta) {
+                                                    ?>
+                                                        <span class="text-muted text-decoration-line-through me-2">
+                                                            <?php echo number_format($precio, 2, ',', '.'); ?> €
+                                                        </span>
+                                                        <span class="text-success fw-semibold">
+                                                            <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
+                                                        </span>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <span class="text-success fw-semibold">
+                                                            <?php echo number_format($precio, 2, ',', '.'); ?> €
+                                                        </span>
+                                                    <?php
+                                                    }
+                                                    ?>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </div>
                                     </div>
                                 <?php endwhile; ?>
                             </div>
@@ -565,6 +741,7 @@ $filtros = [
     <?php include('../udify-bot.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         // Si la URL tiene ?focus=1, enfoca el input de búsqueda
@@ -573,19 +750,52 @@ $filtros = [
             if (input) input.focus();
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var offcanvas = document.getElementById('offcanvasFiltro');
             var btnFiltro = document.getElementById('btn-filtro-lateral');
             if (offcanvas && btnFiltro) {
-                offcanvas.addEventListener('show.bs.offcanvas', function () {
+                offcanvas.addEventListener('show.bs.offcanvas', function() {
                     btnFiltro.style.display = 'none';
                 });
-                offcanvas.addEventListener('hidden.bs.offcanvas', function () {
+                offcanvas.addEventListener('hidden.bs.offcanvas', function() {
                     btnFiltro.style.display = '';
                 });
             }
         });
     </script>
+
+    <?php if (isset($mensaje) && $mensaje == "success"): ?>
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Producto añadido al carrito',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f4e5cc',
+                color: '#333',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        </script>
+    <?php elseif (isset($mensaje) && $mensaje == "error"): ?>
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'Error al añadir el producto al carrito',
+                text: '<?= addslashes($errorMsg); ?>',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
