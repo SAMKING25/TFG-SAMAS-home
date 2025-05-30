@@ -9,9 +9,10 @@ $resultado = $sql->get_result();
 
 define('IMG_USUARIO', '/img/usuario/');
 define('USUARIO', '/login/');
-define('FUNCIONES', '/util/funciones/')
+define('FUNCIONES', '/util/funciones/');
+define('INICIO', '/');
 
-  ?>
+?>
 <style>
   /* Navbar madera profesional y translúcido */
   .navbar-madera {
@@ -107,7 +108,10 @@ define('FUNCIONES', '/util/funciones/')
     <ul class="dropdown-menu dropdown-menu-end text-small shadow navbar-madera-dropdown"
       aria-labelledby="dropdownUser1">
       <li>
-        <a class="dropdown-item" href="<?php echo USUARIO ?>proveedor/cambiar_credenciales_proveedor">Mi Perfil</a>
+        <a class="dropdown-item" href="<?php echo INICIO ?>">Volver a inicio</a>
+      </li>
+      <li>
+        <a class="dropdown-item" href="<?php echo USUARIO ?>proveedor/cambiar_credenciales_proveedor">Ajustes de perfil</a>
       </li>
       <li>
         <a class="dropdown-item" href="<?php echo USUARIO ?>proveedor/iniciar_sesion_proveedor">Cambiar de cuenta</a>
@@ -116,7 +120,7 @@ define('FUNCIONES', '/util/funciones/')
         <hr class="dropdown-divider">
       </li>
       <li>
-        <a class="dropdown-item" href="<?php echo FUNCIONES ?>cerrar_sesion">Salir</a>
+        <a class="dropdown-item" href="<?php echo FUNCIONES ?>cerrar_sesion">Cerrar sesión</a>
       </li>
     </ul>
   </div>
