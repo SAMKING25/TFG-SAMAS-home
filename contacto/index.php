@@ -51,6 +51,10 @@
 			background-color: #f4f4f4;
 		}
 
+		.main-content {
+			padding-bottom: 5rem !important;
+		}
+
 		.contact-item:hover {
 			transform: translateX(10px);
 		}
