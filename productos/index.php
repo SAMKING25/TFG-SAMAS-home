@@ -27,9 +27,12 @@ $largos_arr = [];
 $res = $_conexion->query("SELECT medidas FROM productos");
 while ($row = $res->fetch_assoc()) {
     $medidas = json_decode($row['medidas'], true);
-    if (isset($medidas['ancho'])) $anchos_arr[] = $medidas['ancho'];
-    if (isset($medidas['alto'])) $altos_arr[] = $medidas['alto'];
-    if (isset($medidas['largo'])) $largos_arr[] = $medidas['largo'];
+    if (isset($medidas['ancho']))
+        $anchos_arr[] = $medidas['ancho'];
+    if (isset($medidas['alto']))
+        $altos_arr[] = $medidas['alto'];
+    if (isset($medidas['largo']))
+        $largos_arr[] = $medidas['largo'];
 }
 $anchos_arr = array_unique($anchos_arr);
 $altos_arr = array_unique($altos_arr);
@@ -55,15 +58,15 @@ $res = $_conexion->query("SELECT medidas FROM productos");
 while ($row = $res->fetch_assoc()) {
     $medidas = json_decode($row['medidas'], true);
     if (isset($medidas['ancho'])) {
-        $key = (string)$medidas['ancho'];
+        $key = (string) $medidas['ancho'];
         $anchos_count[$key] = ($anchos_count[$key] ?? 0) + 1;
     }
     if (isset($medidas['alto'])) {
-        $key = (string)$medidas['alto'];
+        $key = (string) $medidas['alto'];
         $altos_count[$key] = ($altos_count[$key] ?? 0) + 1;
     }
     if (isset($medidas['largo'])) {
-        $key = (string)$medidas['largo'];
+        $key = (string) $medidas['largo'];
         $largos_count[$key] = ($largos_count[$key] ?? 0) + 1;
     }
 }
@@ -237,22 +240,10 @@ $filtros = [
                 <div class="mb-3">
                     <label class="form-label fw-semibold">Precio (€)</label>
                     <div class="d-flex gap-2">
-                        <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            name="precio_min"
-                            class="form-control"
-                            placeholder="Mín"
-                            value="<?= htmlspecialchars($filtros['precio_min']) ?>">
-                        <input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            name="precio_max"
-                            class="form-control"
-                            placeholder="Máx"
-                            value="<?= htmlspecialchars($filtros['precio_max']) ?>">
+                        <input type="number" step="0.01" min="0" name="precio_min" class="form-control"
+                            placeholder="Mín" value="<?= htmlspecialchars($filtros['precio_min']) ?>">
+                        <input type="number" step="0.01" min="0" name="precio_max" class="form-control"
+                            placeholder="Máx" value="<?= htmlspecialchars($filtros['precio_max']) ?>">
                     </div>
                 </div>
                 <!-- Medidas -->
@@ -262,7 +253,7 @@ $filtros = [
                         <option value="">Todos</option>
                         <?php foreach ($anchos_arr as $an): ?>
                             <option value="<?= htmlspecialchars($an) ?>" <?= $filtros['ancho'] === $an ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($an) ?> (<?= $anchos_count[(string)$an] ?? 0 ?>)
+                                <?= htmlspecialchars($an) ?> (<?= $anchos_count[(string) $an] ?? 0 ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -273,7 +264,7 @@ $filtros = [
                         <option value="">Todos</option>
                         <?php foreach ($altos_arr as $al): ?>
                             <option value="<?= htmlspecialchars($al) ?>" <?= $filtros['alto'] === $al ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($al) ?> (<?= $altos_count[(string)$al] ?? 0 ?>)
+                                <?= htmlspecialchars($al) ?> (<?= $altos_count[(string) $al] ?? 0 ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -284,7 +275,7 @@ $filtros = [
                         <option value="">Todos</option>
                         <?php foreach ($largos_arr as $la): ?>
                             <option value="<?= htmlspecialchars($la) ?>" <?= $filtros['largo'] === $la ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($la) ?> (<?= $largos_count[(string)$la] ?? 0 ?>)
+                                <?= htmlspecialchars($la) ?> (<?= $largos_count[(string) $la] ?? 0 ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -311,31 +302,29 @@ $filtros = [
                         <!-- Buscador -->
                         <form method="GET" class="row justify-content-center mb-4">
                             <div class="col-12 col-md-10 col-lg-8">
-                                <div class="search-bar-container p-2 bg-white rounded-4 shadow-sm d-flex align-items-center gap-2 flex-nowrap">
+                                <div
+                                    class="search-bar-container p-2 bg-white rounded-4 shadow-sm d-flex align-items-center gap-2 flex-nowrap">
                                     <span class="ps-2 pe-1 text-secondary">
                                         <i class="bi bi-search fs-4"></i>
                                     </span>
-                                    <input
-                                        type="text"
+                                    <input type="text"
                                         class="form-control border-0 bg-white shadow-none px-2 flex-grow-1"
-                                        name="busqueda"
-                                        id="input-busqueda"
-                                        placeholder="Buscar productos por nombre..."
+                                        name="busqueda" id="input-busqueda" placeholder="Buscar productos por nombre..."
                                         value="<?php echo isset($_GET['busqueda']) ? ($_GET['busqueda']) : ''; ?>"
-                                        style="font-size: 1.1rem; min-width: 200px;"
-                                        autocomplete="off">
-                                    <button
-                                        type="button"
+                                        style="font-size: 1.1rem; min-width: 200px;" autocomplete="off">
+                                    <button type="button"
                                         class="btn rounded-pill px-4 ms-2 fw-semibold text-dark search-btn-yellow"
-                                        data-bs-toggle="offcanvas"
-                                        data-bs-target="#offcanvasFiltro"
+                                        data-bs-toggle="offcanvas" data-bs-target="#offcanvasFiltro"
                                         aria-controls="offcanvasFiltro">
                                         <i class="bi bi-funnel-fill me-2"></i>Filtrar
                                     </button>
-                                    <button type="submit" class="btn rounded-pill px-4 ms-2 fw-semibold text-dark search-btn-yellow">
+                                    <button type="submit"
+                                        class="btn rounded-pill px-4 ms-2 fw-semibold text-dark search-btn-yellow">
                                         Buscar
                                     </button>
-                                    <a href="./index.php" class="btn btn-outline-secondary rounded-pill px-4 ms-2 ver-todos-btn">Ver todos</a>
+                                    <a href="./index.php"
+                                        class="btn btn-outline-secondary rounded-pill px-4 ms-2 ver-todos-btn">Ver
+                                        todos</a>
                                 </div>
                             </div>
                         </form>
@@ -426,6 +415,33 @@ $filtros = [
                                     margin-left: 0 !important;
                                 }
                             }
+
+                            /* Hover en imágen de carta */
+                            .card-img-container {
+                                width: 100%;
+                                height: 350px;
+                                /* igual que .img-fija */
+                                overflow: hidden;
+                                border-top-left-radius: 1.5rem;
+                                border-top-right-radius: 1.5rem;
+                                background: #f8f8f8;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                            }
+
+                            .img-fija {
+                                width: 100%;
+                                height: 100%;
+                                object-fit: fill;
+                                transition: transform 0.35s cubic-bezier(.4, 2, .3, 1), filter 0.3s;
+                            }
+
+                            .card:hover .img-fija,
+                            .card:focus-within .img-fija {
+                                transform: scale(1.08);
+                                filter: brightness(1.04) saturate(1.1);
+                            }
                         </style>
 
                         <?php
@@ -484,19 +500,23 @@ $filtros = [
                                     }
                                     ?>
                                     <div class="col">
-                                        <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>" class="text-decoration-none text-dark">
-                                            <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
+                                        <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
+                                            class="text-decoration-none text-dark">
+                                            <div
+                                                class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
 
                                                 <?php if ($hayOferta): ?>
-                                                    <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
+                                                    <span style="z-index:80;"
+                                                        class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
                                                         -<?php echo $porcentaje; ?>%
                                                     </span>
                                                 <?php endif; ?>
 
-                                                <img class="img-fluid img-fija" src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
-                                                    class="card-img-top img-fluid"
-                                                    style="object-fit: contain; height: 300px; background-color: #f8f8f8; padding: 10px;"
-                                                    alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
+                                                <div class="card-img-container">
+                                                    <img class="img-fija"
+                                                        src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
+                                                        alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
+                                                </div>
 
                                                 <div class="card-body text-center">
                                                     <h5 class="card-title fw-bold fs-5 mb-2"><?php echo $fila["nombre"]; ?></h5>
@@ -504,20 +524,20 @@ $filtros = [
                                                     <div class="card-text fs-5">
                                                         <?php
                                                         if ($hayOferta) {
-                                                        ?>
+                                                            ?>
                                                             <span class="text-muted text-decoration-line-through me-2">
                                                                 <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                             </span>
                                                             <span class="text-success fw-semibold">
                                                                 <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
                                                             </span>
-                                                        <?php
+                                                            <?php
                                                         } else {
-                                                        ?>
+                                                            ?>
                                                             <span class="text-success fw-semibold">
                                                                 <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                             </span>
-                                                        <?php
+                                                            <?php
                                                         }
                                                         ?>
                                                     </div>
@@ -549,14 +569,14 @@ $filtros = [
             if (input) input.focus();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var offcanvas = document.getElementById('offcanvasFiltro');
             var btnFiltro = document.getElementById('btn-filtro-lateral');
             if (offcanvas && btnFiltro) {
-                offcanvas.addEventListener('show.bs.offcanvas', function() {
+                offcanvas.addEventListener('show.bs.offcanvas', function () {
                     btnFiltro.style.display = 'none';
                 });
-                offcanvas.addEventListener('hidden.bs.offcanvas', function() {
+                offcanvas.addEventListener('hidden.bs.offcanvas', function () {
                     btnFiltro.style.display = '';
                 });
             }
