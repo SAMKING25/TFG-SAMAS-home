@@ -22,10 +22,12 @@ $importe = floatval($_POST['importe']);
       background: #f6f6f6;
     }
     .main-content {
-      min-height: 100vh;
+      min-height: 90vh; /* Antes: 100vh. Así el contenido no ocupa toda la pantalla */
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
+      padding-top: 2rem;
+      padding-bottom: 1rem; /* Añadido para menos espacio abajo */
     }
     .form-card {
       background: #fff;
@@ -34,7 +36,7 @@ $importe = floatval($_POST['importe']);
       padding: 2.5rem 2rem 2rem 2rem;
       max-width: 420px;
       width: 100%;
-      margin: 2rem 0;
+      margin: 0;
       display: flex;
       flex-direction: column;
       gap: 1.2rem;
@@ -63,6 +65,11 @@ $importe = floatval($_POST['importe']);
       .form-card {
         padding: 1.2rem 0.5rem 1.5rem 0.5rem;
         max-width: 98vw;
+      }
+      .main-content {
+        padding-top: 1rem;
+        padding-bottom: 0.5rem; /* Menos espacio abajo en móvil */
+        min-height: 90vh; /* Un poco más pequeño en móvil */
       }
     }
   </style>
