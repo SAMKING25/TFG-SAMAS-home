@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/css/landing.css" />
 	<!--Search-->
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 
 	<!--Conexion con BD-->
 	<?php
@@ -69,6 +70,12 @@
 	?>
 
 	<style>
+		.montserrat-title {
+			font-family: 'Montserrat', Arial, sans-serif !important;
+			font-weight: 700;
+			letter-spacing: -1px;
+		}
+
 		.oferta-card {
 			border-radius: 1.2rem !important;
 			overflow: hidden;
@@ -136,7 +143,7 @@
 	<div class="col">
 		<section class="index-section">
 			<div class="section-banner">
-				<h1 class="cardo-title">Tu hogar comienza aquí</h1>
+				<h1 class="montserrat-title">Tu hogar comienza aquí</h1>
 				<p class="banner-subtext">
 					Encuentra los mejores muebles para tu hogar
 				</p>
