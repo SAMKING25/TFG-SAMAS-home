@@ -31,6 +31,11 @@
             object-fit: cover;
             width: 100%;
         }
+        .sticky-top {
+    background: rgba(120, 80, 40, 0.85) !important; /* Marrón translúcido */
+    backdrop-filter: blur(4px);
+    transition: box-shadow 0.2s;
+}
     </style>
 </head>
 

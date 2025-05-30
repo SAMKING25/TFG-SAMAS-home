@@ -12,39 +12,80 @@ define('USUARIO', '/login/');
 define('FUNCIONES', '/util/funciones/')
 
 ?>
+<style>
+  /* Navbar madera profesional y translúcido */
+    .navbar-madera {
+        background: rgba(44, 27, 13, 0.93) !important; /* Marrón madera oscuro translúcido */
+        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 12px rgba(44,27,13,0.10);
+        transition: box-shadow 0.2s;
+        min-height: 48px;
+    }
+    .navbar-madera * {
+        color: #fff !important;
+        fill: #fff !important;
+        border-color: #fff !important;
+    }
+    .navbar-madera .btn-outline-light {
+        border-color: #fff !important;
+        color: #fff !important;
+        background: transparent !important;
+    }
+    .navbar-madera .btn-outline-light:hover,
+    .navbar-madera .btn-outline-light:focus {
+        background: rgba(255,255,255,0.12) !important;
+        color: #fff !important;
+        border-color: #fff !important;
+    }
+    .navbar-madera .dropdown-toggle::after {
+        filter: invert(1);
+    }
+    .navbar-madera .rounded-circle {
+        border: 2px solid #fff !important;
+        background: transparent !important;
+    }
+    .navbar-madera-dropdown {
+        background: rgba(44, 27, 13, 0.97) !important;
+        border: none;
+    }
+    .navbar-madera-dropdown .dropdown-item {
+        color: #fff !important;
+    }
+    .navbar-madera-dropdown .dropdown-item:hover,
+    .navbar-madera-dropdown .dropdown-item:focus {
+        background: rgba(255,255,255,0.08) !important;
+        color: #fff !important;
+    }
+</style>
 
-<header class="p-3 text-white row align-items-center" style="background-color:#381D12;">
-  <div class="col-2 col-sm-2  col-lg-1 d-flex align-items-center justify-content-center">
-    <a class="btn btn-outline-light col-10" data-bs-toggle="offcanvas" href="#offcanvasExample" aria-controls="offcanvasExample">
-      <i class="bi bi-list"></i>
+<link rel="stylesheet" href="/panel-control/css/panel.css">
+
+<header class="sticky-top navbar-madera px-3 py-2 d-flex align-items-center justify-content-between" style="z-index:1050;">
+  <div class="d-flex align-items-center gap-2">
+    <a class="btn btn-outline-light d-flex align-items-center justify-content-center me-2" data-bs-toggle="offcanvas" href="#offcanvasExample" aria-controls="offcanvasExample">
+      <i class="bi bi-list fs-4"></i>
+    </a>
+    <a href="/" class="text-decoration-none d-flex align-items-center gap-2">
+      <img src="/img/logos/loguito_gris.png" alt="Logo" height="38" class="me-1" />
+      <span class="fw-bold fs-5 text-white">Panel de control</span>
     </a>
   </div>
-  <a href="/" class="text-decoration-none col-4 col-sm-5 col-lg-8 h4 align-items-center d-flex">
-    <div class="d-flex align-items-center">
-      <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
-      <span>Panel de control</span>
-    </div>
-  </a>
-  <div class="dropdown text-end col-6 col-sm-5 col-lg-3 justify-content-center">
-    <a href="#" class=" align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
+  <div class="dropdown text-end">
+    <a href="#" class="align-items-center text-white text-decoration-none dropdown-toggle d-flex" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
       <?php while ($fila = $resultado->fetch_assoc()) { ?>
-        <img src="<?php echo IMG_USUARIO . $fila['img_proveedor'] ?>" alt="" width="32" height="32"
-          class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
-        <strong>
+        <img src="<?php echo IMG_USUARIO . $fila['img_proveedor'] ?>" alt="" width="36" height="36"
+          class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1; border:2px solid #fff;">
+        <strong class="d-none d-md-inline text-white">
           <?php echo $fila['nombre_proveedor'] ?>
         </strong>
       <?php } ?>
     </a>
-    <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser1">
-      <li><a class="dropdown-item" href="<?php echo USUARIO ?>proveedor/cambiar_credenciales_proveedor">Mi Perfil</a>
-      </li>
-      <li><a class="dropdown-item" href="<?php echo USUARIO ?>proveedor/iniciar_sesion_proveedor">Cambiar de
-          cuenta</a></li>
-      <li>
-        <hr class="dropdown-divider">
-      </li>
-      <li><a class="dropdown-item" href="<?php echo FUNCIONES ?>cerrar_sesion">Salir</a></li>
+    <ul class="dropdown-menu dropdown-menu-end text-small shadow navbar-madera-dropdown" aria-labelledby="dropdownUser1">
+      <li><a class="dropdown-item text-white" href="<?php echo USUARIO ?>proveedor/cambiar_credenciales_proveedor">Mi Perfil</a></li>
+      <li><a class="dropdown-item text-white" href="<?php echo USUARIO ?>proveedor/iniciar_sesion_proveedor">Cambiar de cuenta</a></li>
+      <li><hr class="dropdown-divider"></li>
+      <li><a class="dropdown-item text-white" href="<?php echo FUNCIONES ?>cerrar_sesion">Salir</a></li>
     </ul>
   </div>
 </header>
