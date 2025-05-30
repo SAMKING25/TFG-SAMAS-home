@@ -117,22 +117,22 @@ if (isset($_SESSION['usuario'])) {
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php if ($tipo_sesion === 'usuario') { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario.php">Mi Perfil</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario.php">Cambiar cuenta</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de perfil</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion.php">Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar sesión</a></li>
                         <?php } elseif ($tipo_sesion === 'proveedor') { ?>
-                            <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Mi Perfil</a></li>
+                            <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Ajustes de perfil</a></li>
                             <li><a class="dropdown-item" href="/panel-control/">Panel de control</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar Sesión</a></li>
+                            <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar sesión</a></li>
                         <?php } else { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar Sesión</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar sesión</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/registro_usuario">Registrarse</a></li>
                         <?php }; ?>
                     </ul>

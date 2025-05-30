@@ -88,7 +88,7 @@ define('BASE_URL', '/panel-control/');
     }
 
     .sidebar-title {
-        font-family: 'Playfair Display', 'Georgia', serif;
+        /* font-family: 'Playfair Display', 'Georgia', serif; */
         /* Fuente elegante */
         font-size: 1.7rem;
         /* Más grande */
