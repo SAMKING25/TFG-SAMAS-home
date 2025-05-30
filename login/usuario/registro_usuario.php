@@ -7,19 +7,20 @@
     <title>Registro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <?php
-        error_reporting( E_ALL );
-        ini_set("display_errors", 1 );    
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
 
-        require('../../util/conexion.php');
-        require('../../util/funciones/utilidades.php');
+    require('../../util/conexion.php');
+    require('../../util/funciones/utilidades.php');
     ?>
     <style>
         html {
             background: #fccb90;
         }
-        
+
         .error {
             color: red;
         }
@@ -36,6 +37,26 @@
             border: 1px solid black;
         }
 
+        /* Mostrar/Ocultar contraseña */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            top: 38px;
+            /* Ajusta según el padding/margen de tu input */
+            right: 10px;
+            z-index: 2;
+            border: none;
+            background: transparent;
+            padding: 0 8px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (min-width: 768px) {
             .gradient-form {
                 height: 100vh !important;
@@ -48,92 +69,116 @@
                 border-bottom-right-radius: .3rem;
             }
         }
+
+        /* Quita hover de Mostrar/Ocultar contraseña */
+        .toggle-password-btn,
+        .toggle-password-btn:hover,
+        .toggle-password-btn:focus {
+            /* background: rgba(255, 255, 255, 0.8) !important; */
+            /* Fondo blanco semitransparente */
+            border: none !important;
+            box-shadow: none !important;
+            color: #333 !important;
+            outline: none !important;
+            cursor: pointer;
+        }
+
+        .toggle-password-btn i,
+        .toggle-password-btn:hover i,
+        .toggle-password-btn:focus i {
+            color: #333 !important;
+            /* Color oscuro siempre visible */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 
 <body>
     <?php
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $tmp_email_usuario = depurar($_POST["email_usuario"]);
-            $tmp_nombre_usuario = depurar($_POST["nombre_usuario"]);
-            $tmp_contrasena_usuario = $_POST["contrasena_usuario"];
-            $img_usuario = "estandar.png";
-            $id_suscripcion = 1; //Suscripción básica por defecto
-
-            if ($tmp_email_usuario == "") {
-                $err_email_usuario = "El email es obligatorio";
-            } else {
-                $sql = "SELECT * FROM usuarios WHERE email_usuario ='$tmp_email_usuario'";
-                $resultado = $_conexion->query($sql);
-                
-                if ($resultado->num_rows == 1) {
-                    $err_email_usuario = "Este correo electrónico ya se encuentra registrado";
-                } else {
-                    if (filter_var($tmp_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
-                        $err_email_usuario = "El email no es válido";
-                    } else {
-                        $email_usuario = $tmp_email_usuario;
-                    }
-                }
-            }
-
-            if ($tmp_nombre_usuario == "") {
-                $err_nombre_usuario = "El nombre es obligatorio";
-            } else {
-                $sql = "SELECT * FROM usuarios WHERE nombre_usuario ='$tmp_nombre_usuario'";
-                $resultado = $_conexion->query($sql);
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $tmp_email_usuario = depurar($_POST["email_usuario"]);
+        $tmp_nombre_usuario = depurar($_POST["nombre_usuario"]);
+        $tmp_contrasena_usuario = $_POST["contrasena_usuario"];
+        $img_usuario = "estandar.png";
+        $id_suscripcion = 1; //Suscripción básica por defecto
     
-                if ($resultado->num_rows == 1) {
-                    $err_nombre_usuario = "El nombre de usuario ya está en uso";
-                } else {
-                    $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
-                    if (!preg_match($patron, $tmp_nombre_usuario)) {
-                        $err_nombre_usuario = "El nombre solo puede tener letras y números";
-                    } else {
-                        $nombre_usuario = $tmp_nombre_usuario;
-                    }
-                }
-            }
+        if ($tmp_email_usuario == "") {
+            $err_email_usuario = "El email es obligatorio";
+        } else {
+            $sql = "SELECT * FROM usuarios WHERE email_usuario ='$tmp_email_usuario'";
+            $resultado = $_conexion->query($sql);
 
-            if ($tmp_contrasena_usuario == "") {
-                $err_contrasena_usuario = "La contraseña es obligatoria";
+            if ($resultado->num_rows == 1) {
+                $err_email_usuario = "Este correo electrónico ya se encuentra registrado";
             } else {
-                if (strlen($tmp_contrasena_usuario) < 8) {
-                    $err_contrasena_usuario = "La contraseña tiene que tener como minimo 8 caracteres";
+                if (filter_var($tmp_email_usuario, FILTER_VALIDATE_EMAIL) === false) {
+                    $err_email_usuario = "El email no es válido";
                 } else {
-                    $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
-                    if (!preg_match($patron, $tmp_contrasena_usuario)) {
-                        $err_contrasena_usuario = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
-                    } else {
-                        $contrasena_usuario_cifrada = password_hash($tmp_contrasena_usuario, PASSWORD_DEFAULT);
-                    }
+                    $email_usuario = $tmp_email_usuario;
                 }
             }
+        }
 
-            if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
-                // Generar código de verificación
-                $codigo_verificacion = rand(100000, 999999);
-                
-                // Guardar datos temporales en sesión
-                session_start();
-                $_SESSION['registro_email'] = $email_usuario;
-                $_SESSION['registro_nombre'] = $nombre_usuario;
-                $_SESSION['registro_contrasena'] = $contrasena_usuario_cifrada;
-                $_SESSION['registro_id_suscripcion'] = $id_suscripcion;
-                $_SESSION['registro_img_usuario'] = $img_usuario;
-                $_SESSION['registro_codigo'] = $codigo_verificacion;
+        if ($tmp_nombre_usuario == "") {
+            $err_nombre_usuario = "El nombre es obligatorio";
+        } else {
+            $sql = "SELECT * FROM usuarios WHERE nombre_usuario ='$tmp_nombre_usuario'";
+            $resultado = $_conexion->query($sql);
 
-                // Enviar email con el código
-                $asunto = "Código de verificación SAMAS home";
-                $mensaje = "Tu código de verificación es: $codigo_verificacion";
-                $cabeceras = "From: no-reply@samas-home.com\r\n";
-                mail($email_usuario, $asunto, $mensaje, $cabeceras);
-
-                // Redirigir a la página de verificación
-                header("Location: verificar_codigo");
-                exit;
+            if ($resultado->num_rows == 1) {
+                $err_nombre_usuario = "El nombre de usuario ya está en uso";
+            } else {
+                $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
+                if (!preg_match($patron, $tmp_nombre_usuario)) {
+                    $err_nombre_usuario = "El nombre solo puede tener letras y números";
+                } else {
+                    $nombre_usuario = $tmp_nombre_usuario;
+                }
             }
-        } 
+        }
+
+        if ($tmp_contrasena_usuario == "") {
+            $err_contrasena_usuario = "La contraseña es obligatoria";
+        } else {
+            if (strlen($tmp_contrasena_usuario) < 8) {
+                $err_contrasena_usuario = "La contraseña tiene que tener como minimo 8 caracteres";
+            } else {
+                $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
+                if (!preg_match($patron, $tmp_contrasena_usuario)) {
+                    $err_contrasena_usuario = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
+                } else {
+                    $contrasena_usuario_cifrada = password_hash($tmp_contrasena_usuario, PASSWORD_DEFAULT);
+                }
+            }
+        }
+
+        if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
+            // Generar código de verificación
+            $codigo_verificacion = rand(100000, 999999);
+
+            // Guardar datos temporales en sesión
+            session_start();
+            $_SESSION['registro_email'] = $email_usuario;
+            $_SESSION['registro_nombre'] = $nombre_usuario;
+            $_SESSION['registro_contrasena'] = $contrasena_usuario_cifrada;
+            $_SESSION['registro_id_suscripcion'] = $id_suscripcion;
+            $_SESSION['registro_img_usuario'] = $img_usuario;
+            $_SESSION['registro_codigo'] = $codigo_verificacion;
+
+            // Enviar email con el código
+            $asunto = "Código de verificación SAMAS home";
+            $mensaje = "Tu código de verificación es: $codigo_verificacion";
+            $cabeceras = "From: no-reply@samas-home.com\r\n";
+            mail($email_usuario, $asunto, $mensaje, $cabeceras);
+
+            // Redirigir a la página de verificación
+            header("Location: verificar_codigo");
+            exit;
+        }
+    }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
@@ -154,7 +199,8 @@
                                                 class="form-control" placeholder="Inserte su nombre"
                                                 value="<?php echo isset($_POST['nombre_usuario']) ? htmlspecialchars($_POST['nombre_usuario']) : ''; ?>" />
                                             <span class="error" id="nombre-error">
-                                                <?php if (isset($err_nombre_usuario)) echo $err_nombre_usuario; ?>
+                                                <?php if (isset($err_nombre_usuario))
+                                                    echo $err_nombre_usuario; ?>
                                             </span>
                                         </div>
 
@@ -164,17 +210,25 @@
                                                 class="form-control" placeholder="Inserte su correo electrónico"
                                                 value="<?php echo isset($_POST['email_usuario']) ? htmlspecialchars($_POST['email_usuario']) : ''; ?>" />
                                             <span class="error" id="email-error">
-                                                <?php if (isset($err_email_usuario)) echo $err_email_usuario; ?>
+                                                <?php if (isset($err_email_usuario))
+                                                    echo $err_email_usuario; ?>
                                             </span>
                                         </div>
 
-                                        <div data-mdb-input-init class="form-outline mb-4">
+                                        <div data-mdb-input-init class="form-outline mb-4 password-wrapper">
                                             <label class="form-label" for="contrasena_usuario">Contraseña</label>
                                             <input type="password" id="contrasena_usuario" name="contrasena_usuario"
                                                 class="form-control"
                                                 value="<?php echo isset($_POST['contrasena_usuario']) ? htmlspecialchars($_POST['contrasena_usuario']) : ''; ?>" />
+                                            <!-- Botón mostrar/ocultar contraseña -->
+                                            <button type="button" id="togglePassword"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                style="position: absolute; top: 38px; right: 10px; z-index: 2; border: none;">
+                                                <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+                                            </button>
                                             <span class="error" id="password-error">
-                                                <?php if (isset($err_contrasena_usuario)) echo $err_contrasena_usuario; ?>
+                                                <?php if (isset($err_contrasena_usuario))
+                                                    echo $err_contrasena_usuario; ?>
                                             </span>
                                         </div>
 
@@ -277,6 +331,31 @@
                 errores.forEach(function (error) {
                     error.remove();
                 });
+            }
+        });
+    </script>
+    <script>
+        // Mostrar/ocultar contraseña
+        // Inicializa el icono según el estado inicial del input
+        const passwordInput = document.getElementById('contrasena_usuario');
+        const icon = document.getElementById('togglePasswordIcon');
+        if (passwordInput.type === 'password') {
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
             }
         });
     </script>

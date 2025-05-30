@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesion proveedor</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>	
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <?php
-        error_reporting( E_ALL );
-        ini_set("display_errors", 1 );
+    error_reporting(E_ALL);
+    ini_set("display_errors", 1);
 
-        require('../../util/conexion.php');
-        require('../../util/funciones/utilidades.php');
+    require('../../util/conexion.php');
+    require('../../util/funciones/utilidades.php');
     ?>
     <style>
         html {
@@ -35,6 +37,26 @@
             border: 1px solid black;
         }
 
+        /* Mostrar/Ocultar contraseña */
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            top: 38px;
+            /* Ajusta según el padding/margen de tu input */
+            right: 10px;
+            z-index: 2;
+            border: none;
+            background: transparent;
+            padding: 0 8px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (min-width: 768px) {
             .gradient-form {
                 height: 100vh !important;
@@ -47,40 +69,64 @@
                 border-bottom-right-radius: .3rem;
             }
         }
+
+        /* Quita hover de Mostrar/Ocultar contraseña */
+        .toggle-password-btn,
+        .toggle-password-btn:hover,
+        .toggle-password-btn:focus {
+            /* background: rgba(255, 255, 255, 0.8) !important; */
+            /* Fondo blanco semitransparente */
+            border: none !important;
+            box-shadow: none !important;
+            color: #333 !important;
+            outline: none !important;
+            cursor: pointer;
+        }
+
+        .toggle-password-btn i,
+        .toggle-password-btn:hover i,
+        .toggle-password-btn:focus i {
+            color: #333 !important;
+            /* Color oscuro siempre visible */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            font-size: 1.2rem;
+        }
     </style>
 </head>
 
 <body>
     <?php
-    if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $email_proveedor = depurar($_POST["email_proveedor"]);
-            $contrasena_proveedor = $_POST["contrasena_proveedor"];
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email_proveedor = depurar($_POST["email_proveedor"]);
+        $contrasena_proveedor = $_POST["contrasena_proveedor"];
 
-            $sql="SELECT * FROM proveedores WHERE email_proveedor ='$email_proveedor'";
-            $resultado=$_conexion -> query($sql);
+        $sql = "SELECT * FROM proveedores WHERE email_proveedor ='$email_proveedor'";
+        $resultado = $_conexion->query($sql);
 
-            if($resultado -> num_rows == 0){
+        if ($resultado->num_rows == 0) {
+            $err_email_proveedor = "El correo y la contraseña no coinciden";
+        } else {
+            $datos_usuario = $resultado->fetch_assoc();
+            $acceso_concedido = password_verify($contrasena_proveedor, $datos_usuario["contrasena_proveedor"]);
+
+            if ($acceso_concedido) {
+                session_start();
+
+                session_unset();
+                session_destroy();
+
+                session_start();
+
+                $_SESSION["proveedor"] = $datos_usuario["id_proveedor"];
+                header("location: ../../");
+                exit;
+            } else {
                 $err_email_proveedor = "El correo y la contraseña no coinciden";
-            }else{
-                $datos_usuario = $resultado -> fetch_assoc();
-                $acceso_concedido = password_verify($contrasena_proveedor,$datos_usuario["contrasena_proveedor"]);
-
-                if($acceso_concedido){
-                    session_start();
-    
-                    session_unset();
-                    session_destroy();
-                                        
-                    session_start();
-                    
-                    $_SESSION["proveedor"] = $datos_usuario["id_proveedor"];
-                    header("location: ../../");
-                    exit;
-                }else{
-                    $err_email_proveedor = "El correo y la contraseña no coinciden";
-                }
             }
-        } 
+        }
+    }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
@@ -104,17 +150,25 @@
                                                 class="form-control" placeholder="Inserte su correo electrónico"
                                                 value="<?php echo isset($_POST['email_proveedor']) ? htmlspecialchars($_POST['email_proveedor']) : ''; ?>" />
                                             <span class="error" id="email-error">
-                                                <?php if (isset($err_email_proveedor)) echo $err_email_proveedor; ?>
+                                                <?php if (isset($err_email_proveedor))
+                                                    echo $err_email_proveedor; ?>
                                             </span>
                                         </div>
 
-                                        <div data-mdb-input-init class="form-outline mb-4">
+                                        <div data-mdb-input-init class="form-outline mb-4 password-wrapper">
                                             <label class="form-label" for="contrasena_proveedor">Contraseña</label>
                                             <input type="password" id="contrasena_proveedor" name="contrasena_proveedor"
                                                 class="form-control"
                                                 value="<?php echo isset($_POST['contrasena_proveedor']) ? htmlspecialchars($_POST['contrasena_proveedor']) : ''; ?>" />
+                                            <!-- Botón mostrar/ocultar contraseña -->
+                                            <button type="button" id="togglePassword"
+                                                class="btn btn-outline-secondary btn-sm"
+                                                style="position: absolute; top: 38px; right: 10px; z-index: 2; border: none;">
+                                                <i class="bi bi-eye-slash" id="togglePasswordIcon"></i>
+                                            </button>
                                             <span class="error" id="password-error">
-                                                <?php if (isset($err_contrasena_proveedor)) echo $err_contrasena_proveedor; ?>
+                                                <?php if (isset($err_contrasena_proveedor))
+                                                    echo $err_contrasena_proveedor; ?>
                                             </span>
                                         </div>
 
@@ -156,19 +210,19 @@
         </div>
     </section>
     <!-- Pop-up de cookies incluido-->
-	<?php include('../../cookies.php'); ?>
+    <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_proveedor');
             const passwordInput = document.getElementById('contrasena_proveedor');
             const emailError = document.getElementById('email-error');
             const passwordError = document.getElementById('password-error');
 
-            form.addEventListener('submit', function(event) {
+            form.addEventListener('submit', function (event) {
                 let valid = true;
 
                 // Limpia los errores previos (incluyendo los de PHP)
@@ -198,5 +252,31 @@
             });
         });
     </script>
+    <script>
+        // Mostrar/ocultar contraseña
+        // Inicializa el icono según el estado inicial del input
+        const passwordInput = document.getElementById('contrasena_proveedor');
+        const icon = document.getElementById('togglePasswordIcon');
+        if (passwordInput.type === 'password') {
+            icon.classList.remove('bi-eye');
+            icon.classList.add('bi-eye-slash');
+        } else {
+            icon.classList.remove('bi-eye-slash');
+            icon.classList.add('bi-eye');
+        }
+
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            }
+        });
+    </script>
 </body>
+
 </html>
