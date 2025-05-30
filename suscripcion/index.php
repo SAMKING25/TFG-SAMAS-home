@@ -277,10 +277,13 @@
                                         <?php
                                             if ($id_suscripcion_usuario === $id_suscripcion) {
                                                 echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
-                                                echo '<div><a href="/suscripcion/cancelar.php" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
+                                                // Solo mostrar el enlace si la suscripción activa NO es la básica
+                                                if ($id_suscripcion_usuario != 1) {
+                                                    echo '<div><a href="#" id="cancelar-suscripcion-btn" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
+                                                }
+                                                // Si es la básica, no se muestra nada más (no se reserva espacio)
                                             } else {
                                                 echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
-                                                echo '<div style="height:1.5em;"></div>';
                                             }
                                         ?>
                                     <?php endif; ?>
@@ -298,6 +301,51 @@
     <?php include('../udify-bot.php'); ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cancelarBtn = document.getElementById('cancelar-suscripcion-btn');
+        if (cancelarBtn) {
+            cancelarBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '¿Seguro que quieres cancelar?',
+                    text: 'Al cancelar tu suscripción perderás el acceso a las funciones premium.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cancelar',
+                    cancelButtonText: 'No, mantener',
+                    reverseButtons: true,
+                    confirmButtonColor: '#dc3545', // rojo
+                    cancelButtonColor: '#198754'   // verde
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/suscripcion/cancelar.php';
+                    }
+                });
+            });
+        }
+    });
+    </script>
+    <script>
+    <?php if (!empty($_SESSION['mensaje_cancelacion'])): ?>
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: '<?php echo addslashes($_SESSION['mensaje_cancelacion']); ?>',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true,
+            background: '#f4e5cc',
+            color: '#333',
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    <?php unset($_SESSION['mensaje_cancelacion']); endif; ?>
+    </script>
 </body>
 
 
