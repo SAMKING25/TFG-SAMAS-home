@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <?php
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -31,6 +31,12 @@
 
         body {
             background-color: #F7E5CB;
+        }
+
+        /* Hover para la imagen */
+        .foto-perfil-editable:hover img {
+            filter: brightness(0.7);
+            transition: filter 0.2s;
         }
     </style>
 </head>
@@ -213,7 +219,7 @@
         }
 
         if (isset($largo_actual) && isset($ancho_actual) && isset($alto_actual)) {
-            $medidas = array('largo' => intval($largo_actual),'ancho' => intval($ancho_actual),'alto' => intval($alto_actual));
+            $medidas = array('largo' => intval($largo_actual), 'ancho' => intval($ancho_actual), 'alto' => intval($alto_actual));
             $sql = "UPDATE productos SET medidas = '" . json_encode($medidas) . "' WHERE id_producto = '$id_producto'";
             $_conexion->query($sql);
         }
@@ -248,11 +254,16 @@
                     <div class="card-body p-5">
                         <form action="" method="post" enctype="multipart/form-data">
                             <div class="text-center mb-3">
-                                <img src="<?php echo IMG_PRODUCTOS . $img_actual ?>"
-                                    style="height: 260px; width: 60%; object-fit: cover;" alt="logo"
-                                    class="card-img-top img-fluid" />
-                                <input type="file" disabled hidden name="nueva_imagen" id="nueva_imagen"
-                                    class="form-control mb-4" accept="image/*" />
+                                <div id="foto-producto-wrapper"
+                                    style="width: 60%; height: 260px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+                                    <img id="foto-producto" src="<?php echo IMG_PRODUCTOS . $img_actual ?>"
+                                        style="height: 100%; width: 100%; object-fit: cover; border-radius: 10px; border: 2px solid #ccc;"
+                                        alt="Imagen producto" class="card-img-top img-fluid" />
+                                </div>
+                                <input type="file" name="img_producto" id="img_producto" class="form-control mb-4"
+                                    accept="image/*" style="display: none;" />
+                                <?php if (isset($err_imagen))
+                                    echo "<span class='error'>$err_imagen</span>"; ?>
                             </div>
 
                             <div class="row g-3 mb-3">
@@ -339,35 +350,35 @@
                                     <select class="form-select" name="oferta">
                                         <option selected value="<?php echo $oferta_actual ?>">
                                             <?php if ($oferta_actual === null) {
-                                                    echo "Sin oferta";
-                                                } else {
-                                                    foreach ($ofertas as $oferta) {
-                                                        if ($oferta['id_oferta'] == $oferta_actual) {
-                                                            echo $oferta['nombre'];
-                                                        }
+                                                echo "Sin oferta";
+                                            } else {
+                                                foreach ($ofertas as $oferta) {
+                                                    if ($oferta['id_oferta'] == $oferta_actual) {
+                                                        echo $oferta['nombre'];
                                                     }
                                                 }
+                                            }
                                             ?>
                                         </option>
                                         <?php
                                         foreach ($ofertas as $oferta) { ?>
                                             <?php if ($oferta['id_oferta'] != $oferta_actual) { ?>
-                                                    <option value="<?php echo $oferta['id_oferta']; ?>">
-                                                        <?php echo $oferta['nombre']; ?>
-                                                    </option>
+                                                <option value="<?php echo $oferta['id_oferta']; ?>">
+                                                    <?php echo $oferta['nombre']; ?>
+                                                </option>
                                             <?php } ?>
                                         <?php } ?>
                                     </select>
                                     <?php if (isset($err_oferta))
                                         echo "<span class='error'>$err_oferta</span>"; ?>
                                 </div>
-                                <div class="col-md-6">
+                                <!-- <div class="col-md-6">
                                     <label class="form-label">Imagen</label>
                                     <input class="form-control" type="file" name="img_producto" id="img_producto"
                                         accept="image/*" />
                                     <?php if (isset($err_imagen))
                                         echo "<span class='error'>$err_imagen</span>"; ?>
-                                </div>
+                                </div> -->
                             </div>
 
                             <div class="d-flex justify-content-between">
@@ -386,6 +397,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const fotoWrapper = document.getElementById('foto-producto-wrapper');
+            const fotoProducto = document.getElementById('foto-producto');
+            const inputFile = document.getElementById('img_producto');
+
+            // Cambia el cursor y el efecto hover
+            fotoWrapper.style.cursor = 'pointer';
+            fotoWrapper.classList.add('foto-perfil-editable');
+
+            fotoWrapper.addEventListener('click', function () {
+                inputFile.click();
+            });
+
+            inputFile.addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (ev) {
+                        fotoProducto.src = ev.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

@@ -1,3 +1,76 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../../util/conexion.php');
+require('../../util/funciones/utilidades.php');
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
+    $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
+    $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
+    $img_proveedor = "estandar.png";
+
+    if ($tmp_email_proveedor == "") {
+        $err_email_proveedor = "El email es obligatorio";
+    } else {
+        $sql = "SELECT * FROM proveedores WHERE email_proveedor ='$tmp_email_proveedor'";
+        $resultado = $_conexion->query($sql);
+
+        if ($resultado->num_rows == 1) {
+            $err_email_proveedor = "Este correo electrónico ya se encuentra registrado";
+        } else {
+            if (filter_var($tmp_email_proveedor, FILTER_VALIDATE_EMAIL) === false) {
+                $err_email_proveedor = "El email no es válido";
+            } else {
+                $email_proveedor = $tmp_email_proveedor;
+            }
+        }
+    }
+
+    if ($tmp_nombre_proveedor == "") {
+        $err_nombre_proveedor = "El nombre es obligatorio";
+    } else {
+        $sql = "SELECT * FROM proveedores WHERE nombre_proveedor ='$tmp_nombre_proveedor'";
+        $resultado = $_conexion->query($sql);
+
+        if ($resultado->num_rows == 1) {
+            $err_nombre_proveedor = "El nombre de usuario ya está en uso";
+        } else {
+            $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
+            if (!preg_match($patron, $tmp_nombre_proveedor)) {
+                $err_nombre_proveedor = "El nombre solo puede tener letras y números";
+            } else {
+                $nombre_proveedor = $tmp_nombre_proveedor;
+            }
+        }
+    }
+
+    if ($tmp_contrasena_proveedor == "") {
+        $err_contrasena_proveedor = "La contraseña es obligatoria";
+    } else {
+        if (strlen($tmp_contrasena_proveedor) < 8) {
+            $err_contrasena_proveedor = "La contraseña tiene que tener como minimo 8 caracteres";
+        } else {
+            $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
+            if (!preg_match($patron, $tmp_contrasena_proveedor)) {
+                $err_contrasena_proveedor = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
+            } else {
+                $contrasena_proveedor_cifrada = password_hash($tmp_contrasena_proveedor, PASSWORD_DEFAULT);
+            }
+        }
+    }
+
+    if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
+        $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, img_proveedor) 
+                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
+        $_conexion->query($sql);
+        header("Location: iniciar_sesion_proveedor?registro=ok");
+        exit;
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,160 +82,239 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    require('../../util/conexion.php');
-    require('../../util/funciones/utilidades.php');
-    ?>
     <style>
-        html {
-            background: #fccb90;
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fccb90 0%, #a39082 100%);
+            min-height: 100vh;
         }
 
-        .error {
-            color: red;
+        .gradient-form {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
         }
 
-        .gradient-custom-2 {
-            background: #fccb90;
-            background: -webkit-linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
-            background: linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
-
-            border: 1px solid #F7E5CB;
+        .card {
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(102, 67, 20, 0.15), 0 1.5px 6px 0 rgba(165, 125, 49, 0.10);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
         }
 
-        .btn:hover {
-            border: 1px solid black;
+        .card-body {
+            padding: 3rem 2.5rem;
         }
 
-        /* Mostrar/Ocultar contraseña */
+        .text-center img {
+            filter: drop-shadow(0 2px 8px #a39082aa);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+        .form-label {
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+            font-weight: 600;
+            color: #a39082;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+            font-size: 1.08rem;
+            border-radius: 1.5rem;
+            border: 1.5px solid #f7e5cb;
+            background: #fff8f1;
+            padding: 0.75rem 1.25rem;
+            transition: border-color 0.2s;
+            color: #6d4c1b;
+            /* color acorde a la paleta */
+        }
+
+        .form-control:focus {
+            border-color: #a39082;
+            box-shadow: 0 0 0 2px #fccb90aa;
+        }
+
         .password-wrapper {
             position: relative;
         }
 
         .toggle-password-btn {
             position: absolute;
-            top: 38px;
-            /* Ajusta según el padding/margen de tu input */
-            right: 10px;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
             z-index: 2;
             border: none;
             background: transparent;
-            padding: 0 8px;
+            padding: 0;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        @media (min-width: 768px) {
-            .gradient-form {
-                height: 100vh !important;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .gradient-custom-2 {
-                border-top-right-radius: .3rem;
-                border-bottom-right-radius: .3rem;
-            }
-        }
-
-        /* Quita hover de Mostrar/Ocultar contraseña */
-        .toggle-password-btn,
-        .toggle-password-btn:hover,
-        .toggle-password-btn:focus {
-            /* background: rgba(255, 255, 255, 0.8) !important; */
-            /* Fondo blanco semitransparente */
-            border: none !important;
-            box-shadow: none !important;
-            color: #333 !important;
-            outline: none !important;
+            color: #a39082 !important;
+            font-size: 1.3rem;
             cursor: pointer;
         }
 
-        .toggle-password-btn i,
-        .toggle-password-btn:hover i,
-        .toggle-password-btn:focus i {
-            color: #333 !important;
-            /* Color oscuro siempre visible */
-            background: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-            font-size: 1.2rem;
+        .toggle-password-btn:focus {
+            outline: none;
+        }
+
+        .btn-primary.gradient-custom-2 {
+            background: linear-gradient(90deg, #a39082 0%, #927447 50%, #a57d31 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 2rem;
+            box-shadow: 0 2px 8px #a3908240;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary.gradient-custom-2:hover,
+        .btn-primary.gradient-custom-2:focus {
+            background: linear-gradient(90deg, #a57d31 0%, #927447 100%);
+            box-shadow: 0 4px 16px #a3908240;
+            color: #fff;
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .error {
+            color: #b94a48;
+            font-size: 0.97rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
+        }
+
+        .side-panel {
+            background: linear-gradient(135deg, #a39082 0%, #927447 100%);
+            color: #fff;
+            /* border-top-right-radius: 2rem;
+            border-bottom-right-radius: 2rem; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 3rem 2.5rem;
+        }
+
+        .side-panel h4 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
+        }
+
+        .side-panel p {
+            font-size: 1.08rem;
+            opacity: 0.93;
+        }
+
+        .text-center h4 {
+            color: #a57d31;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        a {
+            color: #a57d31;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #927447;
+        }
+
+        .d-flex.align-items-center.justify-content-center.pb-4 {
+            margin-top: 0.5rem;
+        }
+
+        /* Links de regístrate y eres una empresa */
+        .login-links {
+            margin-top: 2rem;
+        }
+
+        .login-links p {
+            font-size: 1.08rem;
+            color: #a39082;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-links a {
+            color: #a57d31;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid #a57d31;
+            transition: color 0.2s, border-color 0.2s;
+            margin-left: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .login-links a:hover {
+            color: #927447;
+            border-bottom: 2px solid #927447;
+        }
+
+        .login-links .bi {
+            font-size: 1.1em;
+            margin-right: 0.15em;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 991.98px) {
+            .side-panel {
+                border-radius: 0 0 2rem 2rem;
+                min-height: 180px;
+                padding: 2rem 1.5rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.2rem;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .side-panel {
+                border-radius: 0 0 2rem 2rem;
+                min-height: 120px;
+                padding: 1.5rem 1rem;
+            }
+
+            .card {
+                border-radius: 1.2rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .card-body {
+                padding: 1.2rem 0.5rem;
+            }
+
+            .side-panel {
+                padding: 1rem 0.5rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
-        $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
-        $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
-        $img_proveedor = "estandar.png";
-
-        if ($tmp_email_proveedor == "") {
-            $err_email_proveedor = "El email es obligatorio";
-        } else {
-            $sql = "SELECT * FROM proveedores WHERE email_proveedor ='$tmp_email_proveedor'";
-            $resultado = $_conexion->query($sql);
-
-            if ($resultado->num_rows == 1) {
-                $err_email_proveedor = "Este correo electrónico ya se encuentra registrado";
-            } else {
-                if (filter_var($tmp_email_proveedor, FILTER_VALIDATE_EMAIL) === false) {
-                    $err_email_proveedor = "El email no es válido";
-                } else {
-                    $email_proveedor = $tmp_email_proveedor;
-                }
-            }
-        }
-
-        if ($tmp_nombre_proveedor == "") {
-            $err_nombre_proveedor = "El nombre es obligatorio";
-        } else {
-            $sql = "SELECT * FROM proveedores WHERE nombre_proveedor ='$tmp_nombre_proveedor'";
-            $resultado = $_conexion->query($sql);
-
-            if ($resultado->num_rows == 1) {
-                $err_nombre_proveedor = "El nombre de usuario ya está en uso";
-            } else {
-                $patron = "/^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/";
-                if (!preg_match($patron, $tmp_nombre_proveedor)) {
-                    $err_nombre_proveedor = "El nombre solo puede tener letras y números";
-                } else {
-                    $nombre_proveedor = $tmp_nombre_proveedor;
-                }
-            }
-        }
-
-        if ($tmp_contrasena_proveedor == "") {
-            $err_contrasena_proveedor = "La contraseña es obligatoria";
-        } else {
-            if (strlen($tmp_contrasena_proveedor) < 8) {
-                $err_contrasena_proveedor = "La contraseña tiene que tener como minimo 8 caracteres";
-            } else {
-                $patron = "/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/";
-                if (!preg_match($patron, $tmp_contrasena_proveedor)) {
-                    $err_contrasena_proveedor = "La contraseña tiene que tener letras en mayus y minus, algun numero y puede tener caracteres especiales";
-                } else {
-                    $contrasena_proveedor_cifrada = password_hash($tmp_contrasena_proveedor, PASSWORD_DEFAULT);
-                }
-            }
-        }
-
-        if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
-            $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, img_proveedor) 
-                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
-            $_conexion->query($sql);
-            header("location: iniciar_sesion_proveedor.php");
-            exit;
-        }
-    }
-    ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
@@ -226,17 +378,26 @@
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">Ya tienes cuenta?
-                                                <a style="text-decoration: none; color: black;"
-                                                    href="./iniciar_sesion_proveedor.php"><u>Iniciar sesión</u></a>
+                                        <div class="login-links">
+                                            <p>
+                                                <i class="bi bi-person-check"></i>
+                                                ¿Ya tienes cuenta?
+                                                <a href="./iniciar_sesion_proveedor">
+                                                    Iniciar sesión
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <i class="bi bi-arrow-left-circle"></i>
+                                                <a href="../../">
+                                                    Volver al inicio
+                                                </a>
                                             </p>
                                         </div>
                                     </form>
 
                                 </div>
                             </div>
-                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                            <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Mucho más que muebles</h4>
                                     <p class="small mb-0">Somos SAMAS home y operamos en toda la provincia de Málaga
