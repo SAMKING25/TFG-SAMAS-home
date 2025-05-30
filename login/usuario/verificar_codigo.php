@@ -33,41 +33,245 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <title>Verificar código</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
-        html {
-            background: #fccb90;
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fccb90 0%, #a39082 100%);
+            min-height: 100vh;
+        }
+
+        .gradient-form {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+        }
+
+        .card {
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(102, 67, 20, 0.15), 0 1.5px 6px 0 rgba(165, 125, 49, 0.10);
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .card-body {
+            padding: 3rem 2.5rem;
+        }
+
+        .text-center img {
+            filter: drop-shadow(0 2px 8px #a39082aa);
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
+
+        .form-label {
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+            font-weight: 600;
+            color: #a39082;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+            font-size: 1.08rem;
+            border-radius: 1.5rem;
+            border: 1.5px solid #f7e5cb;
+            background: #fff8f1;
+            padding: 0.75rem 1.25rem;
+            transition: border-color 0.2s;
+            color: #6d4c1b;
+            /* color acorde a la paleta */
+        }
+
+        .form-control:focus {
+            border-color: #a39082;
+            box-shadow: 0 0 0 2px #fccb90aa;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            top: 50%;
+            right: 18px;
+            transform: translateY(-50%);
+            z-index: 2;
+            border: none;
+            background: transparent;
+            padding: 0;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a39082 !important;
+            font-size: 1.3rem;
+            cursor: pointer;
+        }
+
+        .toggle-password-btn:focus {
+            outline: none;
+        }
+
+        .btn-primary.gradient-custom-2 {
+            background: linear-gradient(90deg, #a39082 0%, #927447 50%, #a57d31 100%);
+            border: none;
+            color: #fff;
+            font-weight: 600;
+            border-radius: 2rem;
+            box-shadow: 0 2px 8px #a3908240;
+            transition: background 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary.gradient-custom-2:hover,
+        .btn-primary.gradient-custom-2:focus {
+            background: linear-gradient(90deg, #a57d31 0%, #927447 100%);
+            box-shadow: 0 4px 16px #a3908240;
+            color: #fff;
+        }
+
+        .btn-block {
+            width: 100%;
         }
 
         .error {
-            color: red;
+            color: #b94a48;
+            font-size: 0.97rem;
+            margin-top: 0.25rem;
+            font-weight: 500;
         }
-        .gradient-custom-2 {
-            background: #fccb90;
-            background: -webkit-linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
-            background: linear-gradient(to right, rgb(163, 144, 130), rgb(146, 116, 71), rgb(165, 125, 49), rgb(102, 67, 20));
-            border: 1px solid #F7E5CB;
+
+        .side-panel {
+            background: linear-gradient(135deg, #a39082 0%, #927447 100%);
+            color: #fff;
+            /* border-top-right-radius: 2rem;
+            border-bottom-right-radius: 2rem; */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100%;
+            padding: 3rem 2.5rem;
         }
-        .btn:hover {
-            border: 1px solid black;
+
+        .side-panel h4 {
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 1.5rem;
         }
-        @media (min-width: 768px) {
-            .gradient-form {
-                height: 100vh !important;
+
+        .side-panel p {
+            font-size: 1.08rem;
+            opacity: 0.93;
+        }
+
+        .text-center h4 {
+            color: #a57d31;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        a {
+            color: #a57d31;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: #927447;
+        }
+
+        .d-flex.align-items-center.justify-content-center.pb-4 {
+            margin-top: 0.5rem;
+        }
+
+        /* Links de regístrate y eres una empresa */
+        .login-links {
+            margin-top: 2rem;
+        }
+
+        .login-links p {
+            font-size: 1.08rem;
+            color: #a39082;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .login-links a {
+            color: #a57d31;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 2px solid #a57d31;
+            transition: color 0.2s, border-color 0.2s;
+            margin-left: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .login-links a:hover {
+            color: #927447;
+            border-bottom: 2px solid #927447;
+        }
+
+        .login-links .bi {
+            font-size: 1.1em;
+            margin-right: 0.15em;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 991.98px) {
+            .side-panel {
+                border-radius: 0 0 2rem 2rem;
+                min-height: 180px;
+                padding: 2rem 1.5rem;
+            }
+
+            .card-body {
+                padding: 2rem 1.2rem;
             }
         }
-        @media (min-width: 769px) {
-            .gradient-custom-2 {
-                border-top-right-radius: .3rem;
-                border-bottom-right-radius: .3rem;
+
+        @media (max-width: 767.98px) {
+            .side-panel {
+                border-radius: 0 0 2rem 2rem;
+                min-height: 120px;
+                padding: 1.5rem 1rem;
+            }
+
+            .card {
+                border-radius: 1.2rem;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .card-body {
+                padding: 1.2rem 0.5rem;
+            }
+
+            .side-panel {
+                padding: 1rem 0.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
@@ -83,7 +287,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 
-                                        
+
                                         <!-- ALERTA BORRAR CÓDIGO -->
                                         <?php
                                         if (isset($_SESSION['registro_codigo'])) {
@@ -93,34 +297,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <!-- ALERTA BORRAR CÓDIGO -->
 
 
-                                        
+
 
 
                                     </div>
                                     <form method="post">
                                         <div class="mb-4">
                                             <label for="codigo" class="form-label">Código de verificación</label>
-                                            <input type="text" class="form-control" id="codigo" name="codigo" placeholder="Introduce el código recibido">
+                                            <input type="text" class="form-control" id="codigo" name="codigo"
+                                                placeholder="Introduce el código recibido">
                                         </div>
-                                        <?php if ($mensaje) echo "<div class='alert alert-danger'>$mensaje</div>"; ?>
+                                        <?php if ($mensaje)
+                                            echo "<div class='alert alert-danger'>$mensaje</div>"; ?>
                                         <div class="pt-1 mb-5 pb-1">
-                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3" type="submit">Verificar</button>
-                                            <a href="registro_usuario.php" class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
+                                            <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
+                                                type="submit">Verificar</button>
                                         </div>
-                                        <div class="d-flex align-items-center justify-content-center pb-4">
-                                            <p class="mb-0 me-2">¿Ya tienes cuenta?
-                                                <a style="text-decoration: none; color: black;" href="./iniciar_sesion_usuario"><u>Iniciar sesión</u></a>
+                                        <div class="login-links">
+                                            <p>
+                                                <i class="bi bi-person-check"></i>
+                                                ¿Ya tienes cuenta?
+                                                <a href="./iniciar_sesion_usuario">
+                                                    Iniciar sesión
+                                                </a>
+                                            </p>
+                                            <p>
+                                                <i class="bi bi-arrow-left-circle"></i>
+                                                <a href="registro_usuario">
+                                                    Volver
+                                                </a>
                                             </p>
                                         </div>
                                     </form>
                                 </div>
                             </div>
-                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
+                            <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Verifica tu correo</h4>
                                     <p class="small mb-0">
                                         Te hemos enviado un código de verificación a tu correo electrónico.<br>
-                                        Por favor, revisa tu bandeja de entrada y la carpeta de spam e introduce el código para completar tu registro.
+                                        Por favor, revisa tu bandeja de entrada y la carpeta de spam e introduce el
+                                        código para completar tu registro.
                                     </p>
                                 </div>
                             </div>
@@ -163,4 +380,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     </script>
 </body>
+
 </html>

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
         body {
             background-color: #F7E5CB;
@@ -33,7 +33,7 @@
 
     session_start();
     if (!isset($_SESSION["proveedor"])) {
-        header("location: ../../login/proveedor/iniciar_sesion_proveedor.php");
+        header("location: ../../login/proveedor/iniciar_sesion_proveedor");
         exit;
     }
     ?>
@@ -67,100 +67,110 @@
 
 
     // Consulta SQL
-    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";;
+    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";
+    ;
     $resultado = $_conexion->query($sql);
     ?>
 
     <div class="container-fluid py-5">
-        <h1 class="text-center mb-4">Gestión de Productos</h1>
-
-        <!-- Buscador -->
-        <form method="GET" class="row g-2 mb-4 justify-content-center">
-            <div class="col-md-4">
-                <input type="text" class="form-control" name="busqueda" placeholder="Buscar por ID o nombre">
+        <?php if ($resultado->num_rows === 0): ?>
+            <div class="d-flex flex-column align-items-center justify-content-center" style="height: 40vh;">
+                <p class="fs-4 mb-4 text-center">Todavía no has subido ningún producto, crea tu primer producto</p>
+                <a href="./nuevo_producto" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nuevo producto
+                </a>
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-outline-primary">Buscar</button>
-            </div>
-            <div class="col-auto">
-                <a href="./index.php" class="btn btn-outline-secondary">Ver todos</a>
-            </div>
-        </form>
+        <?php else: ?>
+            <h1 class="text-center mb-4">Gestión de Productos</h1>
 
-        <div class="text-end mb-4">
-            <a href="nuevo_producto.php" class="btn btn-success">+ Nuevo Producto</a>
-        </div>
+            <!-- Buscador -->
+            <form method="GET" class="row g-2 mb-4 justify-content-center">
+                <div class="col-md-4">
+                    <input type="text" class="form-control" name="busqueda" placeholder="Buscar por ID o nombre">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                </div>
+                <div class="col-auto">
+                    <a href="./" class="btn btn-outline-secondary">Ver todos</a>
+                </div>
+            </form>
 
-        <?php if ($resultado->num_rows > 0): ?>
-            <div class="row g-3">
-                <?php while ($fila = $resultado->fetch_assoc()): ?>
-                    <?php
-                    $medidas = json_decode($fila["medidas"], true)
-                    ?>
-                    <div class="col-12 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
-                        <div class="card h-100 shadow-sm">
-                            <a href="./ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
-                                class="text-decoration-none">
-                                <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
-                                    style="height: 260px; object-fit: cover;" alt="Imagen del producto">
-                            </a>
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">
-                                    <?php echo $fila["nombre"]; ?>
-                                </h5>
-                                <p class="card-text text-muted">
-                                    <?php echo $fila["descripcion"]; ?>
-                                </p>
-                                <ul class="list-unstyled mb-3">
-                                    <li><strong>Id:</strong>
-                                        <?php echo $fila["id_producto"]; ?>
-                                    </li>
-                                    <li><strong>Precio:</strong>
-                                        <?php echo $fila["precio"]; ?>€
-                                    </li>
-                                    <li><strong>Categoría:</strong>
-                                        <?php echo $fila["categoria"]; ?>
-                                    </li>
-                                    <li><strong>Stock:</strong>
-                                        <?php echo $fila["stock"]; ?>
-                                    </li>
-                                    <li><strong>Medidas:</strong>
-                                        <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
-                                    </li>
-                                    <li><strong>Oferta:</strong>
-                                        <?php
-                                        if (!empty($fila['id_oferta'])) {
-                                            $sql_oferta = "SELECT id_oferta, nombre FROM ofertas WHERE id_oferta = {$fila['id_oferta']} ORDER BY id_oferta";
-                                            $resultado_oferta = $_conexion->query($sql_oferta);
-                                            if ($resultado_oferta && $resultado_oferta->num_rows > 0) {
-                                                $oferta = $resultado_oferta->fetch_assoc();
-                                                echo $oferta["nombre"];
+            <div class="text-end mb-4">
+                <a href="nuevo_producto" class="btn btn-success">+ Nuevo Producto</a>
+            </div>
+
+            <?php if ($resultado->num_rows > 0): ?>
+                <div class="row g-3">
+                    <?php while ($fila = $resultado->fetch_assoc()): ?>
+                        <?php
+                        $medidas = json_decode($fila["medidas"], true)
+                            ?>
+                        <div class="col-12 col-md-6 col-lg-4 col-xl-4 col-xxl-3">
+                            <div class="card h-100 shadow-sm">
+                                <a href="./ver_producto/?id_producto=<?php echo $fila['id_producto'] ?>"
+                                    class="text-decoration-none">
+                                    <img src="../../img/productos/<?php echo $fila["img_producto"]; ?>" class="card-img-top"
+                                        style="height: 260px; object-fit: cover;" alt="Imagen del producto">
+                                </a>
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title">
+                                        <?php echo $fila["nombre"]; ?>
+                                    </h5>
+                                    <p class="card-text text-muted">
+                                        <?php echo $fila["descripcion"]; ?>
+                                    </p>
+                                    <ul class="list-unstyled mb-3">
+                                        <li><strong>Id:</strong>
+                                            <?php echo $fila["id_producto"]; ?>
+                                        </li>
+                                        <li><strong>Precio:</strong>
+                                            <?php echo $fila["precio"]; ?>€
+                                        </li>
+                                        <li><strong>Categoría:</strong>
+                                            <?php echo $fila["categoria"]; ?>
+                                        </li>
+                                        <li><strong>Stock:</strong>
+                                            <?php echo $fila["stock"]; ?>
+                                        </li>
+                                        <li><strong>Medidas:</strong>
+                                            <?php echo $medidas['largo'] . "cm × " . $medidas['ancho'] . "cm × " . $medidas['alto'] . "cm"; ?>
+                                        </li>
+                                        <li><strong>Oferta:</strong>
+                                            <?php
+                                            if (!empty($fila['id_oferta'])) {
+                                                $sql_oferta = "SELECT id_oferta, nombre FROM ofertas WHERE id_oferta = {$fila['id_oferta']} ORDER BY id_oferta";
+                                                $resultado_oferta = $_conexion->query($sql_oferta);
+                                                if ($resultado_oferta && $resultado_oferta->num_rows > 0) {
+                                                    $oferta = $resultado_oferta->fetch_assoc();
+                                                    echo $oferta["nombre"];
+                                                } else {
+                                                    echo "Sin oferta";
+                                                }
                                             } else {
                                                 echo "Sin oferta";
                                             }
-                                        } else {
-                                            echo "Sin oferta";
-                                        }
-                                        ?>
-                                    </li>
-                                </ul>
-                                <div class="mt-auto d-flex justify-content-between">
-                                    <a href="editar_producto.php?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
+                                            ?>
+                                        </li>
+                                    </ul>
+                                    <div class="mt-auto d-flex justify-content-between">
+                                        <a href="editar_producto?id_producto=<?php echo $fila["id_producto"]; ?>" class="btn
                                 btn-outline-primary ">Editar</a>
-                                    <form method="POST" class="d-inline">
-                                        <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
-                                        <button type="submit" class="btn btn-outline-danger">Borrar</button>
-                                    </form>
+                                        <form method="POST" class="d-inline">
+                                            <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
+                                            <button type="submit" class="btn btn-outline-danger">Borrar</button>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                <?php endwhile; ?>
-            </div>
-        <?php else: ?>
-            <div class="alert alert-warning text-center" role="alert">
-                No se encontraron productos con ese criterio.
-            </div>
+                    <?php endwhile; ?>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-warning text-center" role="alert">
+                    No se encontraron productos con ese criterio.
+                </div>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 

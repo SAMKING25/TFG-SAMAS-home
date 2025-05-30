@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <?php
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -17,7 +17,7 @@
 
     session_start();
     if (!isset($_SESSION["proveedor"])) {
-        header("location: ../login/usuario/iniciar_sesion_usuario.php");
+        header("location: ../login/usuario/iniciar_sesion_usuario");
         exit;
     }
     ?>
@@ -31,11 +31,13 @@
             object-fit: cover;
             width: 100%;
         }
+
         .sticky-top {
-    background: rgba(120, 80, 40, 0.85) !important; /* Marrón translúcido */
-    backdrop-filter: blur(4px);
-    transition: box-shadow 0.2s;
-}
+            background: rgba(120, 80, 40, 0.85) !important;
+            /* Marrón translúcido */
+            backdrop-filter: blur(4px);
+            transition: box-shadow 0.2s;
+        }
     </style>
 </head>
 
@@ -56,6 +58,16 @@
     ?>
 
     <div class="container-fluid py-5">
+        
+
+        <?php if ($resultado->num_rows === 0): ?>
+        <div class="d-flex flex-column align-items-center justify-content-center" style="height: 40vh;">
+            <p class="fs-4 mb-4 text-center">Todavía no has subido ningún producto, crea tu primer producto</p>
+            <a href="./productos/nuevo_producto.php" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nuevo producto
+            </a>
+        </div>
+    <?php else: ?>
         <h1 class="text-center mb-4">Mis productos</h1>
         <div class="cards row">
             <?php
@@ -85,6 +97,7 @@
 
         </div>
     </div>
+    <?php endif; ?>
     <?php include('../cookies.php'); ?>
     <?php include('../udify-bot.php'); ?>
 

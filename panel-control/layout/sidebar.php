@@ -1,3 +1,9 @@
+<?php
+// Obtener la URL actual
+    $current_url = $_SERVER['REQUEST_URI'];
+    define('BASE_URL','/panel-control/');
+?>
+
 <style>
     hr {
         color: rgb(81, 53, 19) !important;
@@ -21,13 +27,6 @@
         color: rgb(81, 53, 19) !important;
     }
 </style>
-
-<?php
-// Obtener la URL actual
-    $current_url = $_SERVER['REQUEST_URI'];
-    define('BASE_URL','/panel-control/');
-?>
-
 <div class="d-flex">
     <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar offcanvas offcanvas-start"  id="offcanvasExample"
         style="width: 280px;overflow-y: auto;">
