@@ -1,5 +1,10 @@
-
 <?php
+  error_reporting(E_ALL);
+  ini_set("display_errors", 1);
+
+  require('../util/conexion.php');
+  session_start();
+
 if (!isset($_POST['importe'])) {
   echo "No se recibió el importe. <a href='/carrito/index.php'>Volver al carrito</a>";
   exit;
