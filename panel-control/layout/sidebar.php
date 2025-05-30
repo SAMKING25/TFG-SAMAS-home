@@ -2,6 +2,10 @@
     hr {
         color: rgb(81, 53, 19) !important;
     }
+    /**sidebar encima del navbar */
+    .offcanvas {
+        z-index: 1100 !important;
+    }
 
     .active {
         background-color: rgb(81, 53, 19) !important;
