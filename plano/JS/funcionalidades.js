@@ -24,7 +24,7 @@ window.addEventListener('resize', ajustarCanvasSegunSidebar);
 
 // Llama también cuando se colapsa o expande el sidebar
 document.getElementById('toggle-sidebar-btn').addEventListener('click', function () {
-    setTimeout(ajustarCanvasSegunSidebar); 
+    setTimeout(ajustarCanvasSegunSidebar);
 });
 
 // Llama al cargar la página
@@ -99,14 +99,14 @@ function rotarImagen(eventData, transform) {
 }
 
 function renderIcon(icon) {
-  return function (ctx, left, top, _styleOverride, fabricObject) {
-    const size = this.cornerSize;
-    ctx.save();
-    ctx.translate(left, top);
-    ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-    ctx.drawImage(icon, -size / 2, -size / 2, size, size);
-    ctx.restore();
-  };
+    return function (ctx, left, top, _styleOverride, fabricObject) {
+        const size = this.cornerSize;
+        ctx.save();
+        ctx.translate(left, top);
+        ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
+        ctx.drawImage(icon, -size / 2, -size / 2, size, size);
+        ctx.restore();
+    };
 }
 
 function seleccionMultiple() {
@@ -121,15 +121,27 @@ function seleccionMultiple() {
     canvas.requestRenderAll();
 }
 
-canvas.on('selection:created', function(e) {
+canvas.on('selection:created', function (e) {
     if (e.target && e.target.type === 'activeSelection') {
         seleccionMultiple();
     }
 });
 
-canvas.on('selection:updated', function(e) {
+canvas.on('selection:updated', function (e) {
     if (e.target && e.target.type === 'activeSelection') {
         seleccionMultiple();
+    }
+});
+
+canvas.on('object:moving', function(e) {
+    const target = e.target;
+    if (target && target.type === 'activeSelection') {
+        target.forEachObject(function(obj) {
+            if (typeof obj.actualizarMedida === 'function') {
+                obj.actualizarMedida();
+            }
+        });
+        canvas.requestRenderAll();
     }
 });
 
@@ -183,37 +195,36 @@ fabric.ActiveSelection.prototype.controls = {
     // mtr: new fabric.Control({ visible: true }),
 };
 
-function actualizarMedida(obj, grupo) {
-        const anchoPx = obj.width * grupo.scaleX;
-        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metros;
+function actualizarMedidaComun(objRect, grupo, textoMedida, offset) {
+    const factorConversion = 100; // 100 px = 1 metro
 
-        // Calcula el centro del grupo
-        const center = grupo.getCenterPoint();
+    // Calcula la medida real
+    const anchoPx = objRect.width * grupo.scaleX;
+    const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+    textoMedida.text = metros;
 
-        // Calcula el ángulo de rotación
-        let angle = grupo.angle % 360;
-        if (angle < 0) angle += 360;
+    // Calcula el centro del grupo
+    const center = grupo.getCenterPoint();
 
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
+    // Calcula el ángulo de rotación
+    let angle = grupo.angle % 360;
+    if (angle < 0) angle += 360;
 
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (pared.height * grupo.scaleY) / 2 + 25;
+    // Radio exterior del grupo (mitad del alto del rectángulo)
+    const radio = (objRect.height * grupo.scaleY) / 2 + 25;
 
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
+    // Calcula la posición fuera del grupo, en la parte superior (según rotación)
+    const rad = fabric.util.degreesToRadians(angle - 90);
+    textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
+    textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
 
-        textoMedida.scaleX = 1;
-        textoMedida.scaleY = 1;
+    textoMedida.scaleX = 1;
+    textoMedida.scaleY = 1;
 
-        canvas.requestRenderAll();
+    canvas.requestRenderAll();
 }
 
 function agregarPared() {
-    const factorConversion = 100; // 100px = 1 metro
 
     const pared = new fabric.Rect({
         left: 0,
@@ -268,17 +279,20 @@ function agregarPared() {
 
     grupo.relatedTexts = [textoMedida];
 
-    grupo.on('scaling', actualizarMedida(pared, grupo));
-    grupo.on('modified', actualizarMedida(pared, grupo));
-    grupo.on('moving', actualizarMedida(pared, grupo));
-    grupo.on('rotating', actualizarMedida(pared, grupo));
+    grupo.actualizarMedida = function () {
+        actualizarMedidaComun(pared, grupo, textoMedida, 10);
+    };
 
-    actualizarMedida(pared, grupo);
+    grupo.on('scaling', grupo.actualizarMedida);
+    grupo.on('modified', grupo.actualizarMedida);
+    grupo.on('moving', grupo.actualizarMedida);
+    grupo.on('rotating', grupo.actualizarMedida);
+
+    grupo.actualizarMedida();
 }
 
 
 function agregarVentana() {
-    const factorConversion = 100; // 100px = 1 metro
 
     const ventana = new fabric.Rect({
         left: 0,
@@ -333,48 +347,19 @@ function agregarVentana() {
 
     grupo.relatedTexts = [textoMedida];
 
-    function actualizarMedida() {
-        // Calcula la medida real
-        const anchoPx = ventana.width * grupo.scaleX;
-        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metros;
+    grupo.actualizarMedida = function () {
+        actualizarMedidaComun(ventana, grupo, textoMedida, 10);
+    };
 
-        // Calcula el centro del grupo
-        const center = grupo.getCenterPoint();
+    grupo.on('scaling', grupo.actualizarMedida);
+    grupo.on('modified', grupo.actualizarMedida);
+    grupo.on('moving', grupo.actualizarMedida);
+    grupo.on('rotating', grupo.actualizarMedida);
 
-        // Calcula el ángulo de rotación
-        let angle = grupo.angle % 360;
-        if (angle < 0) angle += 360;
-
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
-
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (ventana.height * grupo.scaleY) / 2 + 25;
-
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-        textoMedida.scaleX = 1;
-        textoMedida.scaleY = 1;
-
-        canvas.requestRenderAll();
-    }
-
-    grupo.actualizarMedida = actualizarMedida;
-
-    grupo.on('scaling', actualizarMedida);
-    grupo.on('modified', actualizarMedida);
-    grupo.on('moving', actualizarMedida);
-    grupo.on('rotating', actualizarMedida);
-
-    actualizarMedida();
+    grupo.actualizarMedida();
 }
 
 function agregarPuerta() {
-    const factorConversion = 100; // 100px = 1 metro
 
     // Crea el rectángulo de la puerta (invisible, solo para agrupar)
     const puerta = new fabric.Rect({
@@ -452,44 +437,16 @@ function agregarPuerta() {
 
         grupo.relatedTexts = [textoMedida];
 
-        function actualizarMedida() {
-            // Calcula la medida real
-            const anchoPx = puerta.width * grupo.scaleX;
-            const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-            textoMedida.text = metros;
+        grupo.actualizarMedida = function () {
+            actualizarMedidaComun(puerta, grupo, textoMedida, 33);
+        };
 
-            // Calcula el centro del grupo
-            const center = grupo.getCenterPoint();
+        grupo.on('scaling', grupo.actualizarMedida);
+        grupo.on('modified', grupo.actualizarMedida);
+        grupo.on('moving', grupo.actualizarMedida);
+        grupo.on('rotating', grupo.actualizarMedida);
 
-            // Calcula el ángulo de rotación
-            let angle = grupo.angle % 360;
-            if (angle < 0) angle += 360;
-
-            // Calcula la posición del texto: por encima del grupo, centrado horizontalmente
-            // Puedes ajustar el offset para que quede más separado
-            const offset = 30;
-            // Calcula el radio exterior del grupo (mitad del ancho del grupo)
-            const radio = (puerta.width * grupo.scaleX) / 2;
-
-            // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-            const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-            textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-            textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-            textoMedida.scaleX = 1;
-            textoMedida.scaleY = 1;
-
-            canvas.requestRenderAll();
-        }
-
-        grupo.actualizarMedida = actualizarMedida;
-
-        grupo.on('scaling', actualizarMedida);
-        grupo.on('modified', actualizarMedida);
-        grupo.on('moving', actualizarMedida);
-        grupo.on('rotating', actualizarMedida);
-
-        actualizarMedida();
+        grupo.actualizarMedida();
     });
 }
 
@@ -816,6 +773,34 @@ canvas.on('object:rotating', function (e) {
 // También al mover (por si acaso)
 canvas.on('object:moving', function (e) {
     restringirZonaBloqueada(e.target);
+});
+
+canvas.on('object:moving', function(e) {
+    const target = e.target;
+    if (target && target.type === 'activeSelection') {
+        target.forEachObject(function(obj) {
+            if (typeof obj.actualizarMedida === 'function') {
+                obj.actualizarMedida();
+            }
+        });
+    } else if (target && typeof target.actualizarMedida === 'function') {
+        target.actualizarMedida();
+    }
+    canvas.requestRenderAll();
+});
+
+canvas.on('object:modified', function(e) {
+    const target = e.target;
+    if (target && target.type === 'activeSelection') {
+        target.forEachObject(function(obj) {
+            if (typeof obj.actualizarMedida === 'function') {
+                obj.actualizarMedida();
+            }
+        });
+    } else if (target && typeof target.actualizarMedida === 'function') {
+        target.actualizarMedida();
+    }
+    canvas.requestRenderAll();
 });
 
 // Exportar PNG
