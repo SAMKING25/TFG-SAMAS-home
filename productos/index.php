@@ -27,9 +27,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart_id"])) {
     $id_usuario = $_SESSION["usuario"];
     $cantidad = 1;
 
+    // Consulta stock actual del producto
     $resStock = $_conexion->query("SELECT stock FROM productos WHERE id_producto = $id_producto");
     $rowStock = $resStock->fetch_assoc();
-    if ($rowStock && $rowStock["stock"] > 0) {
+    $stock = $rowStock ? intval($rowStock["stock"]) : 0;
+
+    // Consulta cuántos ya tiene el usuario en el carrito
+    $stmtCarrito = $_conexion->prepare("SELECT cantidad FROM carrito WHERE id_usuario = ? AND id_producto = ?");
+    $stmtCarrito->bind_param("ii", $id_usuario, $id_producto);
+    $stmtCarrito->execute();
+    $stmtCarrito->bind_result($cantidad_en_carrito);
+    $stmtCarrito->fetch();
+    $stmtCarrito->close();
+
+    if (!isset($cantidad_en_carrito)) {
+        $cantidad_en_carrito = 0;
+    }
+
+    if ($stock <= 0) {
+        if ($isAjax) {
+            echo json_encode(['status' => 'error', 'message' => 'No hay suficiente stock disponible.']);
+            exit;
+        } else {
+            $mensaje = "error";
+            $errorMsg = "No hay suficiente stock disponible.";
+        }
+    } elseif ($cantidad_en_carrito >= $stock) {
+        if ($isAjax) {
+            echo json_encode(['status' => 'error', 'message' => 'Ya tienes el máximo stock permitido en tu carrito.']);
+            exit;
+        } else {
+            $mensaje = "error";
+            $errorMsg = "Ya tienes el máximo stock permitido en tu carrito.";
+        }
+    } elseif (($cantidad + $cantidad_en_carrito) > $stock) {
+        if ($isAjax) {
+            echo json_encode(['status' => 'error', 'message' => "No puedes añadir más de $stock unidades en total."]);
+            exit;
+        } else {
+            $mensaje = "error";
+            $errorMsg = "No puedes añadir más de $stock unidades en total.";
+        }
+    } else {
         $stmt = $_conexion->prepare(
             "INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
             ON DUPLICATE KEY UPDATE cantidad = cantidad + VALUES(cantidad)"
@@ -54,14 +93,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart_id"])) {
             }
         }
         $stmt->close();
-    } else {
-        if ($isAjax) {
-            echo json_encode(['status' => 'error', 'message' => 'No hay suficiente stock disponible.']);
-            exit;
-        } else {
-            $mensaje = "error";
-            $errorMsg = "No hay suficiente stock disponible.";
-        }
     }
 } // <-- ESTA LLAVE ES IMPORTANTE
 // --- FIN BLOQUE ---
