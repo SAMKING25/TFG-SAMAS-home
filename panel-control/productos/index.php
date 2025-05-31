@@ -1,3 +1,45 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../../util/conexion.php');
+
+session_start();
+if (!isset($_SESSION["proveedor"])) {
+    header("location: ../../login/proveedor/iniciar_sesion_proveedor");
+    exit;
+}
+?>
+<?php
+include('../layout/header.php');
+include('../layout/sidebar.php');
+
+$producto_eliminado = false;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id_producto = $_POST["id_producto"];
+    $sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
+    $_conexion->query($sql);
+    $producto_eliminado = true;
+}
+
+// Si se hace una búsqueda (GET)
+$filtro = "";
+if (isset($_GET["busqueda"]) && $_GET["busqueda"] !== "") {
+    $busqueda = $_GET["busqueda"];
+    // Si es numérico, busca por id_producto. Si no, busca por nombre
+    if (is_numeric($busqueda)) {
+        $filtro = "AND id_producto = '$busqueda'";
+    } else {
+        $busqueda = $_conexion->real_escape_string($busqueda); // protección básica
+        $filtro = "AND nombre LIKE '%$busqueda%'";
+    }
+}
+
+
+// Consulta SQL
+$sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";;
+$resultado = $_conexion->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -60,55 +102,12 @@
         }
 
         .valor-marron {
-            color:rgb(87, 86, 85);
+            color: rgb(87, 86, 85);
         }
     </style>
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    require('../../util/conexion.php');
-
-    session_start();
-    if (!isset($_SESSION["proveedor"])) {
-        header("location: ../../login/proveedor/iniciar_sesion_proveedor");
-        exit;
-    }
-    ?>
 </head>
 
 <body>
-
-    <?php
-    include('../layout/header.php');
-    include('../layout/sidebar.php');
-
-    // Si se hace un POST (para borrar)
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $id_producto = $_POST["id_producto"];
-        $sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
-        $_conexion->query($sql);
-    }
-
-    // Si se hace una búsqueda (GET)
-    $filtro = "";
-    if (isset($_GET["busqueda"]) && $_GET["busqueda"] !== "") {
-        $busqueda = $_GET["busqueda"];
-        // Si es numérico, busca por id_producto. Si no, busca por nombre
-        if (is_numeric($busqueda)) {
-            $filtro = "AND id_producto = '$busqueda'";
-        } else {
-            $busqueda = $_conexion->real_escape_string($busqueda); // protección básica
-            $filtro = "AND nombre LIKE '%$busqueda%'";
-        }
-    }
-
-
-    // Consulta SQL
-    $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";
-    ;
-    $resultado = $_conexion->query($sql);
-    ?>
 
     <div class="container py-5">
         <div class="main-header p-4 mb-5 text-center shadow-sm">
@@ -211,7 +210,74 @@
     </div>
     <?php include('../../cookies.php'); ?>
     <?php include('../../udify-bot.php'); ?>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        <?php if (isset($_GET['creado']) && $_GET['creado'] === 'ok'): ?>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Producto creado correctamente',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f4e5cc',
+                color: '#333',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            // Limpia el parámetro creado=ok de la URL sin recargar
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('creado');
+                window.history.replaceState({}, document.title, url);
+            }
+        <?php endif; ?>
 
+        <?php if (isset($_GET['editado']) && $_GET['editado'] === 'ok'): ?>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Producto editado correctamente',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f4e5cc',
+                color: '#333',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+            // Limpia el parámetro editado=ok de la URL sin recargar
+            if (window.history.replaceState) {
+                const url = new URL(window.location);
+                url.searchParams.delete('editado');
+                window.history.replaceState({}, document.title, url);
+            }
+        <?php endif; ?>
+
+        <?php if (!empty($producto_eliminado)): ?>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'success',
+                title: 'Producto eliminado correctamente',
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                background: '#f4e5cc',
+                color: '#333',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        <?php endif; ?>
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
