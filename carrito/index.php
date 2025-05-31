@@ -85,6 +85,104 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link rel="stylesheet" href="/css/landing.css" />
 </head>
+<style>
+    body {
+        background: #f9f6f2;
+    }
+
+    .main-content {
+        background: #fff8ef;
+        border-radius: 18px;
+        box-shadow: 0 4px 24px rgba(180, 140, 80, 0.07);
+        padding: 40px 30px;
+        margin-top: 30px;
+    }
+
+    .carrito-card {
+        border: none;
+        border-radius: 16px;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(180, 140, 80, 0.08);
+        transition: box-shadow 0.2s;
+    }
+
+    .carrito-card:hover {
+        box-shadow: 0 4px 24px rgba(180, 140, 80, 0.13);
+    }
+
+    .carrito-img {
+        background: #f4e5cc;
+        border-radius: 12px;
+        padding: 12px;
+        max-height: 140px;
+        object-fit: contain;
+    }
+
+    .carrito-titulo {
+        color: #a67c52;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .carrito-precio {
+        color: #b08d57;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .carrito-precio-final {
+        color: #4e944f;
+        font-weight: 700;
+        font-size: 1.15rem;
+    }
+
+    .carrito-descuento {
+        color: #d35400;
+        font-size: 0.95rem;
+        font-weight: 600;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-primary:focus {
+        border-color: #a67c52;
+        color: #a67c52;
+        background: transparent;
+    }
+
+    .btn-outline-primary:hover {
+        background: #a67c52;
+        color: #fff;
+    }
+
+    .btn-secondary,
+    .btn-secondary:focus {
+        background: linear-gradient(90deg, #b08d57 0%, #a67c52 100%);
+        border: none;
+        color: #fff;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-secondary:disabled {
+        background: #e0c9a6;
+        color: #fff;
+    }
+
+    .form-control:focus {
+        border-color: #b08d57;
+        box-shadow: 0 0 0 0.2rem rgba(180, 140, 80, 0.13);
+    }
+
+    .resumen-card {
+        border-radius: 16px;
+        background: #fffdf8;
+        box-shadow: 0 2px 12px rgba(180, 140, 80, 0.08);
+    }
+
+    .swal2-popup {
+        font-family: inherit !important;
+    }
+</style>
 
 <body>
     <?php include('../navbar.php'); ?>
@@ -98,45 +196,60 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                     <p>Tu carrito está vacío.</p>
                 <?php else: ?>
                     <?php foreach ($productos as $producto): ?>
-                        <div class="card mb-3 shadow-sm">
+                        <div class="card mb-3 shadow-sm carrito-card">
                             <div class="row g-0">
                                 <div class="col-md-4 text-center p-3">
-                                    <img src="/img/productos/<?php echo $producto["img"]; ?>" class="img-fluid rounded" style="max-height: 150px; object-fit: contain;">
+                                    <img src="/img/productos/<?php echo $producto["img"]; ?>"
+                                        class="img-fluid rounded carrito-img" style="max-height: 150px; object-fit: contain;">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body d-flex justify-content-between align-items-start">
                                         <div>
-                                            <h5 class="card-title fw-bold"><?php echo $producto["nombre"]; ?></h5>
+                                            <h5 class="card-title fw-bold carrito-titulo"><?php echo $producto["nombre"]; ?>
+                                            </h5>
                                             <p class="card-text mb-1">
                                                 Cantidad:
                                             <form method="post" action="" class="d-inline">
-                                                <input type="hidden" name="id_producto" value="<?php echo $producto["id_producto"]; ?>">
-                                                <input type="number" name="nueva_cantidad" value="<?php echo $producto["cantidad"]; ?>" min="1" style="width:60px;" class="form-control d-inline p-1" required>
-                                                <button type="submit" name="actualizar_cantidad" class="btn btn-sm btn-outline-primary ms-1" title="Actualizar cantidad">
+                                                <input type="hidden" name="id_producto"
+                                                    value="<?php echo $producto["id_producto"]; ?>">
+                                                <input type="number" name="nueva_cantidad"
+                                                    value="<?php echo $producto["cantidad"]; ?>" min="1" style="width:60px;"
+                                                    class="form-control d-inline p-1" required>
+                                                <button type="submit" name="actualizar_cantidad"
+                                                    class="btn btn-sm btn-outline-primary ms-1" title="Actualizar cantidad">
                                                     <i class="bi bi-arrow-repeat"></i>
                                                 </button>
                                             </form>
                                             </p>
                                             <?php if (!is_null($producto["porcentaje"])): ?>
-                                                <p class="card-text text-danger mb-1">
+                                                <p class="card-text carrito-descuento">
                                                     Descuento del <?php echo $producto["porcentaje"]; ?>%
                                                 </p>
                                                 <p class="card-text">
-                                                    <span class="text-muted text-decoration-line-through me-2"><?php echo number_format($producto["precio"], 2, ',', '.'); ?> €</span>
-                                                    <span class="text-success fw-semibold"><?php echo number_format($producto["precio_final"], 2, ',', '.'); ?> €</span>
+                                                    <span
+                                                        class="text-success fw-semibold carrito-precio-final"><?php echo number_format($producto["precio_final"], 2, ',', '.'); ?>
+                                                        €</span>
+                                                    <span
+                                                        class="text-muted text-decoration-line-through me-2 carrito-precio"><?php echo number_format($producto["precio"], 2, ',', '.'); ?>
+                                                        €</span>
+
                                                 </p>
                                             <?php else: ?>
                                                 <p class="card-text text-success fw-semibold">
                                                     <?php echo number_format($producto["precio"], 2, ',', '.'); ?> €
                                                 </p>
                                             <?php endif; ?>
-                                            <p class="card-text"><strong>Subtotal:</strong> <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
+                                            <p class="card-text"><strong>Subtotal:</strong>
+                                                <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
                                         </div>
                                         <!-- Botón de eliminar -->
                                         <!-- filepath: c:\xampp\htdocs\carrito\index.php -->
-                                        <form method="post" action="" class="form-eliminar-producto d-inline" style="margin-left:10px;">
-                                            <input type="hidden" name="eliminar_producto" value="<?php echo $producto["id_producto"]; ?>">
-                                            <button type="button" class="btn btn-link text-danger p-0 btn-eliminar-producto" title="Eliminar producto">
+                                        <form method="post" action="" class="form-eliminar-producto d-inline"
+                                            style="margin-left:10px;">
+                                            <input type="hidden" name="eliminar_producto"
+                                                value="<?php echo $producto["id_producto"]; ?>">
+                                            <button type="button" class="btn btn-link text-danger p-0 btn-eliminar-producto"
+                                                title="Eliminar producto">
                                                 <i class="bi bi-x-lg fs-4"></i>
                                             </button>
                                         </form>
@@ -150,7 +263,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 
             <!-- Resumen y pago a la derecha -->
             <div class="col-md-5">
-                <div class="card shadow-sm" style="position:sticky; top:90px; z-index:1;">
+                <div class="card shadow-sm resumen-card" style="position:sticky; top:90px; z-index:1;">
                     <div class="card-body">
                         <h4 class="card-title mb-4">Resumen del pedido</h4>
                         <p class="card-text mb-1">
@@ -165,14 +278,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                                 ?>
                             </span>
                         </p>
-                        <p class="card-text fs-5">Total: <span class="fw-bold text-success"><?php echo number_format($total, 2, ',', '.'); ?> €</span></p>
+                        <p class="card-text fs-5">Total: <span
+                                class="fw-bold text-success"><?php echo number_format($total, 2, ',', '.'); ?> €</span>
+                        </p>
 
                         <hr>
                         <!-- Formulario para aplicar código de descuento -->
                         <form action="" method="">
                             <div class="mb-3">
                                 <label for="codigo_descuento" class="form-label">Código de descuento</label>
-                                <input type="text" class="form-control" name="codigo_descuento" id="codigo_descuento" placeholder="Introduce tu código">
+                                <input type="text" class="form-control" name="codigo_descuento" id="codigo_descuento"
+                                    placeholder="Introduce tu código">
                             </div>
                             <button type="submit" class="btn btn-outline-primary">Aplicar código</button>
                         </form>
@@ -180,7 +296,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                         <hr>
                         <!-- Formulario para finalizar compra -->
                         <form action="../pasarela-pago/" method="post">
-                            <input type="hidden" name="importe" value="<?php echo number_format((float)$total, 2, '.', ''); ?>">
+                            <input type="hidden" name="importe"
+                                value="<?php echo number_format((float) $total, 2, '.', ''); ?>">
                             <button type="submit" class="btn btn-secondary w-100 mt-3" <?php echo ($total <= 0) ? 'disabled' : ''; ?>>
                                 Finalizar compra
                             </button>
@@ -241,8 +358,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.querySelectorAll('.btn-eliminar-producto').forEach(function(btn) {
-        btn.addEventListener('click', function(e) {
+    document.querySelectorAll('.btn-eliminar-producto').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
             const form = btn.closest('form');
             Swal.fire({
