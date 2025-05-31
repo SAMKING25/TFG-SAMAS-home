@@ -1,9 +1,9 @@
 <?php
-  error_reporting(E_ALL);
-  ini_set("display_errors", 1);
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
 
-  require('../util/conexion.php');
-  session_start();
+require('../util/conexion.php');
+session_start();
 
 if (!isset($_POST['importe'])) {
   echo "No se recibió el importe. <a href='/carrito/index.php'>Volver al carrito</a>";
@@ -13,6 +13,7 @@ $importe = floatval($_POST['importe']);
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -26,18 +27,22 @@ $importe = floatval($_POST['importe']);
     body {
       background: #f6f6f6;
     }
+
     .main-content {
-      min-height: 90vh; /* Antes: 100vh. Así el contenido no ocupa toda la pantalla */
+      min-height: 90vh;
+      /* Antes: 100vh. Así el contenido no ocupa toda la pantalla */
       display: flex;
       align-items: flex-start;
       justify-content: center;
       padding-top: 2rem;
-      padding-bottom: 1rem; /* Añadido para menos espacio abajo */
+      padding-bottom: 1rem;
+      /* Añadido para menos espacio abajo */
     }
+
     .form-card {
       background: #fff;
       border-radius: 18px;
-      box-shadow: 0 8px 32px rgba(60,60,120,0.12);
+      box-shadow: 0 8px 32px rgba(60, 60, 120, 0.12);
       padding: 2.5rem 2rem 2rem 2rem;
       max-width: 420px;
       width: 100%;
@@ -46,6 +51,7 @@ $importe = floatval($_POST['importe']);
       flex-direction: column;
       gap: 1.2rem;
     }
+
     .paypal-section {
       border-top: 1px solid #eee;
       padding-top: 1.5rem;
@@ -55,6 +61,7 @@ $importe = floatval($_POST['importe']);
       align-items: center;
       gap: 0.5rem;
     }
+
     #paypal-buttom-conteiner {
       width: 100%;
       padding: 0;
@@ -66,19 +73,24 @@ $importe = floatval($_POST['importe']);
       display: flex;
       justify-content: center;
     }
+
     @media (max-width: 576px) {
       .form-card {
         padding: 1.2rem 0.5rem 1.5rem 0.5rem;
         max-width: 98vw;
       }
+
       .main-content {
         padding-top: 1rem;
-        padding-bottom: 0.5rem; /* Menos espacio abajo en móvil */
-        min-height: 90vh; /* Un poco más pequeño en móvil */
+        padding-bottom: 0.5rem;
+        /* Menos espacio abajo en móvil */
+        min-height: 90vh;
+        /* Un poco más pequeño en móvil */
       }
     }
   </style>
 </head>
+
 <body>
   <?php include('../navbar.php'); ?>
   <div class="main-content">
@@ -125,10 +137,10 @@ $importe = floatval($_POST['importe']);
 
   <script>
     // Bootstrap validation visual feedback
-    (function () {
+    (function() {
       'use strict';
       var form = document.getElementById('datosForm');
-      form.addEventListener('submit', function (event) {
+      form.addEventListener('submit', function(event) {
         if (!form.checkValidity()) {
           event.preventDefault();
           event.stopPropagation();
@@ -158,17 +170,50 @@ $importe = floatval($_POST['importe']);
         return actions.order.capture().then(function(detalles) {
           var form = document.getElementById('datosForm');
           var formData = new FormData(form);
+
+          // Forzar recolección de los valores actuales del formulario
+          formData.set('nombre', form.nombre.value);
+          formData.set('apellidos', form.apellidos.value);
+          formData.set('email', form.email.value);
+          formData.set('telefono', form.telefono.value);
+          formData.set('direccion', form.direccion.value);
+
           formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
           formData.append('paypal_email', detalles.payer.email_address);
 
           fetch('enviar_correo.php', {
-            method: 'POST',
-            body: formData
-          }).then(() => {
-            window.location.href = "/pedidos/tramitar-pedido.php";
-            //include("/pedidos/tramitar-pedidos.php");
+              method: 'POST',
+              body: formData
+            })
+            .then(() => {
+              // 2. Tramitar pedido
+              // Crear un nuevo FormData para el segundo fetch
+              var form = document.getElementById('datosForm');
+              var formData2 = new FormData(form);
+              formData2.set('nombre', form.nombre.value);
+              formData2.set('apellidos', form.apellidos.value);
+              formData2.set('email', form.email.value);
+              formData2.set('telefono', form.telefono.value);
+              formData2.set('direccion', form.direccion.value);
+              formData2.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
+              formData2.append('paypal_email', detalles.payer.email_address);
 
-          });
+              return fetch('/pedidos/tramitar-pedido.php', {
+                method: 'POST',
+                body: formData2
+              });
+            })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                window.location.href = "/pasarela-pago/completado.html";
+              } else {
+                alert("Error al guardar el pedido");
+              }
+            })
+            .catch(() => {
+              alert("Ha ocurrido un error al procesar el pedido.");
+            });
         });
       },
       onCancel: function(data) {
@@ -179,4 +224,5 @@ $importe = floatval($_POST['importe']);
   </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
