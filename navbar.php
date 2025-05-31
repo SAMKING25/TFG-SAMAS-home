@@ -118,6 +118,7 @@ if (isset($_SESSION['usuario'])) {
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php if ($tipo_sesion === 'usuario') { ?>
                             <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de perfil</a></li>
+                            <li><a class="dropdown-item" href="/pedidos/index.php">Mis pedidos</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
                             <li>
                                 <hr class="dropdown-divider">
