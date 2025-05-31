@@ -1,3 +1,237 @@
+<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+
+require('../../util/conexion.php');
+require('../../util/funciones/utilidades.php');
+define('IMG_PRODUCTOS', '/img/productos/');
+
+session_start();
+if (!isset($_SESSION["proveedor"])) {
+    header("location: ../../login/proveedor/iniciar_sesion_proveedor");
+    exit;
+}
+
+// --- TODA LA LÓGICA DE CONSULTA Y PROCESAMIENTO DEL FORMULARIO AQUÍ ---
+// Incluye la lógica de edición, validaciones, updates, y el header("Location: ...")
+
+$id_producto = $_GET["id_producto"];
+$sql = "SELECT * FROM productos WHERE id_producto = '$id_producto'";
+$resultado = $_conexion->query($sql);
+
+while ($datos_actuales = $resultado->fetch_assoc()) {
+    $nombre_actual = $datos_actuales["nombre"];
+    $precio_actual = $datos_actuales["precio"];
+    $categoria_actual = $datos_actuales["categoria"];
+    $stock_actual = $datos_actuales["stock"];
+    $descripcion_actual = $datos_actuales["descripcion"];
+    $medidas = json_decode($datos_actuales["medidas"], true);
+    $img_actual = $datos_actuales["img_producto"];
+    $oferta_actual = $datos_actuales["id_oferta"];
+}
+
+$sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
+$resultado = $_conexion->query($sql);
+$categorias = [];
+
+while ($fila = $resultado->fetch_assoc()) {
+    array_push($categorias, $fila["nombre_categoria"]);
+}
+
+$sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
+$resultado = $_conexion->query($sql);
+$ofertas = [];
+
+while ($fila = $resultado->fetch_assoc()) {
+    $ofertas[] = $fila;  // Guarda todo el array con id_oferta y nombre
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $nuevo_nombre = depurar($_POST["nuevo_nombre"]);
+    $nuevo_precio = depurar($_POST["nuevo_precio"]);
+    if (isset($_POST["nueva_categoria"]))
+        $nueva_categoria = depurar($_POST["nueva_categoria"]);
+    else
+        $nueva_categoria = "";
+    $nuevo_stock = depurar($_POST["nuevo_stock"]);
+    $nueva_descripcion = depurar($_POST["nueva_descripcion"]);
+    $nuevo_largo = depurar($_POST["largo"]);
+    $nuevo_ancho = depurar($_POST["ancho"]);
+    $nuevo_alto = depurar($_POST["alto"]);
+    $nueva_oferta = depurar($_POST["oferta"]);
+
+    $nuevo_nombre_imagen = $_FILES["img_producto"]["name"];
+    $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
+    $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
+
+    if ($nuevo_nombre == '') {
+        $err_nombre = "El nombre es obligatorio";
+    } else {
+        if (strlen($nuevo_nombre) > 50 || strlen($nuevo_nombre) < 3) {
+            $err_nombre = "El nombre es de 50 caracteres maximo y 3 minimo";
+        } else {
+            $patron = "/^[0-9a-zA-Z áéíóúÁÉÍÓÚ]+$/";
+            if (!preg_match($patron, $nuevo_nombre)) {
+                $err_nombre = "El nombre solo puede tener letras, numeros y espacios";
+            } else {
+                // Modifica el nombre
+                $sql = "UPDATE productos SET nombre = '$nuevo_nombre' WHERE id_producto = '$id_producto'";
+                $_conexion->query($sql);
+                $nombre_actual = $nuevo_nombre;
+            }
+        }
+    }
+
+    if ($nuevo_precio == '') {
+        $err_precio = "El precio es obligatorio";
+    } else {
+        if (!filter_var($nuevo_precio, FILTER_VALIDATE_FLOAT)) {
+            $err_precio = "El precio tiene que ser un numero";
+        } else {
+            $patron = "/^[0-9]{1,4}(\.[0-9]{1,2})?$/";
+            if (!preg_match($patron, $nuevo_precio)) {
+                $err_precio = "El precio solo puede tener 6 de los cuales 2 decimales";
+            } else {
+                // Modifica el precio
+                $sql = "UPDATE productos SET precio = '$nuevo_precio' WHERE id_producto = '$id_producto'";
+                $_conexion->query($sql);
+                $precio_actual = $nuevo_precio;
+            }
+        }
+    }
+
+    if ($nueva_categoria == '') {
+        $err_categoria = "La categoria es obligatoria";
+    } else {
+        if (strlen($nueva_categoria) > 30) {
+            $err_categoria = "La categoria no puede tener mas de 30 caracteres";
+        } else {
+            // Modifica la categoria
+            $sql = "UPDATE productos SET categoria = '$nueva_categoria' WHERE id_producto = '$id_producto'";
+            $_conexion->query($sql);
+            $categoria_actual = $nueva_categoria;
+        }
+    }
+
+    if ($nuevo_stock == '' || $nuevo_stock == 0) {
+        $stock_actual = 0;
+    } else {
+        if (!filter_var($nuevo_stock, FILTER_VALIDATE_INT)) {
+            $err_stock = "El stock tiene que ser un numero entero";
+        } else {
+            if ($nuevo_stock < 0 || $nuevo_stock > 2147483647) {
+                $err_stock = "El stock tiene que ser como maximo 2147483647";
+            } else {
+                // Modifica el stock
+                $sql = "UPDATE productos SET stock = $nuevo_stock WHERE id_producto = '$id_producto'";
+                $_conexion->query($sql);
+                $stock_actual = $nuevo_stock;
+            }
+        }
+    }
+
+    if ($nueva_descripcion == "") {
+        $err_descripcion = "La descripcion es obligatoria";
+    } else {
+        if (strlen($nueva_descripcion) > 255) {
+            $err_descripcion = "La descripcion no puede tener mas de 255 caracteres";
+        } else {
+            // Modifica la descripcion
+            $sql = "UPDATE productos SET descripcion = '$nueva_descripcion' WHERE id_producto = '$id_producto'";
+            $_conexion->query($sql);
+            $descripcion_actual = $nueva_descripcion;
+        }
+    }
+
+    if ($nuevo_largo == '') {
+        $err_largo = "El largo es obligatorio";
+    } else {
+        if (!filter_var($nuevo_largo, FILTER_VALIDATE_INT)) {
+            $err_largo = "El largo tiene que ser un numero entero en centimetros";
+        } else {
+            if ($nuevo_largo < 0 || $nuevo_largo > 2147483647) {
+                $nuevo_largo = "El largo tiene que ser como maximo 2147483647";
+            } else {
+                $largo_actual = $nuevo_largo;
+            }
+        }
+    }
+
+    if ($nuevo_ancho == '') {
+        $err_ancho = "El ancho es obligatorio";
+    } else {
+        if (!filter_var($nuevo_ancho, FILTER_VALIDATE_INT)) {
+            $err_ancho = "El ancho tiene que ser un numero entero en centimetros";
+        } else {
+            if ($nuevo_ancho < 0 || $nuevo_ancho > 2147483647) {
+                $err_ancho = "El ancho tiene que ser como maximo 2147483647";
+            } else {
+                $ancho_actual = $nuevo_ancho;
+            }
+        }
+    }
+
+    if ($nuevo_alto == '') {
+        $err_alto = "El alto es obligatorio";
+    } else {
+        if (!filter_var($nuevo_alto, FILTER_VALIDATE_INT)) {
+            $err_alto = "El alto tiene que ser un numero entero en centimetros";
+        } else {
+            if ($nuevo_alto < 0 || $nuevo_alto > 2147483647) {
+                $err_alto = "El alto tiene que ser como maximo 2147483647";
+            } else {
+                $alto_actual = $nuevo_alto;
+            }
+        }
+    }
+
+    if (isset($largo_actual) && isset($ancho_actual) && isset($alto_actual)) {
+        $medidas = array('largo' => intval($largo_actual), 'ancho' => intval($ancho_actual), 'alto' => intval($alto_actual));
+        $sql = "UPDATE productos SET medidas = '" . json_encode($medidas) . "' WHERE id_producto = '$id_producto'";
+        $_conexion->query($sql);
+    }
+
+    if ($nuevo_nombre_imagen == "") {
+        // No se subió una nueva imagen, NO marcar error, solo mantener la actual
+        // $img_actual ya tiene el valor correcto
+    } else {
+        if (strlen($nuevo_nombre_imagen) > 60) {
+            $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
+        } else {
+            move_uploaded_file($ubicacion_temporal, $ubicacion_final);
+            $img_actual = $nuevo_nombre_imagen;
+            $sql = "UPDATE productos SET img_producto = '$img_actual' WHERE id_producto = $id_producto";
+            $_conexion->query($sql);
+        }
+    }
+
+    if ($nueva_oferta === "" || $nueva_oferta === null) {
+        // Sin oferta seleccionada, guarda NULL en la base de datos
+        $sql = "UPDATE productos SET id_oferta = NULL WHERE id_producto = $id_producto";
+        $_conexion->query($sql);
+        $oferta_actual = null;
+    } else {
+        $sql = "UPDATE productos SET id_oferta = $nueva_oferta WHERE id_producto = $id_producto";
+        $_conexion->query($sql);
+        $oferta_actual = $nueva_oferta;
+    }
+
+    // Al final de todas las validaciones y actualizaciones:
+    if (
+        !isset($err_nombre) && !isset($err_precio) && !isset($err_categoria) &&
+        !isset($err_stock) && !isset($err_descripcion) &&
+        !isset($err_largo) && !isset($err_ancho) && !isset($err_alto) &&
+        !isset($err_foto_proveedor) && !isset($err_oferta)
+    ) {
+        header("Location: index.php?editado=ok");
+        exit;
+    }
+}
+
+// SOLO DESPUÉS DE TODO LO ANTERIOR, INCLUYE EL HEADER Y EL HTML:
+include('../layout/header.php');
+include('../layout/sidebar.php');
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,21 +244,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <?php
-    error_reporting(E_ALL);
-    ini_set("display_errors", 1);
-
-    require('../../util/conexion.php');
-    require('../../util/funciones/utilidades.php');
-
-    define('IMG_PRODUCTOS', '/img/productos/');
-
-    session_start();
-    if (!isset($_SESSION["proveedor"])) {
-        header("location: ../../login/proveedor/iniciar_sesion_proveedor");
-        exit;
-    }
-    ?>
     <style>
         body {
             background: linear-gradient(135deg, #f7e5cb 0%, #f3f0e5 100%);
@@ -154,211 +373,6 @@
 </head>
 
 <body>
-    <?php
-    include('../layout/header.php');
-    include('../layout/sidebar.php');
-
-    define('PRODUCTOS', '/panel-control/productos/');
-
-    $id_producto = $_GET["id_producto"];
-    $sql = "SELECT * FROM productos WHERE id_producto = '$id_producto'";
-    $resultado = $_conexion->query($sql);
-
-    while ($datos_actuales = $resultado->fetch_assoc()) {
-        $nombre_actual = $datos_actuales["nombre"];
-        $precio_actual = $datos_actuales["precio"];
-        $categoria_actual = $datos_actuales["categoria"];
-        $stock_actual = $datos_actuales["stock"];
-        $descripcion_actual = $datos_actuales["descripcion"];
-        $medidas = json_decode($datos_actuales["medidas"], true);
-        $img_actual = $datos_actuales["img_producto"];
-        $oferta_actual = $datos_actuales["id_oferta"];
-    }
-
-    $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
-    $resultado = $_conexion->query($sql);
-    $categorias = [];
-
-    while ($fila = $resultado->fetch_assoc()) {
-        array_push($categorias, $fila["nombre_categoria"]);
-    }
-
-    $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
-    $resultado = $_conexion->query($sql);
-    $ofertas = [];
-
-    while ($fila = $resultado->fetch_assoc()) {
-        $ofertas[] = $fila;  // Guarda todo el array con id_oferta y nombre
-    }
-
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $nuevo_nombre = depurar($_POST["nuevo_nombre"]);
-        $nuevo_precio = depurar($_POST["nuevo_precio"]);
-        if (isset($_POST["nueva_categoria"]))
-            $nueva_categoria = depurar($_POST["nueva_categoria"]);
-        else
-            $nueva_categoria = "";
-        $nuevo_stock = depurar($_POST["nuevo_stock"]);
-        $nueva_descripcion = depurar($_POST["nueva_descripcion"]);
-        $nuevo_largo = depurar($_POST["largo"]);
-        $nuevo_ancho = depurar($_POST["ancho"]);
-        $nuevo_alto = depurar($_POST["alto"]);
-        $nueva_oferta = depurar($_POST["oferta"]);
-
-        $nuevo_nombre_imagen = $_FILES["img_producto"]["name"];
-        $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
-        $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
-
-        if ($nuevo_nombre == '') {
-            $err_nombre = "El nombre es obligatorio";
-        } else {
-            if (strlen($nuevo_nombre) > 50 || strlen($nuevo_nombre) < 3) {
-                $err_nombre = "El nombre es de 50 caracteres maximo y 3 minimo";
-            } else {
-                $patron = "/^[0-9a-zA-Z áéíóúÁÉÍÓÚ]+$/";
-                if (!preg_match($patron, $nuevo_nombre)) {
-                    $err_nombre = "El nombre solo puede tener letras, numeros y espacios";
-                } else {
-                    // Modifica el nombre
-                    $sql = "UPDATE productos SET nombre = '$nuevo_nombre' WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
-                    $nombre_actual = $nuevo_nombre;
-                }
-            }
-        }
-
-        if ($nuevo_precio == '') {
-            $err_precio = "El precio es obligatorio";
-        } else {
-            if (!filter_var($nuevo_precio, FILTER_VALIDATE_FLOAT)) {
-                $err_precio = "El precio tiene que ser un numero";
-            } else {
-                $patron = "/^[0-9]{1,4}(\.[0-9]{1,2})?$/";
-                if (!preg_match($patron, $nuevo_precio)) {
-                    $err_precio = "El precio solo puede tener 6 de los cuales 2 decimales";
-                } else {
-                    // Modifica el precio
-                    $sql = "UPDATE productos SET precio = '$nuevo_precio' WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
-                    $precio_actual = $nuevo_precio;
-                }
-            }
-        }
-
-        if ($nueva_categoria == '') {
-            $err_categoria = "La categoria es obligatoria";
-        } else {
-            if (strlen($nueva_categoria) > 30) {
-                $err_categoria = "La categoria no puede tener mas de 30 caracteres";
-            } else {
-                // Modifica la categoria
-                $sql = "UPDATE productos SET categoria = '$nueva_categoria' WHERE id_producto = '$id_producto'";
-                $_conexion->query($sql);
-                $categoria_actual = $nueva_categoria;
-            }
-        }
-
-        if ($nuevo_stock == '' || $nuevo_stock == 0) {
-            $stock_actual = 0;
-        } else {
-            if (!filter_var($nuevo_stock, FILTER_VALIDATE_INT)) {
-                $err_stock = "El stock tiene que ser un numero entero";
-            } else {
-                if ($nuevo_stock < 0 || $nuevo_stock > 2147483647) {
-                    $err_stock = "El stock tiene que ser como maximo 2147483647";
-                } else {
-                    // Modifica el stock
-                    $sql = "UPDATE productos SET stock = $nuevo_stock WHERE id_producto = '$id_producto'";
-                    $_conexion->query($sql);
-                    $stock_actual = $nuevo_stock;
-                }
-            }
-        }
-
-        if ($nueva_descripcion == "") {
-            $err_descripcion = "La descripcion es obligatoria";
-        } else {
-            if (strlen($nueva_descripcion) > 255) {
-                $err_descripcion = "La descripcion no puede tener mas de 255 caracteres";
-            } else {
-                // Modifica la descripcion
-                $sql = "UPDATE productos SET descripcion = '$nueva_descripcion' WHERE id_producto = '$id_producto'";
-                $_conexion->query($sql);
-                $descripcion_actual = $nueva_descripcion;
-            }
-        }
-
-        if ($nuevo_largo == '') {
-            $err_largo = "El largo es obligatorio";
-        } else {
-            if (!filter_var($nuevo_largo, FILTER_VALIDATE_INT)) {
-                $err_largo = "El largo tiene que ser un numero entero en centimetros";
-            } else {
-                if ($nuevo_largo < 0 || $nuevo_largo > 2147483647) {
-                    $nuevo_largo = "El largo tiene que ser como maximo 2147483647";
-                } else {
-                    $largo_actual = $nuevo_largo;
-                }
-            }
-        }
-
-        if ($nuevo_ancho == '') {
-            $err_ancho = "El ancho es obligatorio";
-        } else {
-            if (!filter_var($nuevo_ancho, FILTER_VALIDATE_INT)) {
-                $err_ancho = "El ancho tiene que ser un numero entero en centimetros";
-            } else {
-                if ($nuevo_ancho < 0 || $nuevo_ancho > 2147483647) {
-                    $err_ancho = "El ancho tiene que ser como maximo 2147483647";
-                } else {
-                    $ancho_actual = $nuevo_ancho;
-                }
-            }
-        }
-
-        if ($nuevo_alto == '') {
-            $err_alto = "El alto es obligatorio";
-        } else {
-            if (!filter_var($nuevo_alto, FILTER_VALIDATE_INT)) {
-                $err_alto = "El alto tiene que ser un numero entero en centimetros";
-            } else {
-                if ($nuevo_alto < 0 || $nuevo_alto > 2147483647) {
-                    $err_alto = "El alto tiene que ser como maximo 2147483647";
-                } else {
-                    $alto_actual = $nuevo_alto;
-                }
-            }
-        }
-
-        if (isset($largo_actual) && isset($ancho_actual) && isset($alto_actual)) {
-            $medidas = array('largo' => intval($largo_actual), 'ancho' => intval($ancho_actual), 'alto' => intval($alto_actual));
-            $sql = "UPDATE productos SET medidas = '" . json_encode($medidas) . "' WHERE id_producto = '$id_producto'";
-            $_conexion->query($sql);
-        }
-
-        if ($nuevo_nombre_imagen == "") {
-            $err_foto_proveedor = "La imagen es obligatoria";
-        } else {
-            if (strlen($nuevo_nombre_imagen) > 60) {
-                $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
-            } else {
-                move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
-                $img_actual = $nuevo_nombre_imagen;
-                $sql = "UPDATE productos SET img_producto = '$img_actual' WHERE id_producto = $id_producto";
-                $_conexion->query($sql);
-            }
-        }
-
-        if ($nueva_oferta === "") {
-            $err_oferta = "La oferta no existe";
-        } else {
-            $sql = "UPDATE productos SET id_oferta = $nueva_oferta WHERE id_producto = $id_producto";
-            $_conexion->query($sql);
-            $oferta_actual = $nueva_oferta;
-        }
-    }
-
-    ?>
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-7 col-md-9">
@@ -399,7 +413,7 @@
                                         <?php foreach ($categorias as $categoria) {
                                             if ($categoria != $categoria_actual) { ?>
                                                 <option value="<?php echo $categoria ?>"><?php echo $categoria; ?></option>
-                                            <?php }
+                                        <?php }
                                         } ?>
                                     </select>
                                     <?php if (isset($err_categoria))
@@ -430,23 +444,14 @@
                                 <div class="col-md-4">
                                     <label class="form-label">Oferta</label>
                                     <select class="form-select" name="oferta">
-                                        <option selected value="<?php echo $oferta_actual ?>">
-                                            <?php if ($oferta_actual === null) {
-                                                echo "Sin oferta";
-                                            } else {
-                                                foreach ($ofertas as $oferta) {
-                                                    if ($oferta['id_oferta'] == $oferta_actual)
-                                                        echo $oferta['nombre'];
-                                                }
-                                            } ?>
+                                        <option value="" <?php if ($oferta_actual === null) echo "selected"; ?>>Sin oferta
                                         </option>
-                                        <?php foreach ($ofertas as $oferta) {
-                                            if ($oferta['id_oferta'] != $oferta_actual) { ?>
-                                                <option value="<?php echo $oferta['id_oferta']; ?>">
-                                                    <?php echo $oferta['nombre']; ?>
-                                                </option>
-                                            <?php }
-                                        } ?>
+                                        <?php foreach ($ofertas as $oferta) { ?>
+                                            <option value="<?php echo $oferta['id_oferta']; ?>"
+                                                <?php if ($oferta_actual == $oferta['id_oferta']) echo "selected"; ?>>
+                                                <?php echo $oferta['nombre']; ?>
+                                            </option>
+                                        <?php } ?>
                                     </select>
                                     <?php if (isset($err_oferta))
                                         echo "<span class='error'>$err_oferta</span>"; ?>
@@ -495,23 +500,23 @@
         </div>
     </div>
     <?php include('../../cookies.php'); ?>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');
             const inputFile = document.getElementById('img_producto');
-            fotoWrapper.addEventListener('click', function () {
+            fotoWrapper.addEventListener('click', function() {
                 inputFile.click();
             });
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoProducto.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);

@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$nombre', $precio, '$categoria', $stock, '$img_producto', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
         $_conexion->query($sql);
 
-        header("location: ./");
+        header("location: index.php?creado=ok");
         exit;
     }
 }
@@ -459,19 +459,20 @@ while ($fila = $resultado->fetch_assoc()) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');
             const inputFile = document.getElementById('img_producto');
-            fotoWrapper.addEventListener('click', function () {
+            fotoWrapper.addEventListener('click', function() {
                 inputFile.click();
             });
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoProducto.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
