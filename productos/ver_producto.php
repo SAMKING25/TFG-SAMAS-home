@@ -58,18 +58,33 @@ if (isset($_GET["id_producto"])) {
         $id_usuario = $_SESSION["usuario"];
         $cantidad = isset($_POST["cantidad"]) ? intval($_POST["cantidad"]) : 0;
 
-        // Validar cantidad y stock
+        // 1. Consulta cuántos ya tiene el usuario en el carrito
+        $stmt_carrito = $_conexion->prepare("SELECT cantidad FROM carrito WHERE id_usuario = ? AND id_producto = ?");
+        $stmt_carrito->bind_param("ii", $id_usuario, $id_producto);
+        $stmt_carrito->execute();
+        $stmt_carrito->bind_result($cantidad_en_carrito);
+        $stmt_carrito->fetch();
+        $stmt_carrito->close();
+
+        if (!isset($cantidad_en_carrito)) {
+            $cantidad_en_carrito = 0;
+        }
+
+        // 2. Comprobar si la suma supera el stock
         if ($cantidad < 1) {
             $mensaje = "error";
             $errorMsg = "Cantidad no válida.";
-        } elseif ($cantidad > $producto["stock"]) {
+        } elseif ($cantidad_en_carrito >= $producto["stock"]) {
             $mensaje = "error";
-            $errorMsg = "No hay suficiente stock disponible.";
+            $errorMsg = "Ya tienes el máximo stock permitido en tu carrito.";
+        } elseif (($cantidad + $cantidad_en_carrito) > $producto["stock"]) {
+            $mensaje = "error";
+            $errorMsg = "No puedes añadir más de " . $producto["stock"] . " unidades en total.";
         } else {
             // Insertar o actualizar cantidad en el carrito
             $stmt = $_conexion->prepare(
                 "INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
-                ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)"
+                ON DUPLICATE KEY UPDATE cantidad = cantidad + VALUES(cantidad)"
             );
             $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
 
@@ -237,18 +252,27 @@ if ($hayOferta) {
                             <form action="" method="post" class="d-flex align-items-end gap-3">
                                 <div>
                                     <label for="cantidad" class="form-label mb-1 fw-semibold">Cantidad</label>
-                                    <select name="cantidad" id="cantidad"
-                                        class="form-select form-select-lg w-auto rounded-3 shadow-sm">
-                                        <?php
-                                        $max = min(5, $producto["stock"]);
-                                        for ($i = 1; $i <= $max; $i++): ?>
-                                            <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                                        <?php endfor; ?>
-                                    </select>
+                                    <?php if ($producto["stock"] <= 0): ?>
+                                        <select name="cantidad" id="cantidad"
+                                            class="form-select form-select-lg w-auto rounded-3 shadow-sm" disabled>
+                                            <option value="">-</option>
+                                        </select>
+                                    <?php else: ?>
+                                        <select name="cantidad" id="cantidad"
+                                            class="form-select form-select-lg w-auto rounded-3 shadow-sm">
+                                            <?php
+                                            $max = min(5, $producto["stock"]);
+                                            for ($i = 1; $i <= $max; $i++): ?>
+                                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                            <?php endfor; ?>
+                                        </select>
+                                    <?php endif; ?>
                                 </div>
                                 <button type="submit" class="btn btn-warning btn-lg rounded-4 px-4 shadow"
-                                    style="background:#b88c4a; border:none;">
-                                    <i class="bi bi-cart-plus me-2"></i>Añadir al carrito
+                                    style="background:#b88c4a; border:none;"
+                                    <?php if ($producto["stock"] <= 0) echo "disabled"; ?>>
+                                    <i class="bi bi-cart-plus me-2"></i>
+                                    <?php echo $producto["stock"] <= 0 ? "Sin stock" : "Añadir al carrito"; ?>
                                 </button>
                                 <a href="./" class="btn btn-outline-secondary btn-lg rounded-4 px-4">← Volver</a>
                             </form>
@@ -275,46 +299,56 @@ if ($hayOferta) {
                 $stmt_similares->execute();
                 $result_similares = $stmt_similares->get_result();
 
-                while ($sim = $result_similares->fetch_assoc()):
-                    $hayOfertaSim = !is_null($sim["porcentaje"]);
-                    $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
-                    ?>
-                    <div class="col mb-5">
-                        <a href="ver_producto?id_producto=<?php echo $sim["id_producto"]; ?>"
-                            class="text-decoration-none text-dark">
-                            <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow"
-                                style="transition: box-shadow .2s;">
-                                <?php if ($hayOfertaSim): ?>
-                                    <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
-                                        -<?php echo $sim["porcentaje"]; ?>%
-                                    </span>
-                                <?php endif; ?>
-                                <div class="img-similar-wrapper">
-                                    <img src="../../img/productos/<?php echo $sim["img_producto"]; ?>" class="img-similar"
-                                        alt="Producto similar">
-                                </div>
-                                <div class="card-body text-center">
-                                    <h6 class="card-title fw-bold mb-2"><?php echo $sim["nombre"]; ?></h6>
-                                    <div class="card-text fs-6">
-                                        <?php if ($hayOfertaSim): ?>
-                                            <span class="text-muted text-decoration-line-through me-2">
-                                                <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
-                                            </span>
-                                            <span class="text-success fw-semibold">
-                                                <?php echo number_format($precioFinalSim, 2, ',', '.'); ?> €
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="text-success fw-semibold">
-                                                <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
-                                            </span>
-                                        <?php endif; ?>
+                if ($result_similares->num_rows === 0): ?>
+                    <div class="col">
+                        <div class="alert alert-warning text-center w-100" role="alert">
+                            Actualmente no hay productos similares disponibles.
+                        </div>
+                    </div>
+                <?php
+                else:
+                    while ($sim = $result_similares->fetch_assoc()):
+                        $hayOfertaSim = !is_null($sim["porcentaje"]);
+                        $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
+                        ?>
+                        <div class="col mb-5">
+                            <a href="ver_producto?id_producto=<?php echo $sim["id_producto"]; ?>"
+                                class="text-decoration-none text-dark">
+                                <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow"
+                                    style="transition: box-shadow .2s;">
+                                    <?php if ($hayOfertaSim): ?>
+                                        <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
+                                            -<?php echo $sim["porcentaje"]; ?>%
+                                        </span>
+                                    <?php endif; ?>
+                                    <div class="img-similar-wrapper">
+                                        <img src="../../img/productos/<?php echo $sim["img_producto"]; ?>" class="img-similar"
+                                            alt="Producto similar">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h6 class="card-title fw-bold mb-2"><?php echo $sim["nombre"]; ?></h6>
+                                        <div class="card-text fs-6">
+                                            <?php if ($hayOfertaSim): ?>
+                                                <span class="text-muted text-decoration-line-through me-2">
+                                                    <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
+                                                </span>
+                                                <span class="text-success fw-semibold">
+                                                    <?php echo number_format($precioFinalSim, 2, ',', '.'); ?> €
+                                                </span>
+                                            <?php else: ?>
+                                                <span class="text-success fw-semibold">
+                                                    <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </a>
-                    </div>
-                <?php endwhile; ?>
-                <?php $stmt_similares->close(); ?>
+                            </a>
+                        </div>
+                    <?php endwhile;
+                endif;
+                $stmt_similares->close();
+                ?>
             </div>
         </div>
     </div>

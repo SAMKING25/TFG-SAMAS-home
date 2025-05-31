@@ -13,7 +13,7 @@ if (!isset($_SESSION["usuario"])) {
 $id_usuario = $_SESSION["usuario"];
 
 // Obtener productos del carrito agrupados por producto
-$sql = "SELECT c.id_producto, c.cantidad, p.nombre, p.precio, p.img_producto, o.porcentaje
+$sql = "SELECT c.id_producto, c.cantidad, p.nombre, p.precio, p.img_producto, o.porcentaje, p.stock
         FROM carrito c
         INNER JOIN productos p ON c.id_producto = p.id_producto
         LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
@@ -49,7 +49,8 @@ while ($fila = $resultado->fetch_assoc()) {
         "precio" => $precio,
         "porcentaje" => $porcentaje,
         "precio_final" => $precio_final,
-        "subtotal" => $subtotal
+        "subtotal" => $subtotal,
+        "stock" => $fila["stock"] // <-- Añadido
     ];
 }
 
@@ -66,6 +67,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"]))
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"])) {
     $id_producto = intval($_POST["id_producto"]);
     $nueva_cantidad = max(1, intval($_POST["nueva_cantidad"])); // Evita cantidades menores a 1
+
+    // Comprobar stock disponible
+    $stmt = $_conexion->prepare("SELECT stock FROM productos WHERE id_producto = ?");
+    $stmt->bind_param("i", $id_producto);
+    $stmt->execute();
+    $stmt->bind_result($stock_disponible);
+    $stmt->fetch();
+    $stmt->close();
+
+    if ($nueva_cantidad > $stock_disponible) {
+        header("Location: index.php?stock=1");
+        exit;
+    }
+
     $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = ? WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("iii", $nueva_cantidad, $id_usuario, $id_producto);
     $stmt->execute();
@@ -212,14 +227,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                                             <form method="post" action="" class="d-inline">
                                                 <input type="hidden" name="id_producto"
                                                     value="<?php echo $producto["id_producto"]; ?>">
-                                                <input type="number" name="nueva_cantidad"
-                                                    value="<?php echo $producto["cantidad"]; ?>" min="1" style="width:60px;"
-                                                    class="form-control d-inline p-1" required>
+                                                <input type="hidden" name="nueva_cantidad"
+                                                    value="<?php echo $producto["cantidad"] - 1; ?>">
                                                 <button type="submit" name="actualizar_cantidad"
-                                                    class="btn btn-sm btn-outline-primary ms-1" title="Actualizar cantidad">
-                                                    <i class="bi bi-arrow-repeat"></i>
+                                                    class="btn btn-sm btn-outline-primary" title="Restar uno" <?php echo ($producto["cantidad"] <= 1) ? 'disabled' : ''; ?>>
+                                                    <i class="bi bi-dash"></i>
                                                 </button>
                                             </form>
+                                            <span class="mx-2 fw-bold"><?php echo $producto["cantidad"]; ?></span>
+                                            <form method="post" action="" class="d-inline">
+                                                <input type="hidden" name="id_producto"
+                                                    value="<?php echo $producto["id_producto"]; ?>">
+                                                <input type="hidden" name="nueva_cantidad"
+                                                    value="<?php echo $producto["cantidad"] + 1; ?>">
+                                                <button type="submit" name="actualizar_cantidad"
+                                                    class="btn btn-sm btn-outline-primary"
+                                                    title="Sumar uno"
+                                                    <?php echo ($producto["cantidad"] >= $producto["stock"]) ? 'disabled' : ''; ?>>
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </form>
+                                            <?php if ($producto["cantidad"] >= $producto["stock"]): ?>
+                                                <span class="text-danger ms-2" style="font-size:0.95em;">No hay más stock disponible</span>
+                                            <?php endif; ?>
                                             </p>
                                             <?php if (!is_null($producto["porcentaje"])): ?>
                                                 <p class="card-text carrito-descuento">
@@ -354,12 +384,33 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
             });
         </script>
     <?php endif; ?>
+
+    <?php if (isset($_GET['stock']) && $_GET['stock'] == '1'): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'error',
+                title: 'No hay suficiente stock disponible',
+                showConfirmButton: false,
+                timer: 2500,
+                timerProgressBar: true,
+                background: '#f4e5cc',
+                color: '#333',
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        </script>
+    <?php endif; ?>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    document.querySelectorAll('.btn-eliminar-producto').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
+    document.querySelectorAll('.btn-eliminar-producto').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
             e.preventDefault();
             const form = btn.closest('form');
             Swal.fire({
