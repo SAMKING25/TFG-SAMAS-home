@@ -119,7 +119,8 @@ if (isset($_SESSION['usuario'])) {
                         <?php if ($tipo_sesion === 'usuario') { ?>
                             <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de perfil</a></li>
                             <li><a class="dropdown-item" href="/pedidos/index.php">Mis pedidos</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a></li>
+
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -127,7 +128,7 @@ if (isset($_SESSION['usuario'])) {
                         <?php } elseif ($tipo_sesion === 'proveedor') { ?>
                             <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Ajustes de perfil</a></li>
                             <li><a class="dropdown-item" href="/panel-control/">Panel de control</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar cuenta</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>

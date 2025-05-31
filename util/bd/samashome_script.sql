@@ -20,6 +20,7 @@ CREATE TABLE usuarios (
     nombre_usuario VARCHAR(50),
     contrasena_usuario VARCHAR(120),
     id_suscripcion INT,
+    fecha_expiracion_suscripcion DATE,
     img_usuario VARCHAR(60),
     usos_plano INT DEFAULT 0,
     FOREIGN KEY (id_suscripcion) REFERENCES suscripciones(id_suscripcion)

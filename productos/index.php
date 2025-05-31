@@ -160,92 +160,233 @@ $filtros = [
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
     <style>
+        body {
+            background: linear-gradient(120deg, #f8f6f2 0%, #f4e5cc 100%);
+            font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+            color: #222;
+        }
+
         .main-content {
             padding-bottom: 3.5rem !important;
         }
 
-        .img-fija {
-            width: 450px !important;
-            height: 350px !important;
-            object-fit: fill !important;
-            display: block;
+        h1 {
+            font-weight: 600;
+            color: black;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 8px #e5d6b6;
         }
 
-        #btn-filtro-lateral {
-            position: fixed;
-            top: 140px;
-            /* Más abajo para evitar el navbar */
-            left: 0;
-            z-index: 2000;
-            width: 52px;
-            height: 52px;
-            padding: 0;
-            margin-left: 8px;
-            box-shadow: 0 2px 8px 0 #0001;
-            transition: background 0.2s, color 0.2s;
+        /* Tarjeta de producto */
+        .card {
+            border: none;
+            border-radius: 2rem;
+            box-shadow: 0 4px 24px 0 #bfa16a22;
+            transition: box-shadow 0.25s, transform 0.2s;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:hover,
+        .card:focus-within {
+            box-shadow: 0 8px 32px 0 #bfa16a44;
+            transform: translateY(-4px) scale(1.02);
+        }
+
+        .card-img-container {
+            width: 100%;
+            height: 320px;
+            background: #f4e5cc;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-top-left-radius: 2rem;
+            border-top-right-radius: 2rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        #btn-filtro-lateral:hover,
-        #btn-filtro-lateral:focus {
-            background: #e9ecef;
-            color: #2563eb;
+        .img-fija {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.35s cubic-bezier(.4, 2, .3, 1), filter 0.3s;
+            border-radius: 0;
         }
 
-        @media (max-width: 600px) {
-            #btn-filtro-lateral {
-                top: 90px;
-                left: 0;
-                width: 44px;
-                height: 44px;
-            }
+        .card:hover .img-fija,
+        .card:focus-within .img-fija {
+            transform: scale(1.08);
+            filter: brightness(1.08) saturate(1.1);
         }
 
-        .search-bar-container {
-            transition: box-shadow 0.2s;
-            border: 1.5px solid #e5e7eb;
-            overflow-x: auto;
+        .add-cart-btn {
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            width: 52px;
+            height: 52px;
+            background: linear-gradient(135deg, #bfa16a 60%, #ffc25a 100%);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 2px 12px 0 #bfa16a55;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.7rem;
+            transition: background 0.2s, color 0.2s, transform 0.15s;
+            z-index: 10;
+            padding: 0;
+        }
+
+        .add-cart-btn:hover,
+        .add-cart-btn:focus {
+            background: linear-gradient(135deg, #a88c54 60%, #ffb340 100%);
+            color: #fff;
+            transform: scale(1.12);
+            outline: none;
+        }
+
+        .card-title {
+            color: #222;
+            font-weight: 700;
+            font-size: 1.18rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text .text-success {
+            color: brown !important;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .card-text .text-muted {
+            color: #bfa16a !important;
+            font-size: 1.05rem;
+        }
+
+        /* Etiqueta de oferta */
+        .card .bg-danger {
+            background: linear-gradient(90deg, #bfa16a 60%, #ffc25a 100%) !important;
+            color: #fff !important;
+            font-weight: 600;
+            font-size: 1rem;
+            border-top-right-radius: 0.8rem !important;
+            border-bottom-left-radius: 0.8rem !important;
+            box-shadow: 0 2px 8px #bfa16a33;
+        }
+
+        /* Filtros laterales */
+        .offcanvas-body {
             background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 2px 16px #bfa16a22;
+            padding: 2rem 1.5rem;
         }
 
-        /* Quita el borde amarillo al enfocar */
-        .search-bar-container:focus-within {
-            box-shadow: none;
-            border-color: #e5e7eb;
+        .offcanvas-title {
+            color: #bfa16a;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        .search-bar-container input:focus {
+        .form-label {
+            color: #222;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .form-select,
+        .form-control {
+            border-radius: 1rem;
+            border: 1.5px solid #e5e7eb;
+            background: #f8f6f2;
+            color: #222;
+            font-size: 1rem;
+            transition: border 0.2s;
+        }
+
+        .form-select:focus,
+        .form-control:focus {
+            border-color: #bfa16a;
             background: #fffbe6;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #bfa16a 60%, #ffc25a 100%) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 700;
+            border-radius: 2rem !important;
+            box-shadow: 0 2px 8px #bfa16a33;
+            letter-spacing: 0.5px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: linear-gradient(90deg, #a88c54 60%, #ffb340 100%) !important;
+            color: #fff !important;
+        }
+
+        /* Buscador */
+        .search-bar-container {
+            border-radius: 2rem;
+            border: 1.5px solid #e5e7eb;
+            background: #fff;
+            box-shadow: 0 2px 8px #bfa16a22;
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .search-bar-container input[type="text"] {
+            min-width: 220px;
+            border-radius: 1.2rem;
+            border: none;
+            background: #f8f6f2;
+            font-size: 1.08rem;
+            color: #222;
+            padding: 0.6rem 1rem;
+            transition: background 0.2s;
+        }
+
+        .search-bar-container input[type="text"]:focus {
+            background: #fffbe6;
+            outline: none;
         }
 
         .search-btn-yellow {
-            background: #bfa16a;
+            background: linear-gradient(90deg, #bfa16a 60%, #ffc25a 100%);
             color: #fff !important;
             border: none;
-            box-shadow: 0 2px 8px 0 #cbbfae80;
-            transition: background 0.2s, color 0.2s;
-            font-weight: 600;
+            border-radius: 2rem;
+            font-weight: 700;
             letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px #bfa16a33;
+            transition: background 0.2s, color 0.2s;
         }
 
         .search-btn-yellow:hover,
         .search-btn-yellow:focus {
-            background: #a88c54;
+            background: linear-gradient(90deg, #a88c54 60%, #ffb340 100%);
             color: #fff !important;
         }
 
         .ver-todos-btn {
-            white-space: nowrap;
             border: 1.5px solid #e5e7eb;
             background: #fff;
             color: #64748b;
-            transition: background 0.2s, color 0.2s, border 0.2s;
             font-weight: 500;
+            border-radius: 2rem;
             letter-spacing: 0.2px;
             padding-left: 1.2rem !important;
             padding-right: 1.2rem !important;
+            transition: background 0.2s, color 0.2s, border 0.2s;
         }
 
         .ver-todos-btn:hover {
@@ -255,94 +396,40 @@ $filtros = [
             text-decoration: none;
         }
 
-        .search-bar-container input[type="text"] {
-            min-width: 250px;
-            max-width: 100%;
-            flex-grow: 1;
-        }
-
-        @media (min-width: 992px) {
-            aside {
-                min-width: 260px;
-                max-width: 320px;
-            }
-        }
-
+        /* Responsive */
         @media (max-width: 991px) {
-            aside {
-                margin-bottom: 1.5rem;
+            .main-content {
+                padding-bottom: 2rem !important;
+            }
+
+            .card-img-container {
+                height: 220px;
+            }
+
+            .offcanvas-body {
+                padding: 1.2rem 0.7rem;
             }
         }
 
-        /* Hover en imágen de carta */
-        .card-img-container {
-            width: 100%;
-            height: 350px;
-            /* igual que .img-fija */
-            overflow: hidden;
-            border-top-left-radius: 1.5rem;
-            border-top-right-radius: 1.5rem;
-            background: #f8f8f8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        @media (max-width: 600px) {
+            .search-bar-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+                padding: 0.7rem 0.5rem;
+            }
 
-        .img-fija {
-            width: 100%;
-            height: 100%;
-            object-fit: fill;
-            transition: transform 0.35s cubic-bezier(.4, 2, .3, 1), filter 0.3s;
-        }
+            .card-img-container {
+                height: 160px;
+            }
 
-        .card:hover .img-fija,
-        .card:focus-within .img-fija {
-            transform: scale(1.08);
-            filter: brightness(1.04) saturate(1.1);
-        }
-
-        .add-cart-btn {
-            right: 16px;
-            bottom: 16px;
-            width: 44px;
-            height: 44px;
-            background: #ffc25a;
-            color: #333;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px 0 #fff3cd80;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            transition: background 0.2s, color 0.2s, transform 0.15s;
-            z-index: 10;
-            padding: 0;
-        }
-
-        .add-cart-btn:hover,
-        .add-cart-btn:focus {
-            background: #ffb340;
-            color: #222;
-            transform: scale(1.08);
-            outline: none;
-        }
-
-        .card-img-container {
-            position: relative;
-        }
-
-        .btn-primary {
-            background-color: #bfa16a !important;
-            border-color: #bfa16a !important;
-            color: #fff !important;
-        }
-
-        .btn-primary:hover,
-        .btn-primary:focus {
-            background-color: #a88c54 !important;
-            border-color: #a88c54 !important;
-            color: #fff !important;
+            .add-cart-btn {
+                width: 42px;
+                height: 42px;
+                font-size: 1.2rem;
+                right: 10px;
+                bottom: 10px;
+            }
         }
     </style>
 
@@ -692,7 +779,8 @@ $filtros = [
                                                         src="../../img/productos/<?php echo $fila["img_producto"]; ?>"
                                                         alt="Imagen del producto <?php echo htmlspecialchars($fila["nombre"]); ?>">
                                                     <form method="post" class="add-to-cart-form">
-                                                        <input type="hidden" name="add_to_cart_id" value="<?php echo $fila["id_producto"]; ?>">
+                                                        <input type="hidden" name="add_to_cart_id"
+                                                            value="<?php echo $fila["id_producto"]; ?>">
                                                         <button type="submit" class="btn add-cart-btn position-absolute">
                                                             <i class="bi bi-cart-plus"></i>
                                                         </button>
@@ -705,20 +793,20 @@ $filtros = [
                                                 <div class="card-text fs-5">
                                                     <?php
                                                     if ($hayOferta) {
-                                                    ?>
+                                                        ?>
                                                         <span class="text-muted text-decoration-line-through me-2">
                                                             <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                         </span>
                                                         <span class="text-success fw-semibold">
                                                             <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
                                                         </span>
-                                                    <?php
+                                                        <?php
                                                     } else {
-                                                    ?>
+                                                        ?>
                                                         <span class="text-success fw-semibold">
                                                             <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                         </span>
-                                                    <?php
+                                                        <?php
                                                     }
                                                     ?>
                                                 </div>
@@ -750,14 +838,14 @@ $filtros = [
             if (input) input.focus();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             var offcanvas = document.getElementById('offcanvasFiltro');
             var btnFiltro = document.getElementById('btn-filtro-lateral');
             if (offcanvas && btnFiltro) {
-                offcanvas.addEventListener('show.bs.offcanvas', function() {
+                offcanvas.addEventListener('show.bs.offcanvas', function () {
                     btnFiltro.style.display = 'none';
                 });
-                offcanvas.addEventListener('hidden.bs.offcanvas', function() {
+                offcanvas.addEventListener('hidden.bs.offcanvas', function () {
                     btnFiltro.style.display = '';
                 });
             }
