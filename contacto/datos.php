@@ -1,9 +1,9 @@
 <?php
-$destino = "samashome1@gmail.com";
+$destino = "samashome1@gmail.com"; // Tu correo de empresa
 
 $nombre = $_POST["nombre"] ?? '';
 $apellido = $_POST["apellido"] ?? '';
-$correo = $_POST["correo"] ?? '';
+$correo = $_POST["email"] ?? ''; // Cambia a "email" si tu input se llama así
 $asunto = $_POST["asunto"] ?? 'Sin asunto';
 $mensaje = $_POST["mensaje"] ?? '';
 
@@ -13,15 +13,18 @@ $mensajeCompleto =  "Nombre: " . $nombre . "\n" .
                     "Asunto: " . $asunto . "\n" .
                     "Mensaje: " . $mensaje;
 
-$header = "From: $correo\r\n";
-$header .= "Reply-To: $correo\r\n";
-$header .= "Content-Type: text/plain; charset=UTF-8\r\n";
+// Usa un correo de tu dominio como remitente
+$from = "From: info@samas-home.com\r\n"; 
+$from .= "Reply-To: $correo\r\n";
+$from .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
-$enviar = mail($destino, $asunto, $mensajeCompleto, $header);
+$enviar = mail($destino, $asunto, $mensajeCompleto, $from);
 
 if ($enviar) {
-    echo "<script>alert('Tu mensaje fue enviado correctamente.');</script>";
+    header("Location: /contacto/mensaje-enviado.html");
+    exit;
 } else {
-    echo "<script>alert('Tu mensaje no fue enviado.');</script>";
+    header("Location: /contacto/index.php?error=1");
+    exit;
 }
 ?>
