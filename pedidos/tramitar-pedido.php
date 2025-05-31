@@ -10,7 +10,7 @@ if (!isset($_SESSION['usuario'])) {
 }
 
 $id_usuario = $_SESSION['usuario'];
-echo "ID usuario: $id_usuario<br>";
+// echo "ID usuario: $id_usuario<br>";
 
 // 2. Leer productos del carrito de la base de datos
 $sql = "SELECT c.id_producto, c.cantidad, p.precio
@@ -29,10 +29,10 @@ while ($item = $resultado->fetch_assoc()) {
     $total += $item['precio'] * $item['cantidad'];
 }
 
-echo '<pre>';
-print_r($carrito);
-echo '</pre>';
-echo "Total: $total<br>";
+// echo '<pre>';
+// print_r($carrito);
+// echo '</pre>';
+// echo "Total: $total<br>";
 
 if (empty($carrito)) {
     die('El carrito está vacío o no existe');
@@ -72,13 +72,14 @@ foreach ($carrito as $item) {
 $stmt = $_conexion->prepare("DELETE FROM carrito WHERE id_usuario = ?");
 $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
-echo "Carrito vaciado<br>";
+// echo "Carrito vaciado<br>";
 
 // 6. (Opcional) Vaciar el carrito de la sesión
 unset($_SESSION['carrito']);
 
 // 7. Confirmar éxito
-echo '<p>Pedido guardado correctamente. Carrito vaciado.</p>';
-echo '<a href="/pedidos/index.php">Ir a mis pedidos</a>';
+// echo '<p>Pedido guardado correctamente. Carrito vaciado.</p>';
+// echo '<a href="/pedidos/index.php">Ir a mis pedidos</a>';
+    header("location: /pasarela-pago/completado.html");
 exit;
 ?>

@@ -165,7 +165,9 @@ $importe = floatval($_POST['importe']);
             method: 'POST',
             body: formData
           }).then(() => {
-            window.location.href = "completado.html";
+            window.location.href = "/pedidos/tramitar-pedido.php";
+            //include("/pedidos/tramitar-pedidos.php");
+
           });
         });
       },
