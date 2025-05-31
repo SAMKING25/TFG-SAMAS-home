@@ -21,7 +21,6 @@ session_start();
 			max-width: 950px;
 			margin: 0 auto;
 			margin-top: 90px;
-			margin-bottom: 60px;
 			background: #fff;
 			border-radius: 1.5rem;
 			box-shadow: 0 6px 32px rgba(60, 60, 60, 0.10);
