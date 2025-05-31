@@ -211,6 +211,9 @@ if (!isset($_SESSION["usuario"])) {
             font-size: 0.97em;
             margin-bottom: 0;
         }
+        i{
+            font-size: 26px;
+        }
     </style>
 </head>
 
@@ -218,16 +221,31 @@ if (!isset($_SESSION["usuario"])) {
     <script>
         // Detecta móviles (ancho menor a 768px o user agent típico de móvil)
         function esMovil() {
-            const ua = navigator.userAgent.toLowerCase();
-            const esMobileUA = /android|iphone|ipod|blackberry|iemobile|opera mini/.test(ua);
-            const esPantallaPequena = window.innerWidth < 768;
+            const uaMobile = navigator.userAgent.toLowerCase();
+            const esMobileUA = /android|iphone|ipod|blackberry|iemobile|opera mini/.test(uaMobile);
+            const esPantallaPequenaMobile = window.innerWidth < 768;
             // Puedes ajustar el ancho según tus necesidades
-            return  esMobileUA && esPantallaPequena;
+            return esMobileUA && esPantallaPequenaMobile;
         }
 
         if (esMovil()) {
             window.location.href = "aviso-movil";
         }
+
+        // Banear botones en Tablet
+        function esTablet() {
+            const uaTablet = navigator.userAgent.toLowerCase();
+            const esTabletUA = /android|iphone|ipod|blackberry|iemobile|opera mini/.test(uaTablet);
+            return esTabletUA;
+        }
+
+        if (esTablet()) {
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('mouse-mode-btn')?.classList.add('d-none');
+                document.getElementById('move-mode-btn')?.classList.add('d-none');
+                document.getElementById('reset-view-btn')?.classList.add('d-none');
+            });
+        }        
     </script>
     <?php
     include('../navbar.php');
@@ -344,20 +362,12 @@ if (!isset($_SESSION["usuario"])) {
                         <i class="bi bi-save" style="font-size: 24px;"></i>
                     </button> -->
 
-                    <button id="import-json-btn" class="btn btn-info rounded-circle shadow me-2"
-                        style="width: 60px; height: 60px;" title="Importar JSON">
-                        <i class="bi bi-upload" style="font-size: 24px;"></i>
-                    </button>
                     <div class="btn-group me-2">
-                        <button id="export-dropdown" type="button"
-                            class="btn btn-success rounded-circle shadow dropdown-toggle" data-bs-toggle="dropdown"
-                            aria-expanded="false" style="width: 60px; height: 60px;">
-                            <i class="bi bi-save" style="font-size: 24px;"></i>
+                        <button id="export-png" type="button"
+                            class="btn btn-success rounded-circle shadow" style="width: 60px; height: 60px;">
+                            <i class="bi bi-card-image"></i>
                         </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#" id="export-png">Exportar PNG</a></li>
-                            <li><a class="dropdown-item" href="#" id="export-json">Exportar JSON</a></li>
-                        </ul>
+
                     </div>
                     <input type="file" id="import-json-input" accept=".json" style="display:none;">
 
@@ -379,8 +389,8 @@ if (!isset($_SESSION["usuario"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Muestra la tarjeta de detalle del producto al pasar el mouse
-        document.querySelectorAll('#productos .list-group-item').forEach(function (item) {
-            item.addEventListener('mouseenter', function (e) {
+        document.querySelectorAll('#productos .list-group-item').forEach(function(item) {
+            item.addEventListener('mouseenter', function(e) {
                 const id = this.getAttribute('data-id');
                 const producto = <?php echo json_encode($productos); ?>.find(p =>
                     String(p.id_producto) === String(id)
@@ -398,7 +408,9 @@ if (!isset($_SESSION["usuario"])) {
                 try {
                     const m = JSON.parse(producto.medidas);
                     medidas = `${m.ancho} × ${m.largo} cm`;
-                } catch { medidas = '-'; }
+                } catch {
+                    medidas = '-';
+                }
 
                 const detalle = document.getElementById('detalle-producto-float');
                 detalle.innerHTML = `
@@ -427,7 +439,7 @@ if (!isset($_SESSION["usuario"])) {
                 document.addEventListener('mousemove', moveDetalle);
             });
 
-            item.addEventListener('mouseleave', function () {
+            item.addEventListener('mouseleave', function() {
                 const detalle = document.getElementById('detalle-producto-float');
                 detalle.style.display = 'none';
                 detalle.innerHTML = '';
@@ -444,7 +456,7 @@ if (!isset($_SESSION["usuario"])) {
         const icon = document.getElementById('toggle-sidebar-icon');
         const canvasButtons = document.getElementById('canvas-buttons');
 
-        toggleBtn.addEventListener('click', function () {
+        toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
             if (sidebar.classList.contains('collapsed')) {
                 toggleBtn.style.left = '10px';
