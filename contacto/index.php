@@ -211,6 +211,7 @@ session_start();
 
 <body>
 	<?php include('../navbar.php'); ?>
+	
 
 	<div class="container main-content">
 		<div class="contact-main mt-4">
@@ -249,6 +250,7 @@ session_start();
 							class="bi bi-instagram"></i></a>
 				</div>
 			</div>
+			
 			<!-- Panel de formulario -->
 			<div class="contact-form-panel">
 				<h2>Envíanos un mensaje</h2>
