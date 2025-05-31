@@ -3,6 +3,29 @@ const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
 });
 
+//Hammer.js para gestos táctiles
+// const tacto = new Hammer(document.getElementById('canvas'));
+
+// // Habilita el reconocimiento de pinch
+// tacto.get('pinch').set({ enable: true });
+
+// let lastScale = 1;
+// let lastZoom = canvas.getZoom();
+
+// tacto.on("pinchstart", function(ev) {
+//     lastScale = ev.scale;
+//     lastZoom = canvas.getZoom();
+// });
+
+// tacto.on("pinchmove", function(ev) {
+//     // Calcula el nuevo zoom relativo al zoom anterior
+//     let newZoom = lastZoom * ev.scale / lastScale;
+//     // Limita el zoom
+//     newZoom = Math.max(0.6, Math.min(2, newZoom));
+//     canvas.setZoom(newZoom);
+//     canvas.requestRenderAll();
+// });
+
 const zonaBloqueadaAltura = 100; // píxeles desde arriba
 
 crearEscalaGrafica();
@@ -30,7 +53,8 @@ document.getElementById('toggle-sidebar-btn').addEventListener('click', function
 // Llama al cargar la página
 ajustarCanvasSegunSidebar();
 
-const rotateIcon = "/img/plano/voltear.png";
+const rotateIcon =
+    "/img/plano/voltear.png";
 
 const rotateImg = document.createElement('img');
 rotateImg.src = rotateIcon;
@@ -89,6 +113,30 @@ function agregarProducto(imagenURL, medidas) {
     });
 }
 
+function agregarProductoSidebar(element, imagenURL, medidas) {
+    agregarProducto(imagenURL, medidas);
+
+    // Restar cantidad visualmente
+    const cantidadNum = element.querySelector('.cantidad-num');
+    let cantidad = parseInt(cantidadNum.textContent, 10);
+    cantidad--;
+    // Guarda los datos del producto en el objeto fabric
+    const lastObj = canvas.getObjects().slice(-1)[0];
+    if (lastObj) {
+        lastObj.productoSidebarData = {
+            nombre: element.querySelector('span').childNodes[0].textContent.trim(),
+            img: element.querySelector('img').getAttribute('src'),
+            categoria: imagenURL.split('/').pop().split('.')[0],
+            medidas: medidas
+        };
+    }
+    if (cantidad <= 0) {
+        element.remove();
+    } else {
+        cantidadNum.textContent = cantidad;
+    }
+}
+
 function rotarImagen(eventData, transform) {
     const target = transform.target;
     if (target) {
@@ -109,64 +157,68 @@ function renderIcon(icon) {
   };
 }
 
-function seleccionMultiple() {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject && activeObject.type === 'activeSelection') {
-        activeObject.forEachObject(function (obj) {
-            if (typeof obj.actualizarMedida === 'function') {
-                obj.actualizarMedida();
-            }
-        });
-    }
-    canvas.requestRenderAll();
-}
-
-canvas.on('selection:created', function(e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
-
-canvas.on('selection:updated', function(e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
-
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
 
-    if (activeObject) {
-        if (activeObject.type === 'activeSelection') {
-            activeObject.forEachObject(function (obj) {
-                canvas.remove(obj);
-                if (obj.relatedTexts) {
-                    obj.relatedTexts.forEach(txt => canvas.remove(txt));
+    function restaurarSidebar(obj) {
+        if (obj.type === 'image' && obj.productoSidebarData) {
+            const data = obj.productoSidebarData;
+            const productosSidebar = document.querySelectorAll('#productos .list-group-item');
+            let encontrado = false;
+
+            productosSidebar.forEach(item => {
+                const img = item.querySelector('img');
+                const nombre = item.querySelector('span').childNodes[0].textContent.trim();
+                if (img && img.src === location.origin + data.img.replace('..', '') && nombre === data.nombre) {
+                    const cantidadNum = item.querySelector('.cantidad-num');
+                    let cantidad = parseInt(cantidadNum.textContent, 10);
+                    cantidadNum.textContent = cantidad + 1;
+                    encontrado = true;
                 }
             });
-            canvas.discardActiveObject();
-        } else {
-            if (activeObject.relatedTexts) {
-                activeObject.relatedTexts.forEach(txt => canvas.remove(txt));
+
+            if (!encontrado) {
+                const productosDiv = document.getElementById('productos');
+                const div = document.createElement('div');
+                div.className = "list-group-item list-group-item-action d-flex align-items-center";
+                div.style.cursor = "pointer";
+                div.onclick = function() {
+                    agregarProductoSidebar(this, '../../img/plano/' + data.categoria + '.png', data.medidas);
+                };
+                div.setAttribute('data-medidas', data.medidas);
+
+                div.innerHTML = `
+                    <img src="${data.img}" alt="${data.nombre}" class="me-2">
+                    <span>
+                        ${data.nombre}<br>
+                        <small class="text-muted cantidad-label">Cantidad: <span class="cantidad-num">1</span></small>
+                    </span>
+                `;
+                productosDiv.appendChild(div);
             }
-            canvas.remove(activeObject);
         }
+    }
+
+    if (activeObject) {
+        let objetos = [];
+        if (activeObject.type === 'activeSelection') {
+            objetos = activeObject.getObjects().slice();
+        } else {
+            objetos = [activeObject];
+        }
+
+        // Descarta la selección activa antes de eliminar objetos
+        canvas.discardActiveObject();
+
+        objetos.forEach(function (obj) {
+            restaurarSidebar(obj);
+            if (obj.relatedTexts) {
+                obj.relatedTexts.forEach(txt => canvas.remove(txt));
+            }
+            canvas.remove(obj);
+        });
+
         canvas.requestRenderAll();
-    } else {
-        // No hay nada seleccionado: mostrar confirmación antes de borrar todo
-        if (confirm("No hay ningún objeto seleccionado. ¿Quieres borrar TODO el plano?")) {
-            canvas.getObjects().forEach(obj => {
-                // Borra todo excepto la escala gráfica y textos fijos
-                if (
-                    (!obj.excludeFromAlign && !obj.excludeFromExport) ||
-                    (obj.type === 'text' && obj.excludeFromExport)
-                ) {
-                    canvas.remove(obj);
-                }
-            });
-            canvas.discardActiveObject();
-            canvas.requestRenderAll();
-        }
     }
 }
 
@@ -182,35 +234,6 @@ fabric.ActiveSelection.prototype.controls = {
     mr: new fabric.Control({ visible: false }),
     // mtr: new fabric.Control({ visible: true }),
 };
-
-function actualizarMedida(obj, grupo) {
-        const anchoPx = obj.width * grupo.scaleX;
-        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metros;
-
-        // Calcula el centro del grupo
-        const center = grupo.getCenterPoint();
-
-        // Calcula el ángulo de rotación
-        let angle = grupo.angle % 360;
-        if (angle < 0) angle += 360;
-
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
-
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (pared.height * grupo.scaleY) / 2 + 25;
-
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-        textoMedida.scaleX = 1;
-        textoMedida.scaleY = 1;
-
-        canvas.requestRenderAll();
-}
 
 function agregarPared() {
     const factorConversion = 100; // 100px = 1 metro
@@ -268,74 +291,9 @@ function agregarPared() {
 
     grupo.relatedTexts = [textoMedida];
 
-    grupo.on('scaling', actualizarMedida(pared, grupo));
-    grupo.on('modified', actualizarMedida(pared, grupo));
-    grupo.on('moving', actualizarMedida(pared, grupo));
-    grupo.on('rotating', actualizarMedida(pared, grupo));
-
-    actualizarMedida(pared, grupo);
-}
-
-
-function agregarVentana() {
-    const factorConversion = 100; // 100px = 1 metro
-
-    const ventana = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#ffffff',
-        width: 120,
-        height: 13,
-        stroke: '#000000',
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-        selectable: false
-    });
-
-    const grupo = new fabric.Group([ventana], {
-        left: 200,
-        top: 200,
-        hasControls: true,
-        lockScalingY: true,
-        lockRotation: false,
-    });
-
-    canvas.add(grupo);
-    canvas.setActiveObject(grupo);
-
-    grupo.setControlsVisibility({
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-        mt: false,
-        mb: false,
-        ml: true,
-        mr: true,
-        mtr: true
-    });
-
-    // Texto que indica la longitud
-    const textoMedida = new fabric.Text('', {
-        fontSize: 20,
-        fill: '#000',
-        backgroundColor: 'white',
-        originX: 'center',
-        originY: 'bottom',
-        selectable: false,
-        evented: false,
-        excludeFromExport: false,
-        visible: medidasVisibles
-    });
-
-    canvas.add(textoMedida);
-
-    grupo.relatedTexts = [textoMedida];
-
     function actualizarMedida() {
         // Calcula la medida real
-        const anchoPx = ventana.width * grupo.scaleX;
+        const anchoPx = pared.width * grupo.scaleX;
         const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
         textoMedida.text = metros;
 
@@ -347,10 +305,10 @@ function agregarVentana() {
         if (angle < 0) angle += 360;
 
         // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
+        const offset = 18; // Puedes ajustar este valor para acercar/alejar el texto
 
         // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (ventana.height * grupo.scaleY) / 2 + 25;
+        const radio = (pared.height * grupo.scaleY) / 2 + 10;
 
         // Calcula la posición fuera del grupo, en la parte superior (según rotación)
         const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
@@ -362,8 +320,6 @@ function agregarVentana() {
 
         canvas.requestRenderAll();
     }
-
-    grupo.actualizarMedida = actualizarMedida;
 
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
@@ -482,8 +438,6 @@ function agregarPuerta() {
             canvas.requestRenderAll();
         }
 
-        grupo.actualizarMedida = actualizarMedida;
-
         grupo.on('scaling', actualizarMedida);
         grupo.on('modified', actualizarMedida);
         grupo.on('moving', actualizarMedida);
@@ -509,7 +463,14 @@ function guardarCanvas() {
     link.click();
 }
 
+//Scroll del mouse para hacer zoom
+/* window.addEventListener('wheel', (event) => {
+    const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+    canvas.setZoom(canvas.getZoom() * zoomFactor);
+}); */
+
 //Scroll de mouse para hacer zoom, pero solo si el mouse está sobre el canvas
+
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2;
 
@@ -617,6 +578,17 @@ canvas.on('object:moving', function (e) {
     }
 });
 
+// const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+//     stroke: '#ccc',
+//     strokeDashArray: [5, 5],
+//     selectable: false,
+//     evented: false,
+//     excludeFromExport: true
+// });
+// canvas.add(lineaBloqueo);
+// canvas.sendToBack(lineaBloqueo);
+
+
 // Mostrar/Ocultar medidas
 let medidasVisibles = true;
 
@@ -640,6 +612,15 @@ function toggleMedidas() {
 }
 
 document.getElementById('toggle-measures').addEventListener('click', toggleMedidas);
+
+// Al cargar la página, asegúrate de que el icono sea correcto
+// document.addEventListener('DOMContentLoaded', function() {
+//     const icon = document.getElementById('toggle-measures-icon');
+//     if (icon) {
+//         icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+//     }
+// });
+
 
 canvas.on('object:modified', function () {
     if (guiaX) {
@@ -780,6 +761,11 @@ canvas.on('object:scaling', function (e) {
             // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
             obj.medidaTexto.scaleX = 1 / obj.scaleX;
             obj.medidaTexto.scaleY = 1 / obj.scaleY;
+
+            // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
+            // obj.medidaTexto.left = ...
+            // obj.medidaTexto.top = ...
+
             obj.medidaTexto.setCoords(); // actualizar bounds
         }
     }

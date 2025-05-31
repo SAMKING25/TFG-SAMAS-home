@@ -30,18 +30,6 @@ if (!isset($_SESSION["usuario"])) {
     <style>
         body {
             overflow: hidden;
-            background: #f5f3ef;
-            font-family: 'Segoe UI', 'Arial', sans-serif;
-            color: #3e2c18;
-        }
-
-        .productos-sidebar {
-            display: flex;
-            flex-direction: row;
-            width: 100vw;
-            height: 100vh;
-            position: relative;
-            background: #f5f3ef;
         }
 
         #sidebar {
@@ -50,9 +38,7 @@ if (!isset($_SESSION["usuario"])) {
             max-width: 400px;
             height: 100vh;
             overflow-y: auto;
-            background: #fff8f1;
-            border-right: 2px solid #e0d6c3;
-            box-shadow: 2px 0 12px rgba(169, 124, 80, 0.07);
+            background: #f8f9fa;
             transition: width 0.3s, min-width 0.3s, padding 0.3s;
         }
 
@@ -63,69 +49,108 @@ if (!isset($_SESSION["usuario"])) {
             padding: 0 !important;
             border: none !important;
             overflow: hidden;
-            box-shadow: none;
         }
 
-        #toggle-sidebar-btn {
-            background: #fff;
-            border: 1.5px solid #a97c50;
-            color: #a97c50;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
+        .productos-sidebar {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px rgba(169, 124, 80, 0.08);
-            transition: left 0.3s, background 0.2s, color 0.2s;
-        }
-
-        #toggle-sidebar-btn:hover {
-            background: #a97c50;
-            color: #fff;
+            flex-direction: row;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
         }
 
         #productos .list-group-item {
-            background: #fff;
-            border: 1px solid #e0d6c3;
-            border-radius: 10px;
-            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 18px 16px;
-            font-size: 1.15rem;
-            box-shadow: 0 2px 8px rgba(169, 124, 80, 0.04);
-            transition: box-shadow 0.2s, border 0.2s;
-        }
-
-        #productos .list-group-item:hover {
-            border-color: #a97c50;
-            box-shadow: 0 4px 16px rgba(169, 124, 80, 0.10);
-            background: #f9f6f2;
+            gap: 10px;
+            padding: 15px;
+            font-size: 1.2rem;
         }
 
         #productos .list-group-item img {
-            width: 72px;
-            height: 72px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            border-radius: 8px;
-            border: 1px solid #e0d6c3;
-            background: #f5f3ef;
         }
 
-        .cantidad-label {
-            color: #a97c50 !important;
-            font-weight: 500;
+        #canvas-container {
+            flex-grow: 1;
+            width: 100%;
+            transition: none;
+            position: relative;
+            /* Elimina margin-left si lo tienes */
         }
 
+        #sidebar.collapsed+#canvas-container {
+            margin-left: 0 !important;
+        }
+
+        canvas {
+            border: 1px solid #ccc;
+            width: 100%;
+            height: 60vh;
+        }
+
+        /* Ajusta el botón de toggle */
+        #toggle-sidebar-btn {
+            /* Ya está en position: absolute y left: 400px por defecto */
+            transition: left 0.3s;
+            /* Puedes ajustar el tamaño si quieres */
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin-right: 56px;
+        }
+
+        #sidebar.collapsed+#canvas-container {
+            margin-left: 0 !important;
+        }
+
+        #sidebar.collapsed+#canvas {
+            transition: width 1s !important;
+        }
+
+        #canvas-buttons {
+            margin-left: 56px !important;
+            transition: margin-left 0.3s;
+
+        }
+
+        #canvas-buttons-2 {
+            margin-right: 36px !important;
+            transition: margin-right 0.3s;
+        }
+
+        /* Anula el hover cuando el botón está en outline (seleccionado) */
+        #add-wall-button.btn-outline-primary:hover,
+        #add-wall-button.btn-outline-primary:focus,
+        #add-door-button.btn-outline-warning:hover,
+        #add-door-button.btn-outline-warning:focus,
+        #mouse-mode-btn.btn-outline-dark:hover,
+        #mouse-mode-btn.btn-outline-dark:focus,
+        #move-mode-btn.btn-outline-dark:hover,
+        #move-mode-btn.btn-outline-dark:focus {
+            background-color: transparent !important;
+            color: inherit !important;
+            border-color: inherit !important;
+            box-shadow: none !important;
+            filter: none !important;
+            outline: none !important;
+            transition: none !important;
+            cursor: pointer;
+        }
+
+        /* Tarjeta flotante de detalle de producto */
         #detalle-producto-float {
             min-width: 320px;
             max-width: 350px;
             background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(169, 124, 80, 0.18);
-            border: 2px solid #e0d6c3;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+            border: 1px solid #ddd;
             overflow: hidden;
             font-size: 1rem;
             pointer-events: none;
@@ -133,36 +158,32 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         #detalle-producto-float .detalle-header {
-            background: linear-gradient(90deg, #a97c50 60%, #e0d6c3 100%);
+            background: #a97c50;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 18px 0 10px 0;
+            padding: 16px 0 8px 0;
         }
 
         #detalle-producto-float .detalle-header img {
             max-width: 90px;
             max-height: 90px;
             object-fit: contain;
-            border-radius: 10px;
-            border: 1.5px solid #e0d6c3;
-            background: #fff8f1;
         }
 
         #detalle-producto-float .detalle-body {
-            padding: 18px 20px 14px 20px;
+            padding: 16px 18px 12px 18px;
         }
 
         #detalle-producto-float .detalle-titulo {
             font-weight: bold;
-            font-size: 1.15rem;
+            font-size: 1.1rem;
             margin-bottom: 4px;
-            color: #a97c50;
         }
 
         #detalle-producto-float .detalle-categoria {
-            color: #bfa16b;
-            font-size: 0.97em;
+            color: #888;
+            font-size: 0.95em;
             margin-bottom: 8px;
         }
 
@@ -173,8 +194,14 @@ if (!isset($_SESSION["usuario"])) {
             margin-bottom: 6px;
         }
 
+        #detalle-producto-float .detalle-stock {
+            color: #0d6efd;
+            font-size: 0.98em;
+            margin-bottom: 6px;
+        }
+
         #detalle-producto-float .detalle-medidas {
-            color: #3e2c18;
+            color: #333;
             font-size: 0.97em;
             margin-bottom: 6px;
         }
@@ -184,111 +211,8 @@ if (!isset($_SESSION["usuario"])) {
             font-size: 0.97em;
             margin-bottom: 0;
         }
-
-        #canvas-container {
-            flex-grow: 1;
-            width: 100%;
-            background: #f5f3ef;
-            transition: none;
-            position: relative;
-        }
-
-        #canvas-buttons {
-            margin-left: 56px !important;
-            transition: margin-left 0.3s;
-        }
-
-        #canvas-buttons-2 {
-            margin-right: 36px !important;
-            transition: margin-right 0.3s;
-        }
-
-        /* Botones principales del plano */
-        #canvas-buttons .btn,
-        #canvas-buttons-2 .btn {
-            border: none;
-            background: #fff;
-            color: #a97c50;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(169, 124, 80, 0.10);
-            font-size: 1.35rem;
-            margin-right: 10px;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-        }
-
-        #canvas-buttons .btn-primary,
-        #canvas-buttons .btn-warning {
-            background: linear-gradient(135deg, #a97c50 80%, #bfa16b 100%);
-            color: #fff;
-            border: none;
-        }
-
-        #canvas-buttons .btn-primary:hover,
-        #canvas-buttons .btn-warning:hover {
-            background: #bfa16b;
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(169, 124, 80, 0.18);
-        }
-
-        #canvas-buttons .btn-dark,
-        #canvas-buttons .btn-secondary {
-            background: #f5f3ef;
-            color: #a97c50;
-            border: 1.5px solid #e0d6c3;
-        }
-
-        #canvas-buttons .btn-dark:hover,
-        #canvas-buttons .btn-secondary:hover {
-            background: #a97c50;
-            color: #fff;
-            border-color: #a97c50;
-        }
-
-        #canvas-buttons .btn-success {
-            background: #198754;
-            color: #fff;
-        }
-
-        #canvas-buttons .btn-success:hover {
-            background: #157347;
-        }
-
-        #canvas-buttons .btn-danger {
-            background: #fff;
-            color: #d9534f;
-            border: 1.5px solid #e0d6c3;
-        }
-
-        #canvas-buttons .btn-danger:hover {
-            background: #d9534f;
-            color: #fff;
-            border-color: #d9534f;
-        }
-
-        /* Tooltip canvas */
-        #canvas-product-tooltip {
-            display: none;
-            position: fixed;
-            z-index: 10000;
-            background: #3e2c18;
-            color: #fff;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 1rem;
-            pointer-events: none;
-            box-shadow: 0 2px 8px rgba(169, 124, 80, 0.18);
-            border: 1.5px solid #a97c50;
-        }
-
-        /* Total abajo */
-        .mt-4.border-top.pt-3.text-end {
-            background: #fff8f1;
-            border-top: 2px solid #e0d6c3 !important;
-            padding-top: 18px !important;
-            font-size: 1.25rem;
-            color: #198754;
-            font-weight: 600;
-            letter-spacing: 0.5px;
+        .botones-plano-iconos{
+            font-size: 26px;
         }
     </style>
 </head>
@@ -316,7 +240,7 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         if (esTablet()) {
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('mouse-mode-btn')?.classList.add('d-none');
                 document.getElementById('move-mode-btn')?.classList.add('d-none');
                 document.getElementById('reset-view-btn')?.classList.add('d-none');
@@ -390,9 +314,7 @@ if (!isset($_SESSION["usuario"])) {
             <!-- Tarjeta flotante de detalle de producto -->
             <div id="detalle-producto-float" style="display:none; position:fixed; z-index:9999;"></div>
             <!-- Nombre en el hover del producto del canvas-->
-            <div id="canvas-product-tooltip"
-                style="display:none; position:fixed; z-index:10000; background:#222; color:#fff; padding:6px 14px; border-radius:8px; font-size:1rem; pointer-events:none; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
-            </div>
+            <div id="canvas-product-tooltip" style="display:none; position:fixed; z-index:10000; background:#222; color:#fff; padding:6px 14px; border-radius:8px; font-size:1rem; pointer-events:none; box-shadow:0 2px 8px rgba(0,0,0,0.18);"></div>
             <!-- Total abajo -->
             <div class="mt-4 border-top pt-3 text-end">
                 <strong>Total: <?php echo number_format($total, 2, ',', '.'); ?>€</strong>
@@ -406,16 +328,16 @@ if (!isset($_SESSION["usuario"])) {
                     <!-- Botón de agregar pared -->
                     <button id="add-wall-button" class="btn btn-primary rounded-circle shadow" onclick="agregarPared()"
                         style="width: 60px; height: 60px;" title="Agregar pared">
-                        <i class="bi bi-bricks"></i>
+                        <i class="bi bi-bricks" style="font-size: 24px;"></i>
                     </button>
                     <!-- Botón de agregar puerta -->
                     <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2"
                         onclick="agregarPuerta()" style="width: 60px; height: 60px;" title="Agregar puerta">
-                        <i class="bi bi-door-open"></i>
+                        <i class="bi bi-door-open" style="font-size: 24px;"></i>
                     </button>
-                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2 botones-plano-iconos"
-                        onclick="agregarVentana()" style="width: 60px; height: 60px;" title="Agregar ventana">
-                        <i class="bi bi-layout-split"></i>
+                    <button id="add-door-button" class="btn btn-warning rounded-circle shadow ms-2 botones-plano-iconos" 
+                        onclick="agregarVentana()" style="width: 60px; height: 60px;" title="Agregar puerta">
+                        <i class="bi bi-door-open" style="font-size: 24px;"></i>
                     </button>
                     <!-- Botón de modo ratón -->
                     <button id="mouse-mode-btn" class="btn btn-dark rounded-circle shadow ms-2 botones-plano-iconos"
@@ -428,14 +350,12 @@ if (!isset($_SESSION["usuario"])) {
                         <i class="bi bi-arrows-move" id="move-mode-icon"></i>
                     </button>
                     <!-- Botón de reset de vista -->
-                    <button id="reset-view-btn"
-                        class="btn btn-secondary rounded-circle shadow ms-2 botones-plano-iconos"
+                    <button id="reset-view-btn" class="btn btn-secondary rounded-circle shadow ms-2 botones-plano-iconos"
                         style="width: 60px; height: 60px;" title="Vista inicial">
-                        <i class="bi bi-aspect-ratio"></i>
+                        <i class="bi bi-aspect-ratio" style="font-size: 24px;"></i>
                     </button>
                     <!-- Mostrar/Ocultar medidas -->
-                    <button id="toggle-measures"
-                        class="btn btn-secondary rounded-circle shadow ms-2 botones-plano-iconos"
+                    <button id="toggle-measures" class="btn btn-secondary rounded-circle shadow ms-2 botones-plano-iconos"
                         style="width: 60px; height: 60px;" title="Ocultar/Mostrar medidas">
                         <i id="toggle-measures-icon" class="bi bi-eye"></i>
                     </button>
@@ -444,17 +364,16 @@ if (!isset($_SESSION["usuario"])) {
                 <div id="canvas-buttons-2" class="d-flex text-end me-2">
                     <div class="btn-group me-2">
                         <button id="export-png" type="button"
-                            class="btn btn-success rounded-circle shadow botones-plano-iconos"
-                            style="width: 60px; height: 60px;">
+                            class="btn btn-success rounded-circle shadow botones-plano-iconos" style="width: 60px; height: 60px;">
                             <i class="bi bi-card-image"></i>
                         </button>
 
                     </div>
                     <input type="file" id="import-json-input" accept=".json" style="display:none;">
 
-                    <button id="delete-button" class="btn btn-danger rounded-circle shadow botones-plano-iconos"
-                        onclick="borrarObjeto()" style="width: 60px; height: 60px;">
-                        <i class="bi bi-trash"></i>
+                    <button id="delete-button" class="btn btn-danger rounded-circle shadow botones-plano-iconos" onclick="borrarObjeto()"
+                        style="width: 60px; height: 60px;">
+                        <i class="bi bi-trash" style="font-size: 24px;"></i>
                     </button>
                 </div>
             </div>
@@ -470,8 +389,8 @@ if (!isset($_SESSION["usuario"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Muestra la tarjeta de detalle del producto al pasar el mouse
-        document.querySelectorAll('#productos .list-group-item').forEach(function (item) {
-            item.addEventListener('mouseenter', function (e) {
+        document.querySelectorAll('#productos .list-group-item').forEach(function(item) {
+            item.addEventListener('mouseenter', function(e) {
                 const id = this.getAttribute('data-id');
                 const producto = <?php echo json_encode($productos); ?>.find(p =>
                     String(p.id_producto) === String(id)
@@ -520,7 +439,7 @@ if (!isset($_SESSION["usuario"])) {
                 document.addEventListener('mousemove', moveDetalle);
             });
 
-            item.addEventListener('mouseleave', function () {
+            item.addEventListener('mouseleave', function() {
                 const detalle = document.getElementById('detalle-producto-float');
                 detalle.style.display = 'none';
                 detalle.innerHTML = '';
@@ -537,7 +456,7 @@ if (!isset($_SESSION["usuario"])) {
         const icon = document.getElementById('toggle-sidebar-icon');
         const canvasButtons = document.getElementById('canvas-buttons');
 
-        toggleBtn.addEventListener('click', function () {
+        toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
             if (sidebar.classList.contains('collapsed')) {
                 toggleBtn.style.left = '10px';
@@ -550,6 +469,29 @@ if (!isset($_SESSION["usuario"])) {
                 icon.classList.add('bi-chevron-left');
                 canvasButtons.style.marginLeft = '0';
             }
+        });
+    </script>
+    <script>
+        // Tooltip para productos en el canvas
+        const tooltip = document.getElementById('canvas-product-tooltip');
+
+        canvas.on('mouse:over', function(opt) {
+            const target = opt.target;
+            if (target && target.productoSidebarData && target.productoSidebarData.nombre) {
+                tooltip.textContent = target.productoSidebarData.nombre;
+                tooltip.style.display = 'block';
+            }
+        });
+
+        canvas.on('mouse:move', function(opt) {
+            if (tooltip.style.display === 'block') {
+                tooltip.style.left = (opt.e.clientX + 16) + 'px';
+                tooltip.style.top = (opt.e.clientY - 10) + 'px';
+            }
+        });
+
+        canvas.on('mouse:out', function(opt) {
+            tooltip.style.display = 'none';
         });
     </script>
 </body>
