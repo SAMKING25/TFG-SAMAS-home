@@ -183,35 +183,6 @@ fabric.ActiveSelection.prototype.controls = {
     // mtr: new fabric.Control({ visible: true }),
 };
 
-function actualizarMedida(obj, grupo) {
-        const anchoPx = obj.width * grupo.scaleX;
-        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metros;
-
-        // Calcula el centro del grupo
-        const center = grupo.getCenterPoint();
-
-        // Calcula el ángulo de rotación
-        let angle = grupo.angle % 360;
-        if (angle < 0) angle += 360;
-
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
-
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (pared.height * grupo.scaleY) / 2 + 25;
-
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-        textoMedida.scaleX = 1;
-        textoMedida.scaleY = 1;
-
-        canvas.requestRenderAll();
-}
-
 function agregarPared() {
     const factorConversion = 100; // 100px = 1 metro
 
@@ -267,15 +238,47 @@ function agregarPared() {
     canvas.add(textoMedida);
 
     grupo.relatedTexts = [textoMedida];
+    
 
-    grupo.on('scaling', actualizarMedida(pared, grupo));
-    grupo.on('modified', actualizarMedida(pared, grupo));
-    grupo.on('moving', actualizarMedida(pared, grupo));
-    grupo.on('rotating', actualizarMedida(pared, grupo));
+    function actualizarMedida() {
+        // Calcula la medida real
+        const anchoPx = pared.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-    actualizarMedida(pared, grupo);
+        // Calcula el centro del grupo
+        const center = grupo.getCenterPoint();
+
+        // Calcula el ángulo de rotación
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
+
+        // Offset pequeño para que el texto quede pegado al rectángulo
+        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
+
+        // Radio exterior del grupo (mitad del alto del rectángulo)
+        const radio = (pared.height * grupo.scaleY) / 2 + 25;
+
+        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
+        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
+        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
+        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
+
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
+
+        canvas.requestRenderAll();
+    }
+
+    grupo.actualizarMedida = actualizarMedida;
+
+    grupo.on('scaling', actualizarMedida);
+    grupo.on('modified', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
+    grupo.on('rotating', actualizarMedida);
+
+    actualizarMedida();
 }
-
 
 function agregarVentana() {
     const factorConversion = 100; // 100px = 1 metro

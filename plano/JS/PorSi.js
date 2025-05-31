@@ -1,4 +1,3 @@
-
 const canvas = new fabric.Canvas('canvas', {
     backgroundColor: '#fcfcfc'
 });
@@ -7,49 +6,26 @@ const zonaBloqueadaAltura = 100; // píxeles desde arriba
 
 crearEscalaGrafica();
 
-function ajustarCanvasSegunSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const sidebarVisible = !sidebar.classList.contains('collapsed');
-    const sidebarWidth = sidebarVisible ? 440 : 40;
-    // Calcula el ancho disponible restando el sidebar si está visible
-    const ancho = window.innerWidth - sidebarWidth;
-    canvas.setWidth(ancho);
+// Hacer que el canvas ocupe todo el contenedor
+canvas.setWidth(window.innerWidth - 400); // 400px del sidebar
+canvas.setHeight(window.innerHeight - 230);
+
+// Ajustar cuando cambie el tamaño de la ventana
+window.addEventListener('resize', () => {
+    canvas.setWidth(window.innerWidth - 400);
     canvas.setHeight(window.innerHeight - 230);
-    canvas.calcOffset && canvas.calcOffset();
-    canvas.requestRenderAll();
-}
-
-// Llama al ajustar tamaño de ventana
-window.addEventListener('resize', ajustarCanvasSegunSidebar);
-
-// Llama también cuando se colapsa o expande el sidebar
-document.getElementById('toggle-sidebar-btn').addEventListener('click', function () {
-    setTimeout(ajustarCanvasSegunSidebar); 
 });
 
-// Llama al cargar la página
-ajustarCanvasSegunSidebar();
-
-const rotateIcon = "/img/plano/voltear.png";
-
-const rotateImg = document.createElement('img');
-rotateImg.src = rotateIcon;
-
-function agregarProducto(imagenURL, medidas) {
+function agregarProductoEn(imagenURL, medidas, x, y) {
     medidas = JSON.parse(medidas);
-
     const anchoPx = medidas.ancho;
     const altoPx = medidas.largo;
-
     fabric.Image.fromURL(imagenURL, function (img) {
-        // Escala para que la imagen tenga el tamaño en px correspondiente a las medidas
         const scaleX = anchoPx / img.width;
         const scaleY = altoPx / img.height;
-
         img.set({
-            left: 50,
-            // Asegura que la imagen se cree justo debajo de la zona bloqueada
-            top: Math.max(zonaBloqueadaAltura + 10, 50),
+            left: x,
+            top: y,
             scaleX: scaleX,
             scaleY: scaleY,
             hasControls: true,
@@ -60,78 +36,15 @@ function agregarProducto(imagenURL, medidas) {
             lockScalingFlip: true,
             lockRotation: false,
         });
-
-        img.controls.rotateControl = new fabric.Control({
-            x: 0.5,
-            y: -0.5,
-            offsetY: -16,
-            offsetX: 16,
-            cursorStyle: 'pointer',
-            mouseUpHandler: rotarImagen,
-            render: renderIcon(rotateImg),
-            cornerSize: 24,
-        });
-
         canvas.add(img);
         canvas.setActiveObject(img);
         img.setControlsVisibility({
-            tl: false,
-            tr: false,
-            bl: false,
-            br: false,
-            mt: false,
-            mb: false,
-            ml: false,
-            mr: false,
-            mtr: true
+            tl: false, tr: false, bl: false, br: false,
+            mt: false, mb: false, ml: false, mr: false, mtr: true
         });
         canvas.renderAll();
     });
 }
-
-function rotarImagen(eventData, transform) {
-    const target = transform.target;
-    if (target) {
-        target.flipX = !target.flipX; // Voltea horizontalmente
-        target.canvas.requestRenderAll();
-    }
-    return false;
-}
-
-function renderIcon(icon) {
-  return function (ctx, left, top, _styleOverride, fabricObject) {
-    const size = this.cornerSize;
-    ctx.save();
-    ctx.translate(left, top);
-    ctx.rotate(fabric.util.degreesToRadians(fabricObject.angle));
-    ctx.drawImage(icon, -size / 2, -size / 2, size, size);
-    ctx.restore();
-  };
-}
-
-function seleccionMultiple() {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject && activeObject.type === 'activeSelection') {
-        activeObject.forEachObject(function (obj) {
-            if (typeof obj.actualizarMedida === 'function') {
-                obj.actualizarMedida();
-            }
-        });
-    }
-    canvas.requestRenderAll();
-}
-
-canvas.on('selection:created', function(e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
-
-canvas.on('selection:updated', function(e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
 
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
@@ -183,72 +96,51 @@ fabric.ActiveSelection.prototype.controls = {
     // mtr: new fabric.Control({ visible: true }),
 };
 
-function actualizarMedida(obj, grupo) {
-        const anchoPx = obj.width * grupo.scaleX;
-        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-        textoMedida.text = metros;
+let herramientaActiva = null; // 'pared', 'puerta', 'producto', null
+let productoActivo = null;    // Guarda el producto seleccionado si es un producto
 
-        // Calcula el centro del grupo
-        const center = grupo.getCenterPoint();
+function limpiarSeleccionHerramientas() {
+    // Pared
+    const wallBtn = document.getElementById('add-wall-button');
+    wallBtn.classList.add('btn-primary');
+    wallBtn.classList.remove('btn-outline-primary');
 
-        // Calcula el ángulo de rotación
-        let angle = grupo.angle % 360;
-        if (angle < 0) angle += 360;
+    // Puerta
+    const doorBtn = document.getElementById('add-door-button');
+    doorBtn.classList.add('btn-warning');
+    doorBtn.classList.remove('btn-outline-warning');
 
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
+    // Ratón
+    const mouseBtn = document.getElementById('mouse-mode-btn');
+    mouseBtn.classList.add('btn-dark');
+    mouseBtn.classList.remove('btn-outline-dark');
 
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (pared.height * grupo.scaleY) / 2 + 25;
+    // Mover
+    const moveBtn = document.getElementById('move-mode-btn');
+    moveBtn.classList.add('btn-dark');
+    moveBtn.classList.remove('btn-outline-dark');
 
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-        textoMedida.scaleX = 1;
-        textoMedida.scaleY = 1;
-
-        canvas.requestRenderAll();
+    // Productos
+    document.querySelectorAll('#productos .list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
 }
 
-function agregarPared() {
-    const factorConversion = 100; // 100px = 1 metro
-
+function agregarParedEn(x, y) {
+    // Usa tu función agregarPared, pero añade left:x, top:y al grupo
+    const factorConversion = 100;
     const pared = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#fhfhfh',
-        width: 200,
-        height: 15,
-        stroke: '#000000',
-        strokeWidth: 2,
-        originX: 'center',
-        originY: 'center',
-        selectable: false
+        left: 0, top: 0, fill: '#fhfhfh', width: 200, height: 15,
+        stroke: '#000000', strokeWidth: 2, originX: 'center', originY: 'center', selectable: false
     });
-
     const grupo = new fabric.Group([pared], {
-        left: 200,
-        top: 200,
-        hasControls: true,
-        lockScalingY: true,
-        lockRotation: false,
+        left: x, top: y, hasControls: true, lockScalingY: true, lockRotation: false,
     });
-
     canvas.add(grupo);
     canvas.setActiveObject(grupo);
-
     grupo.setControlsVisibility({
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-        mt: false,
-        mb: false,
-        ml: true,
-        mr: true,
-        mtr: true
+        tl: false, tr: false, bl: false, br: false,
+        mt: false, mb: false, ml: true, mr: true, mtr: true
     });
 
     // Texto que indica la longitud
@@ -256,114 +148,54 @@ function agregarPared() {
         fontSize: 20,
         fill: '#000',
         backgroundColor: 'white',
-        originX: 'center',
-        originY: 'bottom',
-        selectable: false,
-        evented: false,
-        excludeFromExport: false,
-        visible: medidasVisibles
-    });
-
-    canvas.add(textoMedida);
-
-    grupo.relatedTexts = [textoMedida];
-
-    grupo.on('scaling', actualizarMedida(pared, grupo));
-    grupo.on('modified', actualizarMedida(pared, grupo));
-    grupo.on('moving', actualizarMedida(pared, grupo));
-    grupo.on('rotating', actualizarMedida(pared, grupo));
-
-    actualizarMedida(pared, grupo);
-}
-
-
-function agregarVentana() {
-    const factorConversion = 100; // 100px = 1 metro
-
-    const ventana = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: '#ffffff',
-        width: 120,
-        height: 13,
-        stroke: '#000000',
-        strokeWidth: 2,
         originX: 'center',
         originY: 'center',
-        selectable: false
-    });
-
-    const grupo = new fabric.Group([ventana], {
-        left: 200,
-        top: 200,
-        hasControls: true,
-        lockScalingY: true,
-        lockRotation: false,
-    });
-
-    canvas.add(grupo);
-    canvas.setActiveObject(grupo);
-
-    grupo.setControlsVisibility({
-        tl: false,
-        tr: false,
-        bl: false,
-        br: false,
-        mt: false,
-        mb: false,
-        ml: true,
-        mr: true,
-        mtr: true
-    });
-
-    // Texto que indica la longitud
-    const textoMedida = new fabric.Text('', {
-        fontSize: 20,
-        fill: '#000',
-        backgroundColor: 'white',
-        originX: 'center',
-        originY: 'bottom',
         selectable: false,
         evented: false,
-        excludeFromExport: false,
-        visible: medidasVisibles
+        excludeFromExport: true,
+        visible: medidasVisibles // <-- Añade esto
     });
 
     canvas.add(textoMedida);
 
+    // Vincular el texto a la pared
     grupo.relatedTexts = [textoMedida];
 
     function actualizarMedida() {
-        // Calcula la medida real
-        const anchoPx = ventana.width * grupo.scaleX;
+        const anchoPx = pared.width * grupo.scaleX;
         const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
         textoMedida.text = metros;
 
-        // Calcula el centro del grupo
         const center = grupo.getCenterPoint();
-
-        // Calcula el ángulo de rotación
         let angle = grupo.angle % 360;
         if (angle < 0) angle += 360;
 
-        // Offset pequeño para que el texto quede pegado al rectángulo
-        const offset = 10; // Puedes ajustar este valor para acercar/alejar el texto
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
 
-        // Radio exterior del grupo (mitad del alto del rectángulo)
-        const radio = (ventana.height * grupo.scaleY) / 2 + 25;
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (pared.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (pared.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (pared.height * grupo.scaleY) / 2 - offset;
+        }
 
-        // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-        const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-        textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-        textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
+        textoMedida.left = textX;
+        textoMedida.top = textY;
 
         textoMedida.scaleX = 1;
         textoMedida.scaleY = 1;
 
         canvas.requestRenderAll();
     }
-
-    grupo.actualizarMedida = actualizarMedida;
 
     grupo.on('scaling', actualizarMedida);
     grupo.on('modified', actualizarMedida);
@@ -373,124 +205,82 @@ function agregarVentana() {
     actualizarMedida();
 }
 
-function agregarPuerta() {
-    const factorConversion = 100; // 100px = 1 metro
-
-    // Crea el rectángulo de la puerta (invisible, solo para agrupar)
+function agregarPuertaEn(x, y) {
+    // Igual que agregarPuerta, pero con left:x, top:y
+    const factorConversion = 100;
     const puerta = new fabric.Rect({
-        left: 0,
-        top: 0,
-        fill: 'transparent',
-        width: 100,
-        height: 15,
-        stroke: 'transparent',
-        strokeWidth: 2,
-        selectable: false,
+        left: 0, top: 0, fill: '#9c9c9c', width: 100, height: 15,
+        stroke: '#9c9c9c', strokeWidth: 2, selectable: false, originX: 'center', originY: 'center',
+    });
+    const grupo = new fabric.Group([puerta], {
+        left: x, top: y, hasControls: true, lockScalingY: true, lockRotation: false,
+    });
+    canvas.add(grupo);
+    canvas.setActiveObject(grupo);
+    grupo.setControlsVisibility({
+        tl: false, tr: false, bl: false, br: false,
+        mt: false, mb: false, ml: true, mr: true, mtr: true
+    });
+
+    const textoMedida = new fabric.Text('', {
+        fontSize: 20,
+        fill: '#000',
+        backgroundColor: 'white',
         originX: 'center',
         originY: 'center',
+        selectable: false,
+        evented: false,
+        excludeFromExport: true,
+        visible: medidasVisibles
     });
 
-    puerta.controls.rotateControl = new fabric.Control({
-        x: 0.5,
-        y: -0.5,
-        offsetY: -16,
-        offsetX: 16,
-        cursorStyle: 'pointer',
-        mouseUpHandler: rotarImagen,
-        render: renderIcon(rotateImg),
-        cornerSize: 24,
-    });
+    canvas.add(textoMedida);
 
-    // Carga la imagen de la puerta y crea el grupo
-    fabric.Image.fromURL("../../img/plano/Puerta.png", function (img_puerta) {
-        img_puerta.set({
-            left: 0,
-            top: 0,
-            originX: 'center',
-            originY: 'center',
-            scaleX: 100 / img_puerta.width,
-            scaleY: 100 / img_puerta.height
-        });
+    // Vincular el texto a la puerta
+    grupo.relatedTexts = [textoMedida];
 
-        // Crea el grupo con el rectángulo y la imagen
-        const grupo = new fabric.Group([puerta, img_puerta], {
-            left: 150,
-            top: 150,
-            hasControls: true,
-            lockScalingY: false,
-            lockRotation: false,
-        });
+    function actualizarMedida() {
+        const anchoPx = puerta.width * grupo.scaleX;
+        const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
+        textoMedida.text = metros;
 
-        canvas.add(grupo);
-        canvas.setActiveObject(grupo);
-        grupo.setControlsVisibility({
-            tl: true,
-            tr: true,
-            bl: true,
-            br: true,
-            mt: false,
-            mb: false,
-            ml: false,
-            mr: false,
-            mtr: true
-        });
+        const center = grupo.getCenterPoint();
+        let angle = grupo.angle % 360;
+        if (angle < 0) angle += 360;
 
-        // Texto de medida (fuera del grupo)
-        const textoMedida = new fabric.Text('', {
-            fontSize: 20,
-            fill: '#000',
-            backgroundColor: 'white',
-            originX: 'center',
-            originY: 'bottom',
-            selectable: false,
-            evented: false,
-            excludeFromExport: false,
-            visible: medidasVisibles
-        });
+        const offset = 30;
+        let textX = center.x;
+        let textY = center.y;
 
-        canvas.add(textoMedida);
-
-        grupo.relatedTexts = [textoMedida];
-
-        function actualizarMedida() {
-            // Calcula la medida real
-            const anchoPx = puerta.width * grupo.scaleX;
-            const metros = (anchoPx / factorConversion).toFixed(2) + ' m';
-            textoMedida.text = metros;
-
-            // Calcula el centro del grupo
-            const center = grupo.getCenterPoint();
-
-            // Calcula el ángulo de rotación
-            let angle = grupo.angle % 360;
-            if (angle < 0) angle += 360;
-
-            // Calcula la posición del texto: por encima del grupo, centrado horizontalmente
-            // Puedes ajustar el offset para que quede más separado
-            const offset = 30;
-            // Calcula el radio exterior del grupo (mitad del ancho del grupo)
-            const radio = (puerta.width * grupo.scaleX) / 2;
-
-            // Calcula la posición fuera del grupo, en la parte superior (según rotación)
-            const rad = fabric.util.degreesToRadians(angle - 90); // -90 para ponerlo arriba
-            textoMedida.left = center.x + (radio + offset) * Math.cos(rad);
-            textoMedida.top = center.y + (radio + offset) * Math.sin(rad);
-
-            textoMedida.scaleX = 1;
-            textoMedida.scaleY = 1;
-
-            canvas.requestRenderAll();
+        if (angle >= 0 && angle < 45 || angle >= 315 && angle < 360) {
+            // Hacia la derecha → texto arriba
+            textY = center.y - (puerta.height * grupo.scaleY) / 2 - offset;
+        } else if (angle >= 45 && angle < 135) {
+            // Hacia abajo → texto a la derecha
+            textX = center.x + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 135 && angle < 225) {
+            // Hacia la izquierda → texto abajo
+            textY = center.y + (puerta.height * grupo.scaleY) / 2 + offset;
+        } else if (angle >= 225 && angle < 315) {
+            // Hacia arriba → texto a la izquierda
+            textX = center.x - (puerta.height * grupo.scaleY) / 2 - offset;
         }
 
-        grupo.actualizarMedida = actualizarMedida;
+        textoMedida.left = textX;
+        textoMedida.top = textY;
 
-        grupo.on('scaling', actualizarMedida);
-        grupo.on('modified', actualizarMedida);
-        grupo.on('moving', actualizarMedida);
-        grupo.on('rotating', actualizarMedida);
+        textoMedida.scaleX = 1;
+        textoMedida.scaleY = 1;
 
-        actualizarMedida();
-    });
+        canvas.requestRenderAll();
+    }
+
+    grupo.on('scaling', actualizarMedida);
+    grupo.on('modified', actualizarMedida);
+    grupo.on('moving', actualizarMedida);
+    grupo.on('rotating', actualizarMedida);
+
+    actualizarMedida();
 }
 
 document.addEventListener('keydown', function (event) {
@@ -509,7 +299,14 @@ function guardarCanvas() {
     link.click();
 }
 
+//Scroll del mouse para hacer zoom
+/* window.addEventListener('wheel', (event) => {
+    const zoomFactor = event.deltaY > 0 ? 0.9 : 1.1;
+    canvas.setZoom(canvas.getZoom() * zoomFactor);
+}); */
+
 //Scroll de mouse para hacer zoom, pero solo si el mouse está sobre el canvas
+
 const ZOOM_MIN = 0.6;
 const ZOOM_MAX = 2;
 
@@ -603,7 +400,7 @@ canvas.on('object:moving', function (e) {
     canvas.requestRenderAll();
 });
 
-canvas.on('object:moving', function (e) {
+canvas.on('object:moving', function(e) {
     const obj = e.target;
     // No restringir la escala ni la regla gráfica
     if (obj.text && obj.text.startsWith('Escala:')) return;
@@ -616,6 +413,17 @@ canvas.on('object:moving', function (e) {
         obj.top = zonaBloqueadaAltura;
     }
 });
+
+const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+    stroke: '#ccc',
+    strokeDashArray: [5, 5],
+    selectable: false,
+    evented: false,
+    excludeFromExport: true
+});
+canvas.add(lineaBloqueo);
+canvas.sendToBack(lineaBloqueo);
+
 
 // Mostrar/Ocultar medidas
 let medidasVisibles = true;
@@ -640,6 +448,15 @@ function toggleMedidas() {
 }
 
 document.getElementById('toggle-measures').addEventListener('click', toggleMedidas);
+
+// Al cargar la página, asegúrate de que el icono sea correcto
+// document.addEventListener('DOMContentLoaded', function() {
+//     const icon = document.getElementById('toggle-measures-icon');
+//     if (icon) {
+//         icon.className = medidasVisibles ? 'bi bi-eye' : 'bi bi-eye-slash';
+//     }
+// });
+
 
 canvas.on('object:modified', function () {
     if (guiaX) {
@@ -780,6 +597,11 @@ canvas.on('object:scaling', function (e) {
             // Ajustamos el scaleX y scaleY del texto para que sean el inverso del objeto
             obj.medidaTexto.scaleX = 1 / obj.scaleX;
             obj.medidaTexto.scaleY = 1 / obj.scaleY;
+
+            // También opcionalmente reajustar posición del texto si quieres que siga un borde fijo
+            // obj.medidaTexto.left = ...
+            // obj.medidaTexto.top = ...
+
             obj.medidaTexto.setCoords(); // actualizar bounds
         }
     }
@@ -828,48 +650,220 @@ document.getElementById('export-png').addEventListener('click', function (e) {
     link.click();
 });
 
+// Exportar JSON
+document.getElementById('export-json').addEventListener('click', function (e) {
+    e.preventDefault();
+    const json = canvas.toDatalessJSON([
+        'relatedTexts',
+        'excludeFromAlign',
+        'excludeFromExport'
+    ]);
+    const blob = new Blob([JSON.stringify(json, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'diseño.json';
+    link.click();
+});
+
+// Importar JSON
+document.getElementById('import-json-btn').addEventListener('click', function () {
+    document.getElementById('import-json-input').click();
+});
+
+document.getElementById('import-json-input').addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function (evt) {
+        try {
+            const json = JSON.parse(evt.target.result);
+            canvas.loadFromJSON(json, () => {
+                // Elimina cualquier texto de escala existente
+                canvas.getObjects('text').forEach(obj => {
+                    if (obj.text && obj.text.startsWith('Escala:')) {
+                        canvas.remove(obj);
+                    }
+                });
+                // Elimina cualquier grupo de escala gráfica existente
+                canvas.getObjects('group').forEach(obj => {
+                    if (
+                        obj._objects &&
+                        obj._objects.some(o => o.type === 'line') &&
+                        obj._objects.some(o => o.type === 'text' && o.text && o.text.match(/^\d+ m$/))
+                    ) {
+                        canvas.remove(obj);
+                    }
+                });
+                // Elimina cualquier línea de bloqueo antigua
+                canvas.getObjects('line').forEach(obj => {
+                    if (
+                        obj.stroke === '#ccc' &&
+                        Array.isArray(obj.strokeDashArray) &&
+                        obj.strokeDashArray[0] === 5
+                    ) {
+                        canvas.remove(obj);
+                    }
+                });
+                // Vuelve a crear la escala fija
+                const escalaTexto = new fabric.Text(`Escala: ${factorConversion} px = 1 m`, {
+                    left: 20,
+                    top: 20,
+                    fontSize: 18,
+                    fill: '#333',
+                    backgroundColor: '#fff',
+                    padding: 6,
+                    excludeFromAlign: true,
+                    selectable: false,
+                    evented: false
+                });
+                canvas.add(escalaTexto);
+                canvas.sendToBack(escalaTexto);
+
+                // Vuelve a crear la escala gráfica
+                crearEscalaGrafica();
+
+                // Vuelve a crear la línea de bloqueo (zona bloqueada)
+                const lineaBloqueo = new fabric.Line([0, zonaBloqueadaAltura, 2250, zonaBloqueadaAltura], {
+                    stroke: '#ccc',
+                    strokeDashArray: [5, 5],
+                    selectable: false,
+                    evented: false
+                });
+                canvas.add(lineaBloqueo);
+                canvas.sendToBack(lineaBloqueo);
+
+                // Reaplica los handlers personalizados a cada objeto
+                canvas.getObjects().forEach(obj => {
+                    // Paredes y puertas (fabric.Group)
+                    if (obj.type === 'group' && (obj._objects?.[0]?.fill === '#fhfhfh' || obj._objects?.[0]?.fill === '#9c9c9c')) {
+                        obj.setControlsVisibility({
+                            tl: false,
+                            tr: false,
+                            bl: false,
+                            br: false,
+                            mt: false,
+                            mb: false,
+                            ml: true,
+                            mr: true,
+                            mtr: true
+                        });
+                    }
+                    // Productos (fabric.Image)
+                    if (obj.type === 'image') {
+                        obj.setControlsVisibility({
+                            tl: false,
+                            tr: false,
+                            bl: false,
+                            br: false,
+                            mt: false,
+                            mb: false,
+                            ml: false,
+                            mr: false,
+                            mtr: true
+                        });
+                    }
+                    // Si tienes otros tipos, añade aquí su configuración de handlers
+                });
+
+                canvas.renderAll();
+            });
+        } catch (err) {
+            alert('Archivo JSON inválido.');
+        }
+    };
+    reader.readAsText(file);
+});
+
+// Botón de pared
+document.getElementById('add-wall-button').addEventListener('click', function () {
+    limpiarSeleccionHerramientas();
+    this.classList.remove('btn-primary');
+    this.classList.add('btn-outline-primary');
+    herramientaActiva = 'pared';
+    productoActivo = null;
+});
+
+// Botón de puerta
+document.getElementById('add-door-button').addEventListener('click', function () {
+    limpiarSeleccionHerramientas();
+    this.classList.remove('btn-warning');
+    this.classList.add('btn-outline-warning');
+    herramientaActiva = 'puerta';
+    productoActivo = null;
+});
+
+// Productos (delegación de eventos)
+document.querySelectorAll('#productos .list-group-item').forEach(item => {
+    item.addEventListener('click', function (e) {
+        limpiarSeleccionHerramientas();
+        this.classList.add('active');
+        herramientaActiva = 'producto';
+        // Guarda los datos del producto activo
+        productoActivo = {
+            imagenURL: this.querySelector('img').src,
+            medidas: this.getAttribute('onclick').match(/\(([^)]+)\)/)[1].split(',').slice(1).join(',').trim()
+        };
+        e.stopPropagation();
+    });
+});
+
 let moveMode = false;
 let lastPan = { x: 0, y: 0 };
 
 // Inicialmente, modo ratón activo
-document.getElementById('mouse-mode-btn').classList.remove('btn-dark');
-document.getElementById('mouse-mode-btn').classList.add('btn-outline-dark');
-document.getElementById('move-mode-btn').classList.remove('btn-outline-dark');
-document.getElementById('move-mode-btn').classList.add('btn-dark');
+document.getElementById('mouse-mode-btn').classList.add('btn-dark');
+document.getElementById('move-mode-btn').classList.add('btn-outline-dark');
 canvas.defaultCursor = 'default';
 canvas.selection = true;
 canvas.skipTargetFind = false;
 
-// Cambia a modo ratón
+// Botón de modo ratón
 document.getElementById('mouse-mode-btn').addEventListener('click', function () {
     moveMode = false;
+    limpiarSeleccionHerramientas();
     this.classList.remove('btn-dark');
     this.classList.add('btn-outline-dark');
-    document.getElementById('move-mode-btn').classList.remove('btn-outline-dark');
-    document.getElementById('move-mode-btn').classList.add('btn-dark');
     canvas.defaultCursor = 'default';
     canvas.selection = true;
     canvas.skipTargetFind = false;
     canvas.discardActiveObject();
     canvas.requestRenderAll();
+    herramientaActiva = null;
+    productoActivo = null;
 });
 
-// Cambia a modo mover
+// Botón de modo mover
 document.getElementById('move-mode-btn').addEventListener('click', function () {
     moveMode = true;
+    limpiarSeleccionHerramientas();
     this.classList.remove('btn-dark');
     this.classList.add('btn-outline-dark');
-    document.getElementById('mouse-mode-btn').classList.remove('btn-outline-dark');
-    document.getElementById('mouse-mode-btn').classList.add('btn-dark');
     canvas.defaultCursor = 'grab';
     canvas.selection = false;
     canvas.skipTargetFind = true;
     canvas.discardActiveObject();
     canvas.requestRenderAll();
+    herramientaActiva = null;
+    productoActivo = null;
+});
+
+// Al hacer click en el canvas, añade la figura seleccionada en la posición del click
+canvas.on('mouse:down', function(opt) {
+    if (herramientaActiva === 'pared') {
+        const pointer = canvas.getPointer(opt.e);
+        agregarParedEn(pointer.x, pointer.y);
+    } else if (herramientaActiva === 'puerta') {
+        const pointer = canvas.getPointer(opt.e);
+        agregarPuertaEn(pointer.x, pointer.y);
+    } else if (herramientaActiva === 'producto' && productoActivo) {
+        const pointer = canvas.getPointer(opt.e);
+        agregarProductoEn(productoActivo.imagenURL, productoActivo.medidas, pointer.x, pointer.y);
+    }
+    // Si está en modo mover, sigue funcionando el pan como antes
 });
 
 // Pan con el ratón cuando el modo mover está activo
-canvas.on('mouse:down', function (opt) {
+canvas.on('mouse:down', function(opt) {
     if (!moveMode) return;
     if (canvas.getZoom() === ZOOM_MIN) {
         canvas.isDragging = false;
@@ -881,7 +875,7 @@ canvas.on('mouse:down', function (opt) {
     canvas.defaultCursor = 'grabbing';
 });
 
-canvas.on('mouse:move', function (opt) {
+canvas.on('mouse:move', function(opt) {
     if (!moveMode || !canvas.isDragging) return;
     if (canvas.getZoom() === ZOOM_MIN) return;
     const e = opt.e;
@@ -906,65 +900,9 @@ canvas.on('mouse:move', function (opt) {
     lastPan = { x: e.clientX, y: e.clientY };
 });
 
-canvas.on('mouse:up', function () {
+canvas.on('mouse:up', function() {
     if (!moveMode) return;
     canvas.isDragging = false;
     canvas.selection = false;
     canvas.defaultCursor = 'grab';
-});
-
-// Guarda los valores iniciales de zoom y viewport
-const ZOOM_INICIAL = 0.6;
-const VIEWPORT_INICIAL = [1, 0, 0, 1, 0, 0];
-
-// Botón para restablecer la vista inicial
-document.getElementById('reset-view-btn').addEventListener('click', function () {
-    canvas.setZoom(ZOOM_INICIAL);
-    canvas.viewportTransform = VIEWPORT_INICIAL.slice();
-    canvas.requestRenderAll();
-});
-
-let clipboard = null;
-
-// Copiar (Ctrl+C)
-document.addEventListener('keydown', function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            activeObject.clone(function (cloned) {
-                clipboard = cloned;
-            });
-            e.preventDefault();
-        }
-    }
-});
-
-// Pegar (Ctrl+V)
-document.addEventListener('keydown', function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
-        if (clipboard) {
-            clipboard.clone(function (clonedObj) {
-                canvas.discardActiveObject();
-                clonedObj.set({
-                    left: clonedObj.left + 20,
-                    top: clonedObj.top + 20,
-                    evented: true
-                });
-                if (clonedObj.type === 'activeSelection') {
-                    // Multi-selection
-                    clonedObj.canvas = canvas;
-                    clonedObj.forEachObject(function (obj) {
-                        canvas.add(obj);
-                    });
-                    // Group to selection
-                    clonedObj.setCoords();
-                } else {
-                    canvas.add(clonedObj);
-                }
-                canvas.setActiveObject(clonedObj);
-                canvas.requestRenderAll();
-            });
-            e.preventDefault();
-        }
-    }
 });
