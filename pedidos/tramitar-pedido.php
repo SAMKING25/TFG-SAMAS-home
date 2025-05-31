@@ -38,18 +38,28 @@ if (empty($carrito)) {
     die('El carrito está vacío o no existe');
 }
 
-// 3. Insertar el pedido
-$sql_pedido = "INSERT INTO pedidos (id_usuario, total, fecha) VALUES (?, ?, NOW())";
+// Recoger datos del comprador del POST
+$datos_usuario = [
+    'nombre'    => $_POST['nombre'] ?? '',
+    'apellidos' => $_POST['apellidos'] ?? '',
+    'email'     => $_POST['email'] ?? '',
+    'telefono'  => $_POST['telefono'] ?? '',
+    'direccion' => $_POST['direccion'] ?? ''
+];
+$datos_usuario_json = json_encode($datos_usuario, JSON_UNESCAPED_UNICODE);
+
+// 3. Insertar el pedido (añade datos_usuario)
+$sql_pedido = "INSERT INTO pedidos (id_usuario, total, fecha, datos_usuario) VALUES (?, ?, NOW(), ?)";
 $stmt_pedido = $_conexion->prepare($sql_pedido);
 if (!$stmt_pedido) {
     die('Error preparando pedido: ' . $_conexion->error);
 }
-$stmt_pedido->bind_param("id", $id_usuario, $total);
+$total = floatval($total);
+$stmt_pedido->bind_param("ids", $id_usuario, $total, $datos_usuario_json);
 if (!$stmt_pedido->execute()) {
     die('Error ejecutando pedido: ' . $stmt_pedido->error);
-} else {
-    echo "Pedido insertado<br>";
 }
+
 $id_pedido = $_conexion->insert_id;
 
 // 4. Insertar los detalles del pedido
@@ -63,8 +73,6 @@ foreach ($carrito as $item) {
     $stmt_detalle->bind_param("iiid", $id_pedido, $item['id_producto'], $item['cantidad'], $item['precio']);
     if (!$stmt_detalle->execute()) {
         die('Error insertando detalle: ' . $stmt_detalle->error);
-    } else {
-        echo "Detalle insertado para producto {$item['id_producto']}<br>";
     }
 }
 
@@ -80,6 +88,5 @@ unset($_SESSION['carrito']);
 // 7. Confirmar éxito
 // echo '<p>Pedido guardado correctamente. Carrito vaciado.</p>';
 // echo '<a href="/pedidos/index.php">Ir a mis pedidos</a>';
-    header("location: /pasarela-pago/completado.html");
+echo json_encode(['success' => true]);
 exit;
-?>
