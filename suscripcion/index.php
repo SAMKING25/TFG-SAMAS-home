@@ -270,23 +270,28 @@
                             <div class="mt-auto text-center">
                                 <form action="../pasarela-pago/" method="post">
                                     <input type="hidden" name="importe" value="<?php echo number_format((float)$suscripcion['precio'], 2, '.', ''); ?>">
-                                    <?php if (!$hay_usuarios || $usuario_no_logueado): ?>
-                                        <a href="/login/usuario/registro_usuario.php" class="btn btn-custom <?php echo $suscripcion['nombre']; ?> w-100" style="max-width:220px;">Activar</a>
-                                        <div style="height:1.5em;"></div>
-                                    <?php else: ?>
-                                        <?php
+                                    <?php
+                                        if (!$hay_usuarios || $usuario_no_logueado) {
+                                            // Usuario no logueado
+                                            echo '<a href="/login/usuario/registro_usuario.php" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                            echo '<div style="height:1.5em;"></div>';
+                                        } else {
                                             if ($id_suscripcion_usuario === $id_suscripcion) {
+                                                // Suscripción activa
                                                 echo '<a href="#" class="btn btn-outline-success btn-custom disabled mb-2 w-100" style="max-width:220px;">Activado</a>';
-                                                // Solo mostrar el enlace si la suscripción activa NO es la básica
                                                 if ($id_suscripcion_usuario != 1) {
                                                     echo '<div><a href="#" id="cancelar-suscripcion-btn" class="text-decoration-underline small align-middle" style="cursor:pointer; color: #333;">Cancelar suscripción</a></div>';
                                                 }
-                                                // Si es la básica, no se muestra nada más (no se reserva espacio)
                                             } else {
-                                                echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
+                                                // Si es la básica y el usuario tiene otra suscripción, mostrar alerta antes de cancelar
+                                                if ($id_suscripcion == 1 && $id_suscripcion_usuario != 1) {
+                                                    echo '<a href="#" id="activar-basica-btn" class="btn btn-custom Básica w-100" style="max-width:220px;">Activar</a>';
+                                                } else {
+                                                    echo '<button type="submit" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</button>';
+                                                }
                                             }
-                                        ?>
-                                    <?php endif; ?>
+                                        }
+                                    ?>
                                 </form>
                             </div>
                         </div>
@@ -304,6 +309,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Botón cancelar suscripción
         const cancelarBtn = document.getElementById('cancelar-suscripcion-btn');
         if (cancelarBtn) {
             cancelarBtn.addEventListener('click', function(e) {
@@ -316,8 +322,31 @@
                     confirmButtonText: 'Sí, cancelar',
                     cancelButtonText: 'No, mantener',
                     reverseButtons: true,
-                    confirmButtonColor: '#dc3545', // rojo
-                    cancelButtonColor: '#198754'   // verde
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#198754'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/suscripcion/cancelar.php';
+                    }
+                });
+            });
+        }
+
+        // Botón activar básica (cancela suscripción superior)
+        const activarBasicaBtn = document.getElementById('activar-basica-btn');
+        if (activarBasicaBtn) {
+            activarBasicaBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: '¿Seguro que quieres volver a la suscripción básica?',
+                    text: 'Esto cancelará tu suscripción actual y pasarás a la básica perdiendo las funciones premium.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, cambiar a básica',
+                    cancelButtonText: 'No, mantener actual',
+                    reverseButtons: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#198754'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         window.location.href = '/suscripcion/cancelar.php';
