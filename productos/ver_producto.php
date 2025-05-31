@@ -9,29 +9,6 @@ session_start();
 if (isset($_GET["id_producto"])) {
     $id = intval($_GET["id_producto"]);
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (!isset($_SESSION["usuario"])) {
-            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
-            exit;
-        }
-
-        $id_producto = intval($_GET["id_producto"]);
-        $id_usuario = $_SESSION["usuario"];
-        $cantidad = $_POST["cantidad"];
-
-        $stmt = $_conexion->prepare("INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
-
-        if ($stmt->execute()) {
-            $mensaje = "success";
-        } else {
-            $mensaje = "error";
-            $errorMsg = $stmt->error;
-        }
-
-        $stmt->close();
-    }
-
     $sql = "SELECT p.*, o.porcentaje 
             FROM productos p
             LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
