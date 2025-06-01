@@ -69,7 +69,7 @@ if (isset($_SESSION['usuario'])) {
                 </li>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link subraya util-nav-icons" href="/plano">Plano</a>
+                        <a class="nav-link subraya util-nav-icons" href="/plano/confirmacion_plano">Plano</a>
                     </li>
                 <?php } ?>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
@@ -146,108 +146,3 @@ if (isset($_SESSION['usuario'])) {
 <!-- Pop-up de cookies incluido-->
 <?php include('cookies.php'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-<?php if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Detecta si la URL es exactamente /plano o termina con /plano/
-            if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
-                Swal.fire({
-                    title: "¿Estás seguro?",
-                    text: "¿Quieres ir al plano? Se perderá un uso del plano disponible.",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Sí, ir al plano",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        fetch('/util/funciones/sumar_uso_plano', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                }
-                            })
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    // Permite el acceso, no hace nada porque ya está en /plano
-                                } else if (data.limit) {
-                                    Swal.fire("Límite alcanzado", "Has alcanzado el máximo de usos del plano para tu suscripción este mes.", "info")
-                                        .then(() => {
-                                            window.location.href = '/'; // Redirige a inicio u otra página
-                                        });
-                                } else {
-                                    Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
-                                        .then(() => {
-                                            window.location.href = '/';
-                                        });
-                                }
-                            })
-                            .catch(() => {
-                                Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
-                                    .then(() => {
-                                        window.location.href = '/';
-                                    });
-                            });
-                    } else {
-                        window.location.href = '/'; // Redirige si cancela
-                    }
-                });
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Solo si estamos en /plano o /plano/
-            if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
-                let confirmandoSalida = false; // Para evitar bucles
-
-                // 1. Aviso al recargar, cerrar o navegar fuera (navegación estándar)
-                window.addEventListener('beforeunload', function(e) {
-                    if (!confirmandoSalida) {
-                        e.preventDefault();
-                        e.returnValue = ''; // Chrome requiere esto para mostrar el aviso nativo
-                        return '';
-                    }
-                });
-
-                // 2. Aviso personalizado al pulsar cualquier enlace del navbar
-                document.querySelectorAll('a.nav-link, .dropdown-item').forEach(function(link) {
-                    // Ignora enlaces que abren en nueva pestaña
-                    if (link.target === '_blank') return;
-
-                    link.addEventListener('click', function(e) {
-                        // Si ya estamos confirmando, deja pasar
-                        if (confirmandoSalida) return;
-
-                        // Si el enlace es a la misma página, recarga, o a otra, muestra el modal
-                        e.preventDefault();
-                        Swal.fire({
-                            title: "¿Quieres salir del plano?",
-                            text: "Si sales del plano, podrías perder los cambios no guardados.",
-                            icon: "warning",
-                            showCancelButton: true,
-                            confirmButtonColor: "#3085d6",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Sí, salir",
-                            cancelButtonText: "Cancelar"
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                confirmandoSalida = true;
-                                window.removeEventListener('beforeunload', () => {}); // Evita doble aviso
-                                // Si es recarga (href actual), recarga, si no, navega
-                                if (link.href === window.location.href) {
-                                    window.location.reload();
-                                } else {
-                                    window.location.href = link.href;
-                                }
-                            }
-                            // Si cancela, no hace nada
-                        });
-                    });
-                });
-            }
-        });
-    </script>
-<?php } ?>

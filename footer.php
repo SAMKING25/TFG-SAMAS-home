@@ -42,7 +42,7 @@ if (isset($_SESSION['proveedor'])) {
                     </h6>
                     <p><a href="/productos" class="footer-link">Productos</a></p>
                     <?php if ($tipo_sesion !== 'proveedor') { ?>
-                        <p><a href="/plano" class="footer-link">Plano</a></p>
+                        <p><a href="/plano/confirmacion_plano" class="footer-link">Plano</a></p>
                     <?php } ?>
                     <?php if ($tipo_sesion !== 'proveedor') { ?>
                         <p><a href="/suscripcion" class="footer-link">Suscripción</a></p>

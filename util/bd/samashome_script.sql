@@ -87,10 +87,6 @@ CREATE TABLE detalle_pedidos (
     FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
-
-UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
-UPDATE usuarios SET id_suscripcion = 3 WHERE id_usuario = 1;
-
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas y sillas',"mesas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas y colchones',"colchones.jpg");
@@ -139,6 +135,10 @@ DROP TABLE proveedores;
 DROP TABLE usuarios;
 DROP TABLE suscripciones;
 DROP TABLE categorias;
+
+-- Reiniciar usos del plano
+UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
 
