@@ -27,6 +27,7 @@ $pedidos = $stmt->get_result();
     <title>Mis pedidos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png"/>	
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <style>
@@ -40,9 +41,19 @@ $pedidos = $stmt->get_result();
             background: #fffbe9;
             border-radius: 2rem;
             box-shadow: 0 4px 24px 0 #bfa16a22;
-            padding: 2.5rem 2rem;
+            padding: 3.5rem 2.5rem;
+            /* Aumentado */
             margin-top: 6rem;
             margin-bottom: 4rem;
+            /* Nuevo: */
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card.mb-3.shadow-sm {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
         }
 
         .table-pedidos {
@@ -131,6 +142,17 @@ $pedidos = $stmt->get_result();
         }
 
         @media (max-width: 700px) {
+
+            .pedidos-table-container {
+                padding: 1.5rem 0.7rem !important;
+                /* Más padding en móvil */
+            }
+
+            .card.mb-3.shadow-sm {
+                margin-left: 0.2rem;
+                margin-right: 0.2rem;
+            }
+
             .card.flex-row {
                 flex-direction: column !important;
                 align-items: stretch !important;
@@ -143,6 +165,16 @@ $pedidos = $stmt->get_result();
                 padding-left: 0 !important;
                 padding-right: 0 !important;
             }
+
+            .d-md-flex {
+                display: none !important;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .d-md-none {
+                display: none !important;
+            }
         }
     </style>
 </head>
@@ -152,16 +184,70 @@ $pedidos = $stmt->get_result();
     <div class="container pedidos-table-container">
         <h2 class="mb-4 fw-bold" style="color:#b88c4a; letter-spacing:1px;">Mis pedidos</h2>
         <?php if ($pedidos->num_rows > 0): ?>
-            <div class="d-flex flex-column gap-4">
+            <!-- Vista cards para móvil -->
+            <div class="d-md-none">
+                <?php
+                // Reiniciar el puntero del resultado para volver a recorrerlo
+                $stmt->execute();
+                $pedidos = $stmt->get_result();
+                ?>
                 <?php while ($pedido = $pedidos->fetch_assoc()): ?>
                     <?php
-                        $datos = [];
-                        if (!empty($pedido['datos_usuario'])) {
-                            $datos = json_decode($pedido['datos_usuario'], true);
-                        }
+                    $datos = [];
+                    if (!empty($pedido['datos_usuario'])) {
+                        $datos = json_decode($pedido['datos_usuario'], true);
+                    }
+                    ?>
+                    <div class="card mb-3 shadow-sm" style="border-radius: 1.2rem; background: #fffbe9;">
+                        <div class="card-body py-3 px-3">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="d-inline-flex align-items-center justify-content-center me-2" style="background:#eec06b; border-radius:50%; width:2.2rem; height:2.2rem;">
+                                    <i class="bi bi-cart pedido-icon" style="font-size:1.1rem; color:#fff; margin:0;"></i>
+                                </span>
+                                <span class="fw-semibold text-secondary small"><i class="bi bi-calendar3 pedido-icon"></i> <?php echo date('d/m/Y H:i', strtotime($pedido['fecha'])); ?></span>
+                            </div>
+                            <div class="mb-2">
+                                <div class="fw-semibold text-secondary small mb-1"><i class="bi bi-person pedido-icon"></i> Datos</div>
+                                <?php if (!empty($datos)): ?>
+                                    <div class="text-muted small">
+                                        <strong><?php echo htmlspecialchars($datos['nombre'] ?? ''); ?></strong><br>
+                                        <?php echo htmlspecialchars($datos['apellidos'] ?? ''); ?><br>
+                                        <?php echo htmlspecialchars($datos['email'] ?? ''); ?><br>
+                                        <?php echo htmlspecialchars($datos['telefono'] ?? ''); ?><br>
+                                        <?php echo htmlspecialchars($datos['direccion'] ?? ''); ?>
+                                    </div>
+                                <?php else: ?>
+                                    <span class="text-muted">No disponible</span>
+                                <?php endif; ?>
+                            </div>
+                            <div class="mb-2">
+                                <span class="fw-semibold text-secondary small"><i class="bi bi-cash-coin pedido-icon"></i> Total:</span>
+                                <span class="fw-bold" style="color:#b88c4a;"><?php echo number_format($pedido['total'], 2); ?> €</span>
+                            </div>
+                            <div class="text-center mt-2">
+                                <a href="ver_pedido?id_pedido=<?php echo $pedido['id_pedido']; ?>" title="Ver pedido"
+                                    class="btn btn-eye-pedido d-inline-flex align-items-center justify-content-center mx-auto">
+                                    <i class="bi bi-eye pedido-icon" style="font-size:1.2rem; margin:0;"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
+            </div>
+            <!-- Vista horizontal para escritorio -->
+            <div class="d-none d-md-flex flex-column gap-4">
+                <?php
+                $stmt->execute();
+                $pedidos = $stmt->get_result();
+                ?>
+                <?php while ($pedido = $pedidos->fetch_assoc()): ?>
+                    <?php
+                    $datos = [];
+                    if (!empty($pedido['datos_usuario'])) {
+                        $datos = json_decode($pedido['datos_usuario'], true);
+                    }
                     ?>
                     <div class="card shadow-sm flex-row align-items-center p-3" style="border-radius: 1.2rem; background: #fffbe9;">
-                        <!-- Icono carrito al principio -->
                         <div class="d-flex align-items-center justify-content-center" style="min-width:70px;">
                             <span class="d-inline-flex align-items-center justify-content-center mx-2" style="background:#eec06b; border-radius:50%; width:2.5rem; height:2.5rem;">
                                 <i class="bi bi-cart pedido-icon" style="font-size:1.3rem; color:#fff; margin:0;"></i>
@@ -197,7 +283,6 @@ $pedidos = $stmt->get_result();
                                 <?php echo number_format($pedido['total'], 2); ?> €
                             </span>
                         </div>
-                        <!-- Apartado detalles al final -->
                         <div class="d-flex align-items-center justify-content-center" style="min-width:90px;">
                             <div class="text-center">
                                 <div class="fw-semibold text-secondary small mb-1">Detalles</div>
