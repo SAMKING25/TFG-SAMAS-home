@@ -93,7 +93,7 @@ INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"Arma
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"Mesas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas',"Camas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"Sillas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"Sofas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"Sofás.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillones',"Sillones.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Cómodas',"Cómodas.png");
 
