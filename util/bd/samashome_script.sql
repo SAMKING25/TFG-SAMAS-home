@@ -89,13 +89,13 @@ CREATE TABLE detalle_pedidos (
 );
 
 -- 100%
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"mesas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas',"colchones.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillones',"sillones.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Cómodas',"comodas.png");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"Armarios.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"Mesas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas',"Camas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"Sillas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"Sofas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillones',"Sillones.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Cómodas',"Cómodas.png");
 
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Verano', 20);
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Invierno', 30);

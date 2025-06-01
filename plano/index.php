@@ -297,7 +297,7 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         .btn-primary:hover {
-            background-color:rgb(133, 90, 38) !important;
+            background-color: rgb(133, 90, 38) !important;
         }
     </style>
 </head>
@@ -338,10 +338,11 @@ if (!isset($_SESSION["usuario"])) {
 
     $id_usuario = $_SESSION["usuario"];
     $query = $_conexion->prepare('
-        SELECT p.*, c.cantidad, o.porcentaje 
+        SELECT p.*, c.cantidad, o.porcentaje, pr.nombre_proveedor
         FROM carrito c
         JOIN productos p ON c.id_producto = p.id_producto
         LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
+        LEFT JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
         WHERE c.id_usuario = ?
     ');
     $query->bind_param('i', $id_usuario);
@@ -513,6 +514,7 @@ if (!isset($_SESSION["usuario"])) {
                         <div class="detalle-precio">Precio: <span style="color:#198754;font-weight:bold;">${precio}€</span></div>
                         <div class="detalle-medidas">Medidas: ${medidas}</div>
                         <div class="detalle-desc">${producto.descripcion ?? ''}</div>
+                        <div class="detalle-empresa"><strong>${producto.nombre_proveedor ?? '-'}</strong></div>
                     </div>
                 `;
                 detalle.style.display = 'block';
