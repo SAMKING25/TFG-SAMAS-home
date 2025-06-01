@@ -324,25 +324,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         @media (max-width: 991.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 2rem 2rem !important;
                 min-height: 180px;
                 padding: 2rem 1.5rem;
             }
 
-            .card-body {
-                padding: 2rem 1.2rem;
+            .card {
+                border-radius: 2rem !important;
+                overflow: hidden;
             }
         }
 
         @media (max-width: 767.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
                 min-height: 120px;
                 padding: 1.5rem 1rem;
             }
 
             .card {
-                border-radius: 1.2rem;
+                border-radius: 1.2rem !important;
+                overflow: hidden;
             }
         }
 
@@ -353,6 +355,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             .side-panel {
                 padding: 1rem 0.5rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
+            }
+
+            .card {
+                border-radius: 1.2rem !important;
+                overflow: hidden;
             }
         }
     </style>
