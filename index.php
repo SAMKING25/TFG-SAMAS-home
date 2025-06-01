@@ -327,7 +327,8 @@
 								<div class="nuevo-producto-desc"><?php echo htmlspecialchars($producto['descripcion']); ?>
 								</div>
 								<div class="nuevo-producto-precio">
-									<?php echo number_format($producto['precio'], 2, ',', '.'); ?> €</div>
+									<?php echo number_format($producto['precio'], 2, ',', '.'); ?> €
+								</div>
 								<form method="post" action="" class="w-100">
 									<input type="hidden" name="id_producto" value="<?php echo $producto['id_producto']; ?>">
 									<input type="hidden" name="cantidad" value="1">
