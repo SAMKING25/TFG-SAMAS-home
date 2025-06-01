@@ -71,6 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             align-items: center;
             justify-content: center;
             background: none;
+            /* Quita background: none; */
+            padding: 0 !important;
         }
 
         .card {
@@ -253,25 +255,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         @media (max-width: 991.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 2rem 2rem !important;
                 min-height: 180px;
                 padding: 2rem 1.5rem;
             }
 
-            .card-body {
-                padding: 2rem 1.2rem;
+            .card {
+                border-radius: 2rem !important;
+                /* Asegura el mismo radio en móvil */
             }
         }
 
         @media (max-width: 767.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
                 min-height: 120px;
                 padding: 1.5rem 1rem;
             }
 
             .card {
-                border-radius: 1.2rem;
+                border-radius: 1.2rem !important;
+                /* Igual que side-panel */
             }
         }
 
@@ -282,6 +286,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             .side-panel {
                 padding: 1rem 0.5rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
+            }
+
+            .card {
+                border-radius: 1.2rem !important;
+                /* Igual que side-panel */
             }
         }
     </style>
@@ -378,14 +388,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_usuario');
             const passwordInput = document.getElementById('contrasena_usuario');
             const emailError = document.getElementById('email-error');
             const passwordError = document.getElementById('password-error');
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', function(event) {
                 let valid = true;
 
                 // Limpia los errores previos (incluyendo los de PHP)
@@ -428,7 +438,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             icon.classList.add('bi-eye');
         }
 
-        document.getElementById('togglePassword').addEventListener('click', function () {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.remove('bi-eye-slash');
