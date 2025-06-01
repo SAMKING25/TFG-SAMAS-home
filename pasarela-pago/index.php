@@ -169,39 +169,47 @@ $importe = floatval($_POST['importe']);
       },
       onApprove: function(data, actions) {
         return actions.order.capture().then(function(detalles) {
+          // 2. Tramitar pedido solo si el correo fue exitoso
           var form = document.getElementById('datosForm');
-          var formData = new FormData(form);
+          var formData2 = new FormData(form);
+          formData2.set('nombre', form.nombre.value);
+          formData2.set('apellidos', form.apellidos.value);
+          formData2.set('email', form.email.value);
+          formData2.set('telefono', form.telefono.value);
+          formData2.set('direccion', form.direccion.value);
+          formData2.set('importe', "<?php echo number_format($importe, 2, '.', ''); ?>");
+          formData2.set('id_suscripcion', form.id_suscripcion.value);
+          formData2.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
+          formData2.append('paypal_email', detalles.payer.email_address);
 
-          // Forzar recolección de los valores actuales del formulario
-          formData.set('nombre', form.nombre.value);
-          formData.set('apellidos', form.apellidos.value);
-          formData.set('email', form.email.value);
-          formData.set('telefono', form.telefono.value);
-          formData.set('direccion', form.direccion.value);
+          return fetch('/pedidos/tramitar-pedido', {
+            method: 'POST',
+            body: formData2
+          })
+          .then(response => response.json())
+            .then(data => {
+              if (!data.success) {
+                alert("Error al tramitar pedido: " + (data.error || ""));
+                throw new Error("Error al tramitar pedido");
+              }
 
-          formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
-          formData.append('paypal_email', detalles.payer.email_address);
-
-          fetch('enviar_correo', {
-              method: 'POST',
-              body: formData
-            })
-            .then(() => {
-              // 2. Tramitar pedido
-              // Crear un nuevo FormData para el segundo fetch
               var form = document.getElementById('datosForm');
-              var formData2 = new FormData(form);
-              formData2.set('nombre', form.nombre.value);
-              formData2.set('apellidos', form.apellidos.value);
-              formData2.set('email', form.email.value);
-              formData2.set('telefono', form.telefono.value);
-              formData2.set('direccion', form.direccion.value);
-              formData2.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
-              formData2.append('paypal_email', detalles.payer.email_address);
+              var formData = new FormData(form);
 
-              return fetch('/pedidos/tramitar-pedido', {
+              // Forzar recolección de los valores actuales del formulario
+              formData.set('nombre', form.nombre.value);
+              formData.set('apellidos', form.apellidos.value);
+              formData.set('email', form.email.value);
+              formData.set('telefono', form.telefono.value);
+              formData.set('direccion', form.direccion.value);
+              formData.set('importe', "<?php echo number_format($importe, 2, '.', ''); ?>");
+
+              formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
+              formData.append('paypal_email', detalles.payer.email_address);
+
+              return fetch('enviar_correo', {
                 method: 'POST',
-                body: formData2
+                body: formData
               });
             })
             .then(response => response.json())

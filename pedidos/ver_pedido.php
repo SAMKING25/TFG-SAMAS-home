@@ -38,7 +38,7 @@ $productos = $stmt->get_result();
 
 <head>
     <meta charset="UTF-8">
-    <title>Detalle del pedido #<?php echo $id_pedido; ?></title>
+    <title>Detalle del pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <!-- Archivo CSS personalizado -->
@@ -196,7 +196,7 @@ $productos = $stmt->get_result();
     <div class="container pedido-detalle-container">
         <h2 class="mb-4 detalle-titulo">
             <i class="bi bi-receipt-cutoff icono-cabecera"></i>
-            Detalle del pedido <span style="color:#b88c4a;">#<?php echo $id_pedido; ?></span>
+            Detalle del pedido
         </h2>
         <div class="mb-3">
             <span class="me-4">
@@ -208,7 +208,7 @@ $productos = $stmt->get_result();
                 <strong>Total:</strong> <?php echo number_format($pedido['total'], 2); ?> €
             </span>
         </div>
-        <a href="/" class="btn btn-volver">
+        <a href="/pedidos/" class="btn btn-volver">
             <i class="bi bi-arrow-left"></i> Volver a mis pedidos
         </a>
         <?php if ($productos->num_rows > 0): ?>
