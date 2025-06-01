@@ -9,20 +9,22 @@ session_start();
 if (isset($_GET["id_producto"])) {
     $id = intval($_GET["id_producto"]);
 
-    $sql = "SELECT p.*, o.porcentaje 
-            FROM productos p
-            LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
-            WHERE p.id_producto = $id";
-    $resultado = $_conexion->query($sql);
+    $sql = "SELECT p.*, o.porcentaje, pr.nombre_proveedor 
+        FROM productos p
+        LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
+        LEFT JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
+        WHERE p.id_producto = $id";
+$resultado = $_conexion->query($sql);
 
-    if ($resultado->num_rows > 0) {
-        $producto = $resultado->fetch_assoc();
-        $medidas = json_decode($producto["medidas"], true);
-        $precio = $producto["precio"];
-        $porcentaje = $producto["porcentaje"];
-    } else {
-        die("Producto no encontrado.");
-    }
+if ($resultado->num_rows > 0) {
+    $producto = $resultado->fetch_assoc();
+    $medidas = json_decode($producto["medidas"], true);
+    $precio = $producto["precio"];
+    $porcentaje = $producto["porcentaje"];
+    $nombre_proveedor = $producto["nombre_proveedor"];
+} else {
+    die("Producto no encontrado.");
+}
 
     // Ahora procesamos el POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -347,6 +349,9 @@ if ($hayOferta) {
                                     <?php echo $producto["categoria"]; ?></li>
                                 <li><i class="bi bi-rulers me-2" style="color:#b88c4a"></i><strong>Medidas:</strong>
                                     <?php echo "{$medidas['largo']}cm × {$medidas['ancho']}cm × {$medidas['alto']}cm"; ?>
+                                </li>
+                                <li><i class="bi bi-building me-2" style="color:#b88c4a"></i><strong>Proveedor:</strong>
+                                    <?php echo htmlspecialchars($nombre_proveedor); ?>
                                 </li>
                             </ul>
                             <form action="" method="post" class="d-flex align-items-end gap-3">

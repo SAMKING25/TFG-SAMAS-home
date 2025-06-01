@@ -185,6 +185,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
         color: #fff;
     }
 
+    .btn-sm:hover {
+        border:none;
+    }
+
     .form-control:focus {
         border-color: #b08d57;
         box-shadow: 0 0 0 0.2rem rgba(180, 140, 80, 0.13);
