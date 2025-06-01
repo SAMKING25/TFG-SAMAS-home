@@ -41,6 +41,7 @@ $productos = $stmt->get_result();
     <title>Detalle del pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <style>
@@ -54,11 +55,18 @@ $productos = $stmt->get_result();
             background: #fffbe9;
             border-radius: 2rem;
             box-shadow: 0 4px 24px 0 #bfa16a22;
-            padding: 2.5rem 2rem;
+            padding: 3.5rem 2.5rem;
+            /* Aumentado */
             margin-top: 6rem;
-            /* Más espacio arriba */
             margin-bottom: 4rem;
-            /* Más espacio abajo */
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .card.mb-3.shadow-sm {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
         }
 
         .table-detalle {
@@ -147,7 +155,7 @@ $productos = $stmt->get_result();
 
         @media (max-width: 900px) {
             .pedido-detalle-container {
-                padding: 1.2rem 0.2rem;
+                padding: 2rem 0.7rem !important;
             }
 
             .table-detalle th,
@@ -157,15 +165,19 @@ $productos = $stmt->get_result();
             }
 
             .table-detalle img {
-                width: 100px !important;
-                height: 100px !important;
+                width: 80px !important;
+                height: 80px !important;
             }
         }
 
         @media (max-width: 600px) {
-
             .pedido-detalle-container {
-                padding: 0.5rem 0.1rem;
+                padding: 1.2rem 0.3rem !important;
+            }
+
+            .card.mb-3.shadow-sm {
+                margin-left: 0.1rem;
+                margin-right: 0.1rem;
             }
 
             .table-detalle th,
@@ -212,8 +224,8 @@ $productos = $stmt->get_result();
             <i class="bi bi-arrow-left"></i> Volver a mis pedidos
         </a>
         <?php if ($productos->num_rows > 0): ?>
-            <div class="table-responsive">
-                <table class="table table-hover table-bordered table-responsive table-detalle align-middle mb-0">
+            <div class="table-responsive d-none d-md-block">
+                <table class="table table-hover table-bordered table-detalle align-middle mb-0">
                     <thead>
                         <tr>
                             <th class="th-img">
@@ -238,19 +250,17 @@ $productos = $stmt->get_result();
                             <tr>
                                 <td>
                                     <?php
-                                    // Si la ruta no es absoluta ni URL, la ajustamos a /img/productos/
                                     $img = $prod['img_producto'];
                                     if ($img && strpos($img, '/') !== 0 && strpos($img, 'http') !== 0) {
                                         $img = '/img/productos/' . ltrim($img, '/');
                                     } elseif ($img && strpos($img, '/img/productos/') !== 0 && strpos($img, 'http') !== 0) {
-                                        // Si la ruta no contiene la carpeta correcta, la anteponemos
                                         $img = '/img/productos/' . basename($img);
                                     }
                                     ?>
                                     <div style="display: flex; justify-content: center; align-items: center;">
                                         <img src="<?php echo htmlspecialchars($img); ?>"
                                             alt="Imagen producto"
-                                            style="width: 180px; height: 180px; object-fit: cover; border-radius: 18px; box-shadow: 0 2px 12px #bfa16a22; border: 2.5px solid #f3e2b8; margin: 12px;">
+                                            style="width: 120px; height: 120px; object-fit: cover; border-radius: 18px; box-shadow: 0 2px 12px #bfa16a22; border: 2.5px solid #f3e2b8; margin: 12px;">
                                     </div>
                                 </td>
                                 <td><?php echo htmlspecialchars($prod['nombre']); ?></td>
@@ -261,6 +271,47 @@ $productos = $stmt->get_result();
                         <?php endwhile; ?>
                     </tbody>
                 </table>
+            </div>
+            <!-- Vista tipo cards para móvil -->
+            <div class="d-md-none">
+                <?php
+                // Reiniciar el puntero del resultado para volver a recorrerlo
+                $stmt->execute();
+                $productos = $stmt->get_result();
+                ?>
+                <?php while ($prod = $productos->fetch_assoc()): ?>
+                    <?php
+                    $img = $prod['img_producto'];
+                    if ($img && strpos($img, '/') !== 0 && strpos($img, 'http') !== 0) {
+                        $img = '/img/productos/' . ltrim($img, '/');
+                    } elseif ($img && strpos($img, '/img/productos/') !== 0 && strpos($img, 'http') !== 0) {
+                        $img = '/img/productos/' . basename($img);
+                    }
+                    ?>
+                    <div class="card mb-3 shadow-sm" style="border-radius: 1.2rem;">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-4 d-flex align-items-center justify-content-center">
+                                <img src="<?php echo htmlspecialchars($img); ?>"
+                                    alt="Imagen producto"
+                                    style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; box-shadow: 0 2px 12px #bfa16a22; border: 2px solid #f3e2b8; margin: 10px;">
+                            </div>
+                            <div class="col-8">
+                                <div class="card-body py-2 px-3">
+                                    <h6 class="card-title mb-1"><?php echo htmlspecialchars($prod['nombre']); ?></h6>
+                                    <div class="small text-muted mb-1">
+                                        <i class="bi bi-currency-euro"></i> <b>Precio:</b> <?php echo number_format($prod['precio_unitario'], 2); ?> €
+                                    </div>
+                                    <div class="small text-muted mb-1">
+                                        <i class="bi bi-hash"></i> <b>Cantidad:</b> <?php echo $prod['cantidad']; ?>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <i class="bi bi-calculator"></i> <b>Subtotal:</b> <?php echo number_format($prod['precio_unitario'] * $prod['cantidad'], 2); ?> €
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endwhile; ?>
             </div>
         <?php else: ?>
             <div class="alert alert-info mt-4">No hay productos en este pedido.</div>
