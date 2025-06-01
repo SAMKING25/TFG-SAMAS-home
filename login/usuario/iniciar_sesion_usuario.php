@@ -440,17 +440,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
     </script>
-    <?php if (isset($_GET['verificado']) && $_GET['verificado'] == 1): ?>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Usuario registrado con éxito',
-                text: '¡Ya puedes iniciar sesión!',
-                confirmButtonColor: '#a57d31'
-            });
-        </script>
-    <?php endif; ?>
 </body>
 
 </html>

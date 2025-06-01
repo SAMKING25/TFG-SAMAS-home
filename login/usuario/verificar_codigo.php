@@ -21,11 +21,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 VALUES ('$email','$nombre','$contrasena',$id_suscripcion,'$img_usuario')";
         $_conexion->query($sql);
 
-        // Limpiar sesión y redirigir
+        // Limpiar sesión
         session_unset();
         session_destroy();
-        header("Location: iniciar_sesion_usuario?verificado=1");
-        exit;
+
+        // Indicar éxito para mostrar SweetAlert y redirigir con JS
+        $verificado = true;
     } else {
         $mensaje = "El código es incorrecto. Inténtalo de nuevo.";
     }
@@ -379,6 +380,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
     </script>
+    <?php if (isset($verificado) && $verificado): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Usuario registrado con éxito',
+                text: '¡Ya puedes iniciar sesión!',
+                confirmButtonColor: '#a57d31'
+            }).then(() => {
+                window.location.href = "iniciar_sesion_usuario";
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
