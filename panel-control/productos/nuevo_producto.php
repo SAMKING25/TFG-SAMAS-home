@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$nombre', $precio, '$categoria', $stock, '$img_producto', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
         $_conexion->query($sql);
 
-        header("location: /?creado=ok");
+        header("location: /panel-control/productos/?creado=ok");
         exit;
     }
 }

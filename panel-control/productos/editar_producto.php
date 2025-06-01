@@ -223,7 +223,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         !isset($err_largo) && !isset($err_ancho) && !isset($err_alto) &&
         !isset($err_foto_proveedor) && !isset($err_oferta)
     ) {
-        header("Location: /?editado=ok");
+        header("Location: /panel-control/productos/?editado=ok");
         exit;
     }
 }

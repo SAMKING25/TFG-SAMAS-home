@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"]))
     $stmt = $_conexion->prepare("DELETE FROM carrito WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("ii", $id_usuario, $id_producto);
     $stmt->execute();
-    header("Location: /?eliminado=1");
+    header("Location: /carrito/?eliminado=1");
     exit;
 }
 
@@ -77,14 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     $stmt->close();
 
     if ($nueva_cantidad > $stock_disponible) {
-        header("Location: /?stock=1");
+        header("Location: /carrito/?stock=1");
         exit;
     }
 
     $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = ? WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("iii", $nueva_cantidad, $id_usuario, $id_producto);
     $stmt->execute();
-    header("Location: /?actualizado=1");
+    header("Location: /carrito/?actualizado=1");
     exit;
 }
 ?>
@@ -406,6 +406,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
             });
         </script>
     <?php endif; ?>
+
+    <script>
+        // Elimina los parámetros de mensaje de la URL tras mostrar el mensaje
+        ['actualizado', 'eliminado', 'stock'].forEach(function(param) {
+            if (window.location.search.includes(param + '=1')) {
+                const url = new URL(window.location);
+                url.searchParams.delete(param);
+                window.history.replaceState({}, document.title, url.pathname + url.search);
+            }
+        });
+    </script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
