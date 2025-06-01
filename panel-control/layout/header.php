@@ -7,7 +7,7 @@ $sql->bind_param("i", $id_proveedor);
 $sql->execute();
 $resultado = $sql->get_result();
 
-define('IMG_USUARIO', '/img/usuario/');
+define('IMG_PROVEEDOR', '/img/proveedor/');
 define('USUARIO', '/login/');
 define('FUNCIONES', '/util/funciones/');
 define('INICIO', '/');
@@ -98,7 +98,7 @@ define('INICIO', '/');
     <a href="#" class="align-items-center text-white text-decoration-none dropdown-toggle d-flex" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
       <?php while ($fila = $resultado->fetch_assoc()) { ?>
-        <img src="<?php echo IMG_USUARIO . $fila['img_proveedor'] ?>" alt="" width="36" height="36"
+        <img src="<?php echo IMG_PROVEEDOR . $fila['img_proveedor'] ?>" alt="" width="36" height="36"
           class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
         <strong class="d-none d-md-inline text-white">
           <?php echo $fila['nombre_proveedor'] ?>

@@ -3,6 +3,7 @@
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
 define('IMG_USUARIO', '/img/usuario/');
+define('IMG_PROVEEDOR', '/img/proveedor/');
 define('FUNCIONES', '/util/funciones/');
 
 $tipo_sesion = null;
@@ -106,7 +107,7 @@ if (isset($_SESSION['usuario'])) {
                         <?php } else { ?>
                             <img src="<?php echo $tipo_sesion === 'usuario'
                                 ? IMG_USUARIO . $datos['img_usuario']
-                                : IMG_USUARIO . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
+                                : IMG_PROVEEDOR . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
                                 class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
                             <strong class="util-nav-icons">
                                 <?php echo $tipo_sesion === 'usuario'

@@ -49,6 +49,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 0;
             background: linear-gradient(135deg, #fccb90 0%, #a39082 100%);
             min-height: 100vh;
+            font-family: 'Montserrat', Arial, Helvetica, sans-serif;
         }
 
         .gradient-form {
@@ -75,13 +76,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             filter: drop-shadow(0 2px 8px #a39082aa);
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap');
-
         .form-label {
             font-family: 'Montserrat', Arial, Helvetica, sans-serif;
             font-weight: 600;
             color: #a39082;
             letter-spacing: 0.5px;
+            font-size: 1.08rem;
         }
 
         .form-control {
@@ -93,38 +93,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 0.75rem 1.25rem;
             transition: border-color 0.2s;
             color: #6d4c1b;
-            /* color acorde a la paleta */
         }
 
         .form-control:focus {
             border-color: #a39082;
             box-shadow: 0 0 0 2px #fccb90aa;
-        }
-
-        .password-wrapper {
-            position: relative;
-        }
-
-        .toggle-password-btn {
-            position: absolute;
-            top: 50%;
-            right: 18px;
-            transform: translateY(-50%);
-            z-index: 2;
-            border: none;
-            background: transparent;
-            padding: 0;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #a39082 !important;
-            font-size: 1.3rem;
-            cursor: pointer;
-        }
-
-        .toggle-password-btn:focus {
-            outline: none;
         }
 
         .btn-primary.gradient-custom-2 {
@@ -135,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 2rem;
             box-shadow: 0 2px 8px #a3908240;
             transition: background 0.2s, box-shadow 0.2s;
+            font-size: 1.08rem;
         }
 
         .btn-primary.gradient-custom-2:hover,
@@ -158,20 +132,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .side-panel {
             background: linear-gradient(135deg, #a39082 0%, #927447 100%);
             color: #fff;
-            /* border-top-right-radius: 2rem;
-            border-bottom-right-radius: 2rem; */
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             min-height: 100%;
             padding: 3rem 2.5rem;
+            font-size: 1.08rem;
         }
 
         .side-panel h4 {
             font-weight: 700;
             letter-spacing: 1px;
             margin-bottom: 1.5rem;
+            font-size: 1.25rem;
         }
 
         .side-panel p {
@@ -183,23 +157,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             color: #a57d31;
             font-weight: 700;
             letter-spacing: 1px;
+            font-size: 1.25rem;
         }
 
         a {
             color: #a57d31;
             text-decoration: underline;
             transition: color 0.2s;
+            font-size: 1.08rem;
         }
 
         a:hover {
             color: #927447;
         }
 
-        .d-flex.align-items-center.justify-content-center.pb-4 {
-            margin-top: 0.5rem;
-        }
-
-        /* Links de regístrate y eres una empresa */
         .login-links {
             margin-top: 2rem;
         }
@@ -224,6 +195,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             display: inline-flex;
             align-items: center;
             gap: 0.2rem;
+            font-size: 1.08rem;
         }
 
         .login-links a:hover {
@@ -237,11 +209,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
+        /* RESPONSIVE */
         @media (max-width: 991.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 2rem 2rem !important;
                 min-height: 180px;
                 padding: 2rem 1.5rem;
+            }
+
+            .card {
+                border-radius: 2rem !important;
+                overflow: hidden;
             }
 
             .card-body {
@@ -251,13 +229,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         @media (max-width: 767.98px) {
             .side-panel {
-                border-radius: 0 0 2rem 2rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
                 min-height: 120px;
                 padding: 1.5rem 1rem;
+                font-size: 1rem;
             }
 
             .card {
-                border-radius: 1.2rem;
+                border-radius: 1.2rem !important;
+                overflow: hidden;
             }
         }
 
@@ -268,6 +248,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             .side-panel {
                 padding: 1rem 0.5rem;
+                border-radius: 0 0 1.2rem 1.2rem !important;
+                font-size: 0.98rem;
+            }
+
+            .card {
+                border-radius: 1.2rem !important;
+                overflow: hidden;
             }
         }
     </style>
@@ -335,7 +322,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Verifica tu correo</h4>
-                                    <p class="small mb-0">
+                                    <p class="mb-0" style="font-size:1.08rem;">
                                         Te hemos enviado un código de verificación a tu correo electrónico.<br>
                                         Por favor, revisa tu bandeja de entrada y la carpeta de spam e introduce el
                                         código para completar tu registro.
