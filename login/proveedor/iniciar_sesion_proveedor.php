@@ -428,17 +428,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
     </script>
-    <?php if (isset($_GET['registro']) && $_GET['registro'] === "ok"): ?>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Cuenta de empresa registrada con éxito',
-                text: '¡Ya puedes iniciar sesión!',
-                confirmButtonColor: '#a57d31'
-            });
-        </script>
-    <?php endif; ?>
 </body>
 
 </html>

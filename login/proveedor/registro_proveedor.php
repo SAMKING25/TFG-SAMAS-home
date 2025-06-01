@@ -63,10 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
         $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, img_proveedor) 
-                    VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
+                VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
         $_conexion->query($sql);
-        header("Location: iniciar_sesion_proveedor?registro=ok");
-        exit;
+        $registro_ok = true; // <-- Añade esto
     }
 }
 ?>
@@ -507,6 +506,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         });
     </script>
+    <?php if (isset($registro_ok) && $registro_ok): ?>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Cuenta de empresa registrada con éxito',
+                text: '¡Ya puedes iniciar sesión!',
+                confirmButtonColor: '#a57d31'
+            }).then(() => {
+                window.location.href = "iniciar_sesion_proveedor.php";
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
