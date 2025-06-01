@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
     <?php
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
@@ -293,7 +294,7 @@
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Ajustes</h4>
                                     <p class="small mb-0">Datos personales</p>
-                                    <hr class="my-4" style="border-color: #fff6;"/>
+                                    <hr class="my-4" style="border-color: #fff6;" />
                                     <p class="mb-2">
                                         Desde esta sección puedes modificar tu información personal, como tu nombre, correo electrónico, contraseña y foto de perfil.
                                     </p>
@@ -372,92 +373,36 @@
         </div>
     </section>
 
-    
-
-    <!-- <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
-        <div class="container py-5 h-100">
-            <div class="row d-flex justify-content-center align-items-center h-100">
-                <div class="col-xl-10">
-                    <div class="card rounded-3 text-black">
-                        <div class="row g-0">
-                            <div class="col-lg-6 d-flex align-items-center gradient-custom-2">
-                                <div class="text-white px-3 py-4 p-md-5 mx-md-4">
-                                    <h2 class="mb-4">Ajustes</h2>
-                                    <p class="small mb-0">Datos personales</p>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="card-body p-md-5 mx-md-4">
-                                    <form method="post" enctype="multipart/form-data">
-                                        <div class="text-center">
-                                            <div id="foto-perfil-wrapper"
-                                                style="width: 185px; height: 185px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
-                                                <img id="foto-perfil"
-                                                    src="<?php echo IMG_USUARIO . $img_proveedor_actual ?>"
-                                                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ccc;"
-                                                    alt="Foto de perfil" class="img-fluid" />
-                                            </div>
-                                            <input type="file" name="nueva_img_proveedor" id="nueva_img_proveedor"
-                                                class="form-control mb-4" accept="image/*" style="display: none;" />
-                                            <?php if (isset($err_img_proveedor))
-                                                echo "<span class='error'>$err_img_proveedor</span>"; ?>
-                                        </div>
-
-                                        <div data-mdb-input-init class="form-outline mb-4">
-                                            <label class="form-label" for="nuevo_nombre_proveedor">Nombre</label>
-                                            <input type="text" disabled id="nuevo_nombre_proveedor"
-                                                name="nuevo_nombre_proveedor"
-                                                value="<?php echo $nombre_proveedor_actual ?>" class="form-control"
-                                                placeholder="Inserte su nombre" />
-                                            <?php if (isset($err_nombre_proveedor))
-                                                echo "<span class='error'>$err_nombre_proveedor</span>"; ?>
-                                        </div>
-
-                                        <div data-mdb-input-init class="form-outline mb-4">
-                                            <label class="form-label" for="nuevo_email_proveedor">Email</label>
-                                            <input type="email" disabled id="nuevo_email_proveedor"
-                                                name="nuevo_email_proveedor"
-                                                value="<?php echo $email_proveedor_actual ?>" class="form-control"
-                                                placeholder="Inserte su correo electrónico" />
-                                            <?php if (isset($err_email_proveedor))
-                                                echo "<span class='error'>$err_email_proveedor</span>"; ?>
-                                        </div>
-
-                                        <div data-mdb-input-init class="form-outline mb-4">
-                                            <label class="form-label"
-                                                for="nueva_contrasena_proveedor">Contraseña</label>
-                                            <input type="password" disabled id="nueva_contrasena_proveedor"
-                                                name="nueva_contrasena_proveedor" class="form-control" />
-                                            <?php if (isset($err_contrasena_proveedor))
-                                                echo "<span class='error'>$err_contrasena_proveedor</span>"; ?>
-                                        </div>
-
-                                        <div class="pt-1 mb-5 pb-1">
-                                            <button data-mdb-button-init data-mdb-ripple-init
-                                                class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
-                                                type="button" id="cambiar_datos">Cambiar datos</button>
-                                            <a href="<?php echo $redirect_url ?>" data-mdb-button-init
-                                                data-mdb-ripple-init
-                                                class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+    <!-- Modal para recortar imagen -->
+    <div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropperModalLabel">Recorta tu foto de perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <img id="cropper-image" style="max-width:100%; max-height:400px;">
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cropper-apply" class="btn btn-primary">Aplicar recorte</button>
                 </div>
             </div>
         </div>
-    </section> -->
+    </div>
+
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <script>
         let modo_edicion = false;
 
         // Validación de errores
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nuevo_nombre_proveedor');
             const emailInput = document.getElementById('nuevo_email_proveedor');
@@ -465,7 +410,7 @@
 
             const botonCambiar = document.getElementById('cambiar_datos');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -520,13 +465,13 @@
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
 
             // "Cambiar datos" ==> "Aplicar cambios"
-            botonCambiar.addEventListener('click', function (event) {
+            botonCambiar.addEventListener('click', function(event) {
                 if (!modo_edicion) {
                     event.preventDefault();
 
@@ -547,7 +492,7 @@
     </script>
     <script>
         // Foto de perfil: click para cambiar imagen
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
             const fotoPerfil = document.getElementById('foto-perfil');
             const inputFile = document.getElementById('nueva_img_proveedor');
@@ -566,7 +511,7 @@
             actualizarCursor();
 
             // Permitir click en la foto SOLO si modo_edicion es true
-            fotoPerfilWrapper.addEventListener('click', function () {
+            fotoPerfilWrapper.addEventListener('click', function() {
                 if (typeof modo_edicion !== 'undefined' && modo_edicion) {
                     inputFile.click();
                 }
@@ -574,20 +519,82 @@
 
             // Actualiza el cursor cuando cambie el modo
             if (botonCambiar) {
-                botonCambiar.addEventListener('click', function () {
+                botonCambiar.addEventListener('click', function() {
                     setTimeout(actualizarCursor, 10);
                 });
             }
 
             // Previsualización de la imagen seleccionada
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoPerfil.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let cropper;
+            const inputFile = document.getElementById('nueva_img_proveedor');
+            const fotoPerfil = document.getElementById('foto-perfil');
+            const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+            const cropperImage = document.getElementById('cropper-image');
+            const cropperApply = document.getElementById('cropper-apply');
+
+            inputFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        cropperImage.src = ev.target.result;
+                        cropperModal.show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                });
+            });
+
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+            });
+
+            cropperApply.addEventListener('click', function() {
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 300,
+                        height: 300,
+                        imageSmoothingQuality: 'high'
+                    });
+                    fotoPerfil.src = canvas.toDataURL();
+                    canvas.toBlob(function(blob) {
+                        const fileInput = document.getElementById('nueva_img_proveedor');
+                        const file = new File([blob], "recorte.png", {
+                            type: "image/png"
+                        });
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                    }, 'image/png');
+                    cropperModal.hide();
                 }
             });
         });

@@ -136,8 +136,131 @@ if ($hayOferta) {
 
         /* Cambia el fondo del container principal a un gris muy claro elegante */
         .main-content {
-            background: #f5f5f7; /* Antes: #fffbe9 */
+            background: #f5f5f7;
+            /* Antes: #fffbe9 */
             border-radius: 24px;
+        }
+
+        /* Responsive para móvil */
+        @media (max-width: 767.98px) {
+            .bg-light.p-3 {
+                padding: 0 !important;
+                min-height: 200px !important;
+            }
+
+            .img-fija {
+                width: 100vw !important;
+                max-width: 100vw !important;
+                height: 260px !important;
+                min-height: 140px !important;
+                object-fit: cover !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                background: #f8f8f8;
+                box-shadow: none !important;
+                display: block;
+                position: relative;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .main-content {
+                padding: 0.5rem !important;
+                border-radius: 10px;
+            }
+
+            .card.shadow-lg {
+                padding: 1rem !important;
+                border-radius: 12px !important;
+            }
+
+            .img-fija {
+                max-width: 100%;
+                width: 100%;
+                height: 320px;
+                min-height: 180px;
+                object-fit: contain;
+                background: #f8f8f8;
+                display: block;
+                margin: 0 auto;
+            }
+
+            .img-similar-wrapper {
+                height: 120px;
+                border-radius: 8px;
+            }
+
+            .img-similar {
+                height: 100px;
+                padding: 4px;
+            }
+
+            .badge.bg-danger,
+            .badge.bg-success,
+            .badge.bg-secondary {
+                font-size: 0.9rem !important;
+                padding: 0.5em 0.8em !important;
+                border-radius: 8px !important;
+            }
+
+            .row-cols-sm-2>* {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .row-cols-md-3>* {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            .card-body.text-center {
+                padding: 0.7rem 0.3rem !important;
+            }
+
+            h1.fw-bold {
+                font-size: 1.3rem !important;
+            }
+
+            .fs-3,
+            .fs-5 {
+                font-size: 1.1rem !important;
+            }
+
+            .btn-lg,
+            .btn {
+                font-size: 1rem !important;
+                padding: 0.5rem 1rem !important;
+                border-radius: 10px !important;
+            }
+
+            .btn.btn-warning {
+                width: 56px !important;
+                height: 56px !important;
+                padding: 0 !important;
+                border-radius: 12px !important;
+                min-width: 0 !important;
+                justify-content: center !important;
+                align-items: center !important;
+                display: flex !important;
+            }
+
+            .btn.btn-warning .bi {
+                margin: 0 !important;
+                font-size: 1.7rem !important;
+            }
+
+            .mb-5 {
+                margin-bottom: 1.2rem !important;
+            }
+
+            .rounded-4,
+            .rounded-5 {
+                border-radius: 10px !important;
+            }
+
+            form.d-flex.gap-3 {
+                gap: 1rem !important;
+            }
         }
     </style>
 </head>
@@ -245,11 +368,13 @@ if ($hayOferta) {
                                         </select>
                                     <?php endif; ?>
                                 </div>
-                                <button type="submit" class="btn btn-warning btn-lg rounded-4 px-4 shadow"
+                                <button type="submit" class="btn btn-warning btn-lg rounded-4 px-4 shadow d-flex align-items-center justify-content-center"
                                     style="background:#b88c4a; border:none;"
                                     <?php if ($producto["stock"] <= 0) echo "disabled"; ?>>
-                                    <i class="bi bi-cart-plus me-2"></i>
-                                    <?php echo $producto["stock"] <= 0 ? "Sin stock" : "Añadir al carrito"; ?>
+                                    <i class="bi bi-cart-plus fs-4"></i>
+                                    <span class="d-none d-md-inline ms-2">
+                                        <?php echo $producto["stock"] <= 0 ? "Sin stock" : "Añadir al carrito"; ?>
+                                    </span>
                                 </button>
                                 <a href="./" class="btn btn-outline-secondary btn-lg rounded-4 px-4">← Volver</a>
                             </form>
@@ -282,12 +407,12 @@ if ($hayOferta) {
                             Actualmente no hay productos similares disponibles.
                         </div>
                     </div>
-                <?php
+                    <?php
                 else:
                     while ($sim = $result_similares->fetch_assoc()):
                         $hayOfertaSim = !is_null($sim["porcentaje"]);
                         $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
-                        ?>
+                    ?>
                         <div class="col mb-5">
                             <a href="ver_producto?id_producto=<?php echo $sim["id_producto"]; ?>"
                                 class="text-decoration-none text-dark">
@@ -322,7 +447,7 @@ if ($hayOferta) {
                                 </div>
                             </a>
                         </div>
-                    <?php endwhile;
+                <?php endwhile;
                 endif;
                 $stmt_similares->close();
                 ?>

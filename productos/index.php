@@ -227,8 +227,9 @@ $filtros = [
 
         .card-img-container {
             width: 100%;
-            height: 320px;
-            background: #f4e5cc;
+            height: 340px;
+            /* Más grande en escritorio */
+            background: #f8f8f8;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -239,17 +240,38 @@ $filtros = [
         }
 
         .img-fija {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            margin: 0 auto;
             transition: transform 0.35s cubic-bezier(.4, 2, .3, 1), filter 0.3s;
             border-radius: 0;
         }
 
-        .card:hover .img-fija,
-        .card:focus-within .img-fija {
-            transform: scale(1.08);
-            filter: brightness(1.08) saturate(1.1);
+        @media (max-width: 991px) {
+            .card-img-container {
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .card-img-container {
+                height: 220px !important;
+                padding: 0 !important;
+            }
+
+            .img-fija {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                margin: 0 !important;
+                display: block;
+                border-radius: 0 !important;
+                background: #f8f8f8;
+            }
         }
 
         .add-cart-btn {
@@ -460,6 +482,54 @@ $filtros = [
                 font-size: 1.2rem;
                 right: 10px;
                 bottom: 10px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+
+            /* Badge de oferta más grande y cuadrado */
+            .card .bg-danger,
+            .card .position-absolute.bg-danger {
+                font-size: 1.2rem !important;
+                padding: 0.5em 1.1em !important;
+                border-top-right-radius: 1rem !important;
+                border-bottom-left-radius: 1rem !important;
+            }
+
+            /* Botón añadir al carrito más grande y cuadrado */
+            .add-cart-btn {
+                width: 56px !important;
+                height: 56px !important;
+                font-size: 1.7rem !important;
+                border-radius: 12px !important;
+                right: 12px !important;
+                bottom: 12px !important;
+                min-width: 0 !important;
+                justify-content: center !important;
+                align-items: center !important;
+                display: flex !important;
+                padding: 0 !important;
+            }
+
+            /* Imagen de producto más grande en la card */
+            .card-img-container {
+                height: 220px !important;
+                padding: 0 !important;
+            }
+
+            .img-fija {
+                width: 100% !important;
+                height: 100% !important;
+                object-fit: cover !important;
+                /* Aprovecha todo el espacio lateral */
+                margin: 0 !important;
+                display: block;
+                border-radius: 0 !important;
+                background: #f8f8f8;
+            }
+
+            .search-bar-container .bi-search {
+                display: none !important;
             }
         }
     </style>
@@ -824,20 +894,20 @@ $filtros = [
                                                 <div class="card-text fs-5">
                                                     <?php
                                                     if ($hayOferta) {
-                                                        ?>
+                                                    ?>
                                                         <span class="text-muted text-decoration-line-through me-2">
                                                             <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                         </span>
                                                         <span class="text-success fw-semibold">
                                                             <?php echo number_format($precioFinal, 2, ',', '.'); ?> €
                                                         </span>
-                                                        <?php
+                                                    <?php
                                                     } else {
-                                                        ?>
+                                                    ?>
                                                         <span class="text-success fw-semibold">
                                                             <?php echo number_format($precio, 2, ',', '.'); ?> €
                                                         </span>
-                                                        <?php
+                                                    <?php
                                                     }
                                                     ?>
                                                 </div>
@@ -869,14 +939,14 @@ $filtros = [
             if (input) input.focus();
         }
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             var offcanvas = document.getElementById('offcanvasFiltro');
             var btnFiltro = document.getElementById('btn-filtro-lateral');
             if (offcanvas && btnFiltro) {
-                offcanvas.addEventListener('show.bs.offcanvas', function () {
+                offcanvas.addEventListener('show.bs.offcanvas', function() {
                     btnFiltro.style.display = 'none';
                 });
-                offcanvas.addEventListener('hidden.bs.offcanvas', function () {
+                offcanvas.addEventListener('hidden.bs.offcanvas', function() {
                     btnFiltro.style.display = '';
                 });
             }

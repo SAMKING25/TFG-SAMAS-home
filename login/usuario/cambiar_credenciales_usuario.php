@@ -202,6 +202,8 @@
             }
         }
     </style>
+    <!-- Cropper.js CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -212,7 +214,7 @@
         $nueva_contrasena_usuario = $_POST["nueva_contrasena_usuario"];
         $nueva_img_usuario = "estandar.png";
         $nuevo_id_suscripcion = 1; //Suscripción básica por defecto
-    
+
         $nuevo_nombre_imagen = $_FILES["nueva_img_usuario"]["name"];
         $ubicacion_temporal = $_FILES["nueva_img_usuario"]["tmp_name"];
         $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
@@ -373,15 +375,36 @@
             </div>
         </div>
     </section>
+    <!-- Modal para recortar imagen -->
+    <div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cropperModalLabel">Recorta tu foto de perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <img id="cropper-image" style="max-width:100%; max-height:400px;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="cropper-apply" class="btn btn-primary">Aplicar recorte</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <!-- Cropper.js JS -->
+    <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <script>
         let modo_edicion = false;
 
         // Validación de errores
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nuevo_nombre_usuario');
             const emailInput = document.getElementById('nuevo_email_usuario');
@@ -389,7 +412,7 @@
 
             const botonCambiar = document.getElementById('cambiar_datos');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -444,13 +467,13 @@
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
 
             // "Cambiar datos" ==> "Aplicar cambios"
-            botonCambiar.addEventListener('click', function (event) {
+            botonCambiar.addEventListener('click', function(event) {
                 if (!modo_edicion) {
                     event.preventDefault();
 
@@ -471,7 +494,7 @@
     </script>
     <script>
         // Foto de perfil: click para cambiar imagen
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
             const fotoPerfil = document.getElementById('foto-perfil');
             const inputFile = document.getElementById('nueva_img_usuario');
@@ -490,7 +513,7 @@
             actualizarCursor();
 
             // Permitir click en la foto SOLO si modo_edicion es true
-            fotoPerfilWrapper.addEventListener('click', function () {
+            fotoPerfilWrapper.addEventListener('click', function() {
                 if (typeof modo_edicion !== 'undefined' && modo_edicion) {
                     inputFile.click();
                 }
@@ -498,20 +521,84 @@
 
             // Actualiza el cursor cuando cambie el modo
             if (botonCambiar) {
-                botonCambiar.addEventListener('click', function () {
+                botonCambiar.addEventListener('click', function() {
                     setTimeout(actualizarCursor, 10);
                 });
             }
 
             // Previsualización de la imagen seleccionada
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoPerfil.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let cropper;
+            const inputFile = document.getElementById('nueva_img_usuario');
+            const fotoPerfil = document.getElementById('foto-perfil');
+            const cropperModal = new bootstrap.Modal(document.getElementById('cropperModal'));
+            const cropperImage = document.getElementById('cropper-image');
+            const cropperApply = document.getElementById('cropper-apply');
+
+            inputFile.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(ev) {
+                        cropperImage.src = ev.target.result;
+                        cropperModal.show();
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                });
+            });
+
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
+                if (cropper) {
+                    cropper.destroy();
+                    cropper = null;
+                }
+            });
+
+            cropperApply.addEventListener('click', function() {
+                if (cropper) {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 300,
+                        height: 300,
+                        imageSmoothingQuality: 'high'
+                    });
+                    fotoPerfil.src = canvas.toDataURL();
+                    // Opcional: actualizar el input file con la imagen recortada para enviar al servidor
+                    canvas.toBlob(function(blob) {
+                        const fileInput = document.getElementById('nueva_img_usuario');
+                        const file = new File([blob], "recorte.png", {
+                            type: "image/png"
+                        });
+                        // Crea un DataTransfer para reemplazar el archivo en el input
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        fileInput.files = dataTransfer.files;
+                    }, 'image/png');
+                    cropperModal.hide();
                 }
             });
         });
