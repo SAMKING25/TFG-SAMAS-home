@@ -112,14 +112,14 @@ define('BASE_URL', '/panel-control/');
 <div class="d-flex">
     <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar offcanvas offcanvas-start" id="offcanvasExample"
         style="width: 280px;overflow-y: auto;">
-        <a href="/index.php" class="sidebar-logo">
+        <a href="/" class="sidebar-logo">
             <img src="/img/logos/logo-negro-nobg.png" alt="SAMAS home">
             <span class="sidebar-title">SAMAS<br>home</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="<?php echo BASE_URL; ?>index.php"
+                <a href="<?php echo BASE_URL; ?>"
                     class="nav-link <?php echo ($current_url === BASE_URL) ? 'active' : 'link-dark'; ?>">
                     <i class="bi bi-house-door me-2"></i>
                     Inicio

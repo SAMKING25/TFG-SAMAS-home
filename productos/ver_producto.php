@@ -27,7 +27,7 @@ if (isset($_GET["id_producto"])) {
     // Ahora procesamos el POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (!isset($_SESSION["usuario"])) {
-            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            header("Location: ../login/usuario/iniciar_sesion_usuario");
             exit;
         }
 

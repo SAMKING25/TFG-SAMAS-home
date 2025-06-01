@@ -24,7 +24,7 @@ if ($enviar) {
     header("Location: /contacto/mensaje-enviado.html");
     exit;
 } else {
-    header("Location: /contacto/index.php?error=1");
+    header("Location: /contacto/?error=1");
     exit;
 }
 ?>

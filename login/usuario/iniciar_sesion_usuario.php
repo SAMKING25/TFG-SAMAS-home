@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 unset($_SESSION['redirect_after_login']);
                 header("Location: $redirect_url");
             } else {
-                header("Location: /index.php"); // Si no había una página previa, va al inicio
+                header("Location: /"); // Si no había una página previa, va al inicio
             }
             exit();
         } else {

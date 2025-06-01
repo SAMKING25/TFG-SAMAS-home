@@ -208,7 +208,7 @@ $productos = $stmt->get_result();
                 <strong>Total:</strong> <?php echo number_format($pedido['total'], 2); ?> €
             </span>
         </div>
-        <a href="index.php" class="btn btn-volver">
+        <a href="/" class="btn btn-volver">
             <i class="bi bi-arrow-left"></i> Volver a mis pedidos
         </a>
         <?php if ($productos->num_rows > 0): ?>

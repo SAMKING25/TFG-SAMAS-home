@@ -374,7 +374,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <button data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="submit">Registrarse</button>
-                                            <a href="../../index.php" data-mdb-button-init data-mdb-ripple-init
+                                            <a href="../../" data-mdb-button-init data-mdb-ripple-init
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 

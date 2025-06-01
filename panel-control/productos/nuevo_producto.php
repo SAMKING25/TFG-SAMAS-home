@@ -6,7 +6,7 @@ require('../../util/funciones/utilidades.php');
 
 session_start();
 if (!isset($_SESSION["proveedor"])) {
-    header("location: ../../login/proveedor/iniciar_sesion_proveedor.php");
+    header("location: ../../login/proveedor/iniciar_sesion_proveedor");
     exit;
 }
 
@@ -165,7 +165,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             VALUES ('$nombre', $precio, '$categoria', $stock, '$img_producto', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
         $_conexion->query($sql);
 
-        header("location: index.php?creado=ok");
+        header("location: /?creado=ok");
         exit;
     }
 }
@@ -443,7 +443,7 @@ while ($fila = $resultado->fetch_assoc()) {
                                     echo "<span class='error'>$err_descripcion</span>"; ?>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-4">
-                                <a href="./index.php" class="btn btn-outline-secondary px-4"><i
+                                <a href="./" class="btn btn-outline-secondary px-4"><i
                                         class="bi bi-arrow-left"></i> Cancelar</a>
                                 <button type="submit" class="btn btn-success px-4"><i class="bi bi-check-circle"></i>
                                     Guardar producto</button>

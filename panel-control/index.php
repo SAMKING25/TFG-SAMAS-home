@@ -98,14 +98,14 @@
                     Todavía no has subido ningún producto.<br>
                     ¡Crea tu primer producto!
                 </p>
-                <a href="./productos/nuevo_producto.php" class="btn btn-gold px-4 py-2">
+                <a href="./productos/nuevo_producto" class="btn btn-gold px-4 py-2">
                     <i class="bi bi-plus-circle"></i> Nuevo producto
                 </a>
             </div>
         <?php else: ?>
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Mis productos</h2>
-                <a href="./productos/nuevo_producto.php" class="btn btn-gold">
+                <a href="./productos/nuevo_producto" class="btn btn-gold">
                     <i class="bi bi-plus-circle"></i> Nuevo producto
                 </a>
             </div>
@@ -113,7 +113,7 @@
                 <?php while ($fila = $resultado->fetch_assoc()): ?>
                     <div class="col-12 col-md-6 col-lg-4 col-xl-3">
                         <div class="card card-producto h-100">
-                            <a href="./productos/ver_producto.php/?id_producto=<?php echo $fila['id_producto'] ?>"
+                            <a href="./productos/ver_producto/?id_producto=<?php echo $fila['id_producto'] ?>"
                                 class="text-decoration-none">
                                 <img src="../img/productos/<?php echo $fila['img_producto']; ?>" class="card-img-top"
                                     alt="<?php echo $fila['nombre']; ?>">
