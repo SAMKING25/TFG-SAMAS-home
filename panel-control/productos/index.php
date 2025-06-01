@@ -192,14 +192,14 @@ $resultado = $_conexion->query($sql);
                                     <div class="mt-auto d-flex justify-content-between">
                                         <a href="editar_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
                                             class="btn btn-sm btn-gold">Editar</a>
-                                        <form method="POST" class="d-inline">
-                                            <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i
-                                                    class="bi bi-trash"></i></button>
-                                        </form>
                                     </div>
                                 </div>
                             </a>
+                            <form method="POST" class="d-inline position-absolute" style="top: 10px; right: 10px;">
+                                <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
+                                <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i
+                                        class="bi bi-trash"></i></button>
+                            </form>
                         </div>
                     </div>
                 <?php endwhile; ?>
