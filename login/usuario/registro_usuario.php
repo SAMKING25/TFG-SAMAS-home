@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <p style="color: #6d4c1b; font-size: 1.08rem; margin-bottom: 28px;">
                     Para completar tu registro, introduce el siguiente código de verificación:
                 </p>
-                <div style="background: #fccb90; color: #a39082; font-size: 2.2rem; font-weight: bold; letter-spacing: 8px; border-radius: 12px; padding: 18px 0; margin-bottom: 24px;">
+                <div style="background: #fccb90; color:rgb(0, 0, 0); font-size: 2.2rem; font-weight: bold; letter-spacing: 8px; border-radius: 12px; padding: 18px 0; margin-bottom: 24px;">
                     ' . $codigo_verificacion . '
                 </div>
                 <p style="color: #a39082; font-size: 0.98rem;">
