@@ -44,7 +44,8 @@ if (isset($_SESSION['usuario'])) {
 </style>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
+<nav
+    class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
     <div class="container">
         <!-- Logo a la izquierda -->
         <a class="navbar-brand d-flex align-items-center" href="/">
@@ -98,16 +99,15 @@ if (isset($_SESSION['usuario'])) {
                     </a>
                 <?php } ?>
                 <div class="dropdown">
-                    <a class="dropdown-toggle text-light text-decoration-none" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="dropdown-toggle text-light text-decoration-none" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
                         <?php if (!$datos) { ?>
                             <i class="bi bi-person-circle util-nav-icons"></i>
                         <?php } else { ?>
                             <img src="<?php echo $tipo_sesion === 'usuario'
-                                            ? IMG_USUARIO . $datos['img_usuario']
-                                            : IMG_USUARIO . $datos['img_proveedor']; ?>"
-                                alt="" width="32" height="32" class="rounded-circle me-2"
-                                style="object-fit: cover; aspect-ratio: 1 / 1;">
+                                ? IMG_USUARIO . $datos['img_usuario']
+                                : IMG_USUARIO . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
+                                class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
                             <strong class="util-nav-icons">
                                 <?php echo $tipo_sesion === 'usuario'
                                     ? $datos['nombre_usuario']
@@ -117,26 +117,32 @@ if (isset($_SESSION['usuario'])) {
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <?php if ($tipo_sesion === 'usuario') { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de perfil</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de
+                                    perfil</a></li>
                             <li><a class="dropdown-item" href="/pedidos/">Mis pedidos</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a>
+                            </li>
 
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar sesión</a></li>
                         <?php } elseif ($tipo_sesion === 'proveedor') { ?>
-                            <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Ajustes de perfil</a></li>
+                            <li><a class="dropdown-item" href="/login/proveedor/cambiar_credenciales_proveedor">Ajustes de
+                                    perfil</a></li>
                             <li><a class="dropdown-item" href="/panel-control/">Panel de control</a></li>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a>
+                            </li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar sesión</a></li>
                         <?php } else { ?>
-                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar sesión</a></li>
+                            <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar sesión</a>
+                            </li>
                             <li><a class="dropdown-item" href="/login/usuario/registro_usuario">Registrarse</a></li>
-                        <?php }; ?>
+                        <?php }
+                        ; ?>
                     </ul>
                 </div>
             </div>
@@ -146,3 +152,58 @@ if (isset($_SESSION['usuario'])) {
 <!-- Pop-up de cookies incluido-->
 <?php include('cookies.php'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<?php if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Solo si estamos en /plano o /plano/
+            if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
+                let confirmandoSalida = false; // Para evitar bucles
+
+                // 1. Aviso al recargar, cerrar o navegar fuera (navegación estándar)
+                window.addEventListener('beforeunload', function (e) {
+                    if (!confirmandoSalida) {
+                        e.preventDefault();
+                        e.returnValue = ''; // Chrome requiere esto para mostrar el aviso nativo
+                        return '';
+                    }
+                });
+
+                // 2. Aviso personalizado al pulsar cualquier enlace del navbar
+                document.querySelectorAll('a.nav-link, .dropdown-item').forEach(function (link) {
+                    // Ignora enlaces que abren en nueva pestaña
+                    if (link.target === '_blank') return;
+
+                    link.addEventListener('click', function (e) {
+                        // Si ya estamos confirmando, deja pasar
+                        if (confirmandoSalida) return;
+
+                        // Si el enlace es a la misma página, recarga, o a otra, muestra el modal
+                        e.preventDefault();
+                        Swal.fire({
+                            title: "¿Quieres salir del plano?",
+                            text: "Si sales del plano, podrías perder los cambios no guardados.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#3085d6",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Sí, salir",
+                            cancelButtonText: "Cancelar"
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                confirmandoSalida = true;
+                                window.removeEventListener('beforeunload', () => { }); // Evita doble aviso
+                                // Si es recarga (href actual), recarga, si no, navega
+                                if (link.href === window.location.href) {
+                                    window.location.reload();
+                                } else {
+                                    window.location.href = link.href;
+                                }
+                            }
+                            // Si cancela, no hace nada
+                        });
+                    });
+                });
+            }
+        });
+    </script>
+<?php } ?>
