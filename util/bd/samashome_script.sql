@@ -1,6 +1,6 @@
+DROP SCHEMA u929679314_samashome_db;
 CREATE SCHEMA u929679314_samashome_db;
 USE u929679314_samashome_db;
-DROP SCHEMA u929679314_samashome_db;
 
 CREATE TABLE categorias (
 	nombre_categoria VARCHAR(50) PRIMARY KEY,
@@ -84,9 +84,10 @@ CREATE TABLE detalle_pedidos (
     id_producto INT,
     cantidad INT,
     precio_unitario NUMERIC(6,2),
-    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido),
+    FOREIGN KEY (id_pedido) REFERENCES pedidos(id_pedido) ON DELETE CASCADE,
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
+
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas y sillas',"mesas.jpg");
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas y colchones',"colchones.jpg");
@@ -104,6 +105,7 @@ INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Básica", 0,
 INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Premium", 10, 4);
 INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("VIP", 25, -1); -- (-1 = Va a ser nuestro infinito)
 
+-- Después de crear una cuenta de empresa
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario", 433.00, "Armarios", 7, "Armario con medidas adecuadas.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.webp", 1);
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Cama Moderna", 325.00, "Camas y colchones", 11, "Cama viscoelástica.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "cama.jpg");
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Cama Vintage", 340.00, "Camas y colchones", 5, "Cama viscoelástica retro.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "colchones.jpg", 2);
@@ -113,8 +115,6 @@ INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, i
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sillón Blanco", 88.00, "Sofás y sillones", 24, "Sillón blanco particular y especial.", '{"alto": "115", "ancho": "80", "largo": "80"}', 1, "sillon-blanco.jpg");
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Sofá Gris", 320.00, "Sofás y sillones", 7, "Sofá gris minimalisa", '{"alto": "130", "ancho": "100", "largo": "30"}', 1, "sofa.jpg", 2);
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sofá Celeste", 299.00, "Sofás y sillones", 1, "Sofá celeste perfecto para salones abiertos al aire libre", '{"alto": "60", "ancho": "30", "largo": "100"}', 1, "sofas.jpg");
-
-DELETE FROM suscripciones WHERE nombre="VIP";
 
 SELECT * FROM detalle_pedidos;
 SELECT * FROM pedidos;
@@ -141,6 +141,8 @@ UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
 UPDATE usuarios SET id_suscripcion = 3 WHERE id_usuario = 1;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
+
+DELETE FROM suscripciones WHERE nombre="VIP";
 
 DELETE FROM detalle_pedidos WHERE id_detalle = 1;
 DELETE FROM pedidos WHERE id_pedido = 1;
