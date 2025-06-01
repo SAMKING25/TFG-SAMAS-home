@@ -77,8 +77,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Enviar email con el código
         $asunto = "Código de verificación SAMAS home";
-        $mensaje = "Tu código de verificación es: $codigo_verificacion";
-        $cabeceras = "From: no-reply@samas-home.com\r\n";
+        $logo_url = "https://samas-home.com/img/logos/logo-marron-nobg.png"; // Cambia por la URL real de tu logo
+        $mensaje = '
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Código de verificación SAMAS home</title>
+        </head>
+        <body style="font-family: Montserrat, Arial, sans-serif; background: #f7e5cb; margin:0; padding:0;">
+            <div style="max-width: 480px; margin: 40px auto; background: #fff8f1; border-radius: 18px; box-shadow: 0 4px 24px #a3908240; padding: 32px 24px; text-align: center;">
+                <img src="' . $logo_url . '" alt="SAMAS home" style="width: 120px; margin-bottom: 18px; filter: drop-shadow(0 2px 8px #a39082aa);">
+                <h2 style="color: #a57d31; margin-bottom: 8px;">¡Bienvenido a SAMAS home!</h2>
+                <p style="color: #6d4c1b; font-size: 1.08rem; margin-bottom: 28px;">
+                    Para completar tu registro, introduce el siguiente código de verificación:
+                </p>
+                <div style="background: #fccb90; color: #a39082; font-size: 2.2rem; font-weight: bold; letter-spacing: 8px; border-radius: 12px; padding: 18px 0; margin-bottom: 24px;">
+                    ' . $codigo_verificacion . '
+                </div>
+                <p style="color: #a39082; font-size: 0.98rem;">
+                    Si no has solicitado este registro, puedes ignorar este correo.
+                </p>
+                <hr style="margin: 32px 0 16px 0; border: none; border-top: 1.5px solid #f7e5cb;">
+                <p style="color: #bdbdbd; font-size: 0.92rem;">SAMAS home · Málaga</p>
+            </div>
+        </body>
+        </html>
+        ';
+        $cabeceras = "MIME-Version: 1.0\r\n";
+        $cabeceras .= "Content-type: text/html; charset=UTF-8\r\n";
+        $cabeceras .= "From: no-reply@samas-home.com\r\n";
         mail($email_usuario, $asunto, $mensaje, $cabeceras);
 
         // Redirigir a la página de verificación
