@@ -206,46 +206,46 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
             padding: 0.7rem !important;
             border-radius: 10px;
             margin-top: 10px;
+            text-align: center !important;
         }
 
         .carrito-card {
             border-radius: 10px !important;
             margin-bottom: 1rem !important;
             box-shadow: 0 2px 8px rgba(180, 140, 80, 0.1);
+            text-align: center !important;
         }
 
         .carrito-img {
-            max-height: 160px !important;   /* Antes: 90px */
-            padding: 12px !important;       /* Igual que en desktop */
+            max-width: 100% !important;
             width: 100% !important;
+            height: auto !important;
+            max-height: 220px !important;   /* Más grande que antes */
+            padding: 18px !important;       /* Un poco más de espacio */
+            background: none !important;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
             object-fit: contain !important;
-            display: block;
-            margin: 0 auto;
-            background: #f4e5cc;
-            border-radius: 12px !important;
         }
 
-        .carrito-titulo {
-            font-size: 1.05rem !important;
-        }
-
-        .carrito-precio,
-        .carrito-precio-final {
-            font-size: 1rem !important;
-        }
-
-        .carrito-descuento {
-            font-size: 0.9rem !important;
-        }
-
-        .card-body {
-            flex-direction: column !important;
-            gap: 0.5rem !important;
-            padding: 0.7rem 0.5rem !important;
+        .card-body,
+        .card-body > div,
+        .card-body form,
+        .card-body p,
+        .card-body h5,
+        .card-body .card-title,
+        .card-body .fw-bold {
+            text-align: center !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
         }
 
         .col-md-4,
-        .col-md-8 {
+        .col-md-8,
+        .col-md-7,
+        .col-md-5 {
             flex: 0 0 100%;
             max-width: 100%;
             padding: 0 !important;
@@ -254,60 +254,58 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 
         .row.g-0 {
             flex-direction: column !important;
+            align-items: center !important;
         }
 
-        .resumen-card {
-            border-radius: 10px !important;
-            margin-top: 1.5rem !important;
-            box-shadow: 0 2px 8px rgba(180, 140, 80, 0.1);
-        }
-
-        .btn,
-        .btn-sm,
-        .btn-secondary,
-        .btn-outline-primary {
-            font-size: 1rem !important;
-            border-radius: 10px !important;
-            padding: 0.4rem 1rem !important;
-        }
-
-        .btn-eliminar-producto .bi-x-lg {
-            font-size: 1.5rem !important;
-        }
-
-        .form-eliminar-producto {
-            margin-left: 0 !important;
-            margin-top: 0.5rem !important;
-        }
-
-        h2.mb-4 {
-            font-size: 1.2rem !important;
-            margin-bottom: 1rem !important;
-        }
-
-        .card-title,
-        .fw-bold {
-            font-size: 1.1rem !important;
-        }
-
-        .card-text {
-            font-size: 0.98rem !important;
-        }
-
-        .col-md-7,
-        .col-md-5 {
-            flex: 0 0 100%;
-            max-width: 100%;
-        }
-
-        .row {
+        .col-md-4.text-center.p-3 {
+            display: flex !important;
             flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 100% !important;
+            padding: 0.5rem 0 !important;
+            text-align: center !important;
         }
 
-        .resumen-card {
-            position: static !important;
-            top: unset !important;
-            z-index: unset !important;
+        .carrito-titulo {
+            order: -1 !important;
+            margin-bottom: 0.5rem !important;
+            font-size: 1.1rem !important;
+            width: 100% !important;
+            text-align: center !important;
+        }
+
+        .carrito-img {
+            order: 0 !important;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            max-width: 100% !important;
+            width: 100% !important;
+            height: auto !important;
+            text-align: center !important;
+            background: none !important;
+            padding: 0 !important;
+        }
+
+        .col-md-8 {
+            width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .card-body {
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: flex-start !important;
+            text-align: center !important;
+            width: 100% !important;
+            padding: 0.5rem 0 !important;
+        }
+
+        .carrito-detalles {
+            width: 100% !important;
+            text-align: center !important;
         }
     }
 </style>
@@ -326,15 +324,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                     <?php foreach ($productos as $producto): ?>
                         <div class="card mb-3 shadow-sm carrito-card">
                             <div class="row g-0">
-                                <div class="col-md-4 text-center p-3">
+                                <div class="col-md-4 text-center p-3 d-flex flex-column align-items-center justify-content-center">
+                                    <h5 class="card-title fw-bold carrito-titulo"><?php echo $producto["nombre"]; ?></h5>
                                     <img src="/img/productos/<?php echo $producto["img"]; ?>"
                                         class="img-fluid rounded carrito-img" style="max-height: 150px; object-fit: contain;">
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body d-flex justify-content-between align-items-start">
                                         <div>
-                                            <h5 class="card-title fw-bold carrito-titulo"><?php echo $producto["nombre"]; ?>
-                                            </h5>
                                             <p class="card-text mb-1">
                                                 Cantidad:
                                             <form method="post" action="" class="d-inline">

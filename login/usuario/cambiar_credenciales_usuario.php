@@ -181,14 +181,29 @@
         }
 
         @media (max-width: 767.98px) {
-            .side-panel {
-                border-radius: 0 0 2rem 2rem;
-                min-height: 120px;
-                padding: 1.5rem 1rem;
+            .side-panel .texto-largo {
+                display: none !important;
             }
-
-            .card {
-                border-radius: 1.2rem;
+            .side-panel {
+                text-align: center;
+                padding: 0.7rem 0.7rem !important;
+                min-height: 60px !important;
+            }
+            .side-panel .px-3,
+            .side-panel .py-4,
+            .side-panel .p-md-5,
+            .side-panel .mx-md-4 {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            .side-panel h4,
+            .side-panel p,
+            .side-panel hr {
+                margin-bottom: 0.4rem !important;
+                margin-top: 0.4rem !important;
+            }
+            .side-panel hr {
+                margin: 0.2rem 0 !important;
             }
         }
 
@@ -298,15 +313,15 @@
                                     <h4 class="mb-4">Ajustes</h4>
                                     <p class="small mb-0">Datos personales</p>
                                     <hr class="my-4" style="border-color: #fff6;" />
-                                    <p class="mb-2">
+                                    <p class="mb-2 texto-largo">
                                         Desde esta sección puedes modificar tu información personal, como tu nombre,
                                         correo electrónico, contraseña y foto de perfil.
                                     </p>
-                                    <p class="mb-2">
+                                    <p class="mb-2 texto-largo">
                                         Mantén tus datos actualizados para una mejor experiencia y seguridad en la
                                         plataforma.
                                     </p>
-                                    <p class="mb-0">
+                                    <p class="mb-0 texto-largo">
                                         Recuerda que tu información es confidencial y solo tú puedes cambiarla.
                                     </p>
                                 </div>
