@@ -203,9 +203,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (file_exists($ruta_anterior) && $img_actual != "") {
                 unlink($ruta_anterior);
             }
-            // Mantén el mismo nombre de archivo (ej: 2_22.jpg)
+            // Renombra la imagen como id_proveedor_id_producto.ext
             $extension = strtolower(pathinfo($nuevo_nombre_imagen, PATHINFO_EXTENSION));
-            $nuevo_nombre_final = pathinfo($img_actual, PATHINFO_FILENAME) . "." . $extension;
+            $id_proveedor = $_SESSION["proveedor"];
+            $nuevo_nombre_final = $id_proveedor . "_" . $id_producto . "." . $extension;
             $ubicacion_final = "../../img/productos/" . $nuevo_nombre_final;
             move_uploaded_file($ubicacion_temporal, $ubicacion_final);
             $img_actual = $nuevo_nombre_final;
