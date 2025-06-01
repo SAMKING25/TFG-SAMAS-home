@@ -106,7 +106,7 @@ INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Premium", 10
 INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("VIP", 25, -1); -- (-1 = Va a ser nuestro infinito)
 
 -- Después de crear una cuenta de empresa
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario", 433.00, "Armarios", 7, "Armario con medidas adecuadas.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.webp", 1);
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario", 433.00, "Armarios", 7, "Armario con medidas adecuadas.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.jpg", 1);
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Cama Moderna", 325.00, "Camas y colchones", 11, "Cama viscoelástica.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "cama.jpg");
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Cama Vintage", 340.00, "Camas y colchones", 5, "Cama viscoelástica retro.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "colchones.jpg", 2);
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Mesa Redonda", 75.00, "Mesas y sillas", 25, "Mesa redonda pequeña para disfrutar de una deliciosa merienda.", '{"alto": "50", "ancho": "67", "largo": "67"}', 1, "mesa.jpg");
@@ -138,7 +138,7 @@ DROP TABLE categorias;
 
 -- Reiniciar usos del plano
 UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
-UPDATE usuarios SET id_suscripcion = 3 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
 
@@ -147,4 +147,4 @@ DELETE FROM suscripciones WHERE nombre="VIP";
 DELETE FROM detalle_pedidos WHERE id_detalle = 1;
 DELETE FROM pedidos WHERE id_pedido = 1;
 
-DELETE FROM categorias WHERE nombre_categoria = "Cocinas y electrodomésticos";
+DELETE FROM categorias WHERE nombre_categoria = "Armarios";
