@@ -138,7 +138,7 @@ DROP TABLE categorias;
 
 -- Reiniciar usos del plano
 UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
-UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 3 WHERE id_usuario = 1;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
 

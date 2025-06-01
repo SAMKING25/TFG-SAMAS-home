@@ -4,6 +4,30 @@ if (!isset($_SESSION["usuario"])) {
     header("location: /suscripcion/");
     exit;
 }
+
+// Conexión a la base de datos
+require_once("../util/conexion.php");
+
+$id_usuario = $_SESSION["usuario"];
+$sql = $_conexion->prepare(
+    "SELECT s.nombre, s.max_usos_plano 
+     FROM usuarios u 
+     JOIN suscripciones s ON u.id_suscripcion = s.id_suscripcion 
+     WHERE u.id_usuario = ?"
+);
+if (!$sql) {
+    die("Error en la consulta: " . $_conexion->error);
+}
+$sql->bind_param("i", $id_usuario);
+$sql->execute();
+$result = $sql->get_result();
+$usuario = $result->fetch_assoc();
+
+if ($usuario && isset($usuario['max_usos_plano']) && $usuario['max_usos_plano'] == -1) {
+    // Si es VIP (usos ilimitados), redirige directamente al plano
+    header("Location: /plano/");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
