@@ -59,6 +59,7 @@ function agregarProducto(imagenURL, medidas) {
             lockSkewingY: true,
             lockScalingFlip: true,
             lockRotation: false,
+            isProducto: true
         });
 
         img.controls.rotateControl = new fabric.Control({
@@ -915,10 +916,17 @@ let clipboard = null;
 document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
         const activeObject = canvas.getActiveObject();
+        // Solo permite copiar si es producto o selección múltiple de productos
         if (activeObject) {
-            activeObject.clone(function (cloned) {
-                clipboard = cloned;
-            });
+            if (
+                (activeObject.isProducto === true) ||
+                (activeObject.type === 'activeSelection' &&
+                    activeObject._objects.every(obj => obj.isProducto === true))
+            ) {
+                activeObject.clone(function (cloned) {
+                    clipboard = cloned;
+                });
+            }
             e.preventDefault();
         }
     }
@@ -928,27 +936,32 @@ document.addEventListener('keydown', function (e) {
 document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
         if (clipboard) {
-            clipboard.clone(function (clonedObj) {
-                canvas.discardActiveObject();
-                clonedObj.set({
-                    left: clonedObj.left + 20,
-                    top: clonedObj.top + 20,
-                    evented: true
-                });
-                if (clonedObj.type === 'activeSelection') {
-                    // Multi-selection
-                    clonedObj.canvas = canvas;
-                    clonedObj.forEachObject(function (obj) {
-                        canvas.add(obj);
+            // Solo permite pegar si el clipboard es producto o selección múltiple de productos
+            if (
+                (clipboard.isProducto === true) ||
+                (clipboard.type === 'activeSelection' &&
+                    clipboard._objects.every(obj => obj.isProducto === true))
+            ) {
+                clipboard.clone(function (clonedObj) {
+                    canvas.discardActiveObject();
+                    clonedObj.set({
+                        left: clonedObj.left + 20,
+                        top: clonedObj.top + 20,
+                        evented: true
                     });
-                    // Group to selection
-                    clonedObj.setCoords();
-                } else {
-                    canvas.add(clonedObj);
-                }
-                canvas.setActiveObject(clonedObj);
-                canvas.requestRenderAll();
-            });
+                    if (clonedObj.type === 'activeSelection') {
+                        clonedObj.canvas = canvas;
+                        clonedObj.forEachObject(function (obj) {
+                            canvas.add(obj);
+                        });
+                        clonedObj.setCoords();
+                    } else {
+                        canvas.add(clonedObj);
+                    }
+                    canvas.setActiveObject(clonedObj);
+                    canvas.requestRenderAll();
+                });
+            }
             e.preventDefault();
         }
     }
