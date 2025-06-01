@@ -95,6 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 <head>
     <meta charset="UTF-8" />
     <title>Mi Carrito</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
@@ -197,6 +198,117 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 
     .swal2-popup {
         font-family: inherit !important;
+    }
+
+    /* RESPONSIVE MOBILE - estilo tipo ver_producto */
+    @media (max-width: 767.98px) {
+        .main-content {
+            padding: 0.7rem !important;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .carrito-card {
+            border-radius: 10px !important;
+            margin-bottom: 1rem !important;
+            box-shadow: 0 2px 8px rgba(180, 140, 80, 0.1);
+        }
+
+        .carrito-img {
+            max-height: 160px !important;   /* Antes: 90px */
+            padding: 12px !important;       /* Igual que en desktop */
+            width: 100% !important;
+            object-fit: contain !important;
+            display: block;
+            margin: 0 auto;
+            background: #f4e5cc;
+            border-radius: 12px !important;
+        }
+
+        .carrito-titulo {
+            font-size: 1.05rem !important;
+        }
+
+        .carrito-precio,
+        .carrito-precio-final {
+            font-size: 1rem !important;
+        }
+
+        .carrito-descuento {
+            font-size: 0.9rem !important;
+        }
+
+        .card-body {
+            flex-direction: column !important;
+            gap: 0.5rem !important;
+            padding: 0.7rem 0.5rem !important;
+        }
+
+        .col-md-4,
+        .col-md-8 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding: 0 !important;
+            text-align: center !important;
+        }
+
+        .row.g-0 {
+            flex-direction: column !important;
+        }
+
+        .resumen-card {
+            border-radius: 10px !important;
+            margin-top: 1.5rem !important;
+            box-shadow: 0 2px 8px rgba(180, 140, 80, 0.1);
+        }
+
+        .btn,
+        .btn-sm,
+        .btn-secondary,
+        .btn-outline-primary {
+            font-size: 1rem !important;
+            border-radius: 10px !important;
+            padding: 0.4rem 1rem !important;
+        }
+
+        .btn-eliminar-producto .bi-x-lg {
+            font-size: 1.5rem !important;
+        }
+
+        .form-eliminar-producto {
+            margin-left: 0 !important;
+            margin-top: 0.5rem !important;
+        }
+
+        h2.mb-4 {
+            font-size: 1.2rem !important;
+            margin-bottom: 1rem !important;
+        }
+
+        .card-title,
+        .fw-bold {
+            font-size: 1.1rem !important;
+        }
+
+        .card-text {
+            font-size: 0.98rem !important;
+        }
+
+        .col-md-7,
+        .col-md-5 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+
+        .row {
+            flex-direction: column !important;
+        }
+
+        .resumen-card {
+            position: static !important;
+            top: unset !important;
+            z-index: unset !important;
+        }
     }
 </style>
 
