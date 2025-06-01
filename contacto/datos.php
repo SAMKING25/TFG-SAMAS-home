@@ -9,13 +9,13 @@ $mensaje = $_POST["mensaje"] ?? '';
 
 $mensajeCompleto =  "Nombre: " . $nombre . "\n" .
                     "Apellidos: " . $apellido . "\n" .
-                    "Correo: " . $correo . "\n" .
+                    "Correo: " . $email . "\n" .
                     "Asunto: " . $asunto . "\n" .
                     "Mensaje: " . $mensaje;
 
 // Usa un correo de tu dominio como remitente
 $from = "From: info@samas-home.com\r\n"; 
-$from .= "Reply-To: $correo\r\n";
+$from .= "Reply-To: $email\r\n";
 $from .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
 $enviar = mail($destino, $asunto, $mensajeCompleto, $from);
