@@ -4,7 +4,7 @@ session_start();
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-if (isset($_POST['id_suscripcion']) && isset($_SESSION['usuario'])) {
+if (!empty($_POST['id_suscripcion']) && isset($_SESSION['usuario'])) {
     require('../util/conexion.php');
     $id_usuario = $_SESSION['usuario'];
     $id_suscripcion = intval($_POST['id_suscripcion']);
@@ -35,10 +35,8 @@ $stmt->execute();
 $resultado = $stmt->get_result();
 
 $carrito = [];
-$total = 0;
 while ($item = $resultado->fetch_assoc()) {
     $carrito[] = $item;
-    $total += $item['precio'] * $item['cantidad'];
 }
 
 // echo '<pre>';
@@ -47,8 +45,8 @@ while ($item = $resultado->fetch_assoc()) {
 // echo "Total: $total<br>";
 
 if (empty($carrito)) {
-    // Si es una suscripción, consideramos el pedido realizado correctamente
-    if (isset($_POST['id_suscripcion'])) {
+    // Si es una suscripción válida, consideramos el pedido realizado correctamente
+    if (!empty($_POST['id_suscripcion'])) {
         echo json_encode(['success' => true, 'suscripcion' => true]);
         exit;
     } else {
@@ -66,8 +64,10 @@ $datos_usuario = [
     'direccion' => $_POST['direccion'] ?? ''
 ];
 
-
 $datos_usuario_json = json_encode($datos_usuario, JSON_UNESCAPED_UNICODE);
+
+// Usar el importe recibido por POST en vez de calcularlo
+$total = isset($_POST['importe']) ? floatval($_POST['importe']) : 0;
 
 // 3. Insertar el pedido (añade datos_usuario)
 $sql_pedido = "INSERT INTO pedidos (id_usuario, total, fecha, datos_usuario) VALUES (?, ?, NOW(), ?)";
@@ -75,7 +75,6 @@ $stmt_pedido = $_conexion->prepare($sql_pedido);
 if (!$stmt_pedido) {
     die('Error preparando pedido: ' . $_conexion->error);
 }
-$total = floatval($total);
 $stmt_pedido->bind_param("ids", $id_usuario, $total, $datos_usuario_json);
 if (!$stmt_pedido->execute()) {
     die('Error ejecutando pedido: ' . $stmt_pedido->error);
