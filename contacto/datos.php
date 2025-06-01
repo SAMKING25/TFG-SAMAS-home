@@ -21,7 +21,7 @@ $from .= "Content-Type: text/plain; charset=UTF-8\r\n";
 $enviar = mail($destino, $asunto, $mensajeCompleto, $from);
 
 if ($enviar) {
-    header("Location: /contacto/mensaje-enviado.html");
+    header("Location: /contacto/mensaje-enviado");
     exit;
 } else {
     header("Location: /contacto/?error=1");

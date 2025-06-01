@@ -141,4 +141,8 @@ DROP TABLE suscripciones;
 DROP TABLE categorias;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
+
+DELETE FROM detalle_pedidos WHERE id_detalle = 1;
+DELETE FROM pedidos WHERE id_pedido = 1;
+
 DELETE FROM categorias WHERE nombre_categoria = "Cocinas y electrodomésticos";

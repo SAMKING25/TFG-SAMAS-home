@@ -575,7 +575,7 @@ $filtros = [
                                         class="btn rounded-pill px-4 ms-2 fw-semibold search-btn-yellow">
                                         Buscar
                                     </button>
-                                    <a href="./index.php"
+                                    <a href="./"
                                         class="btn btn-outline-secondary rounded-pill px-4 ms-2 ver-todos-btn">Ver
                                         todos</a>
                                 </div>
