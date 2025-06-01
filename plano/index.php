@@ -290,6 +290,15 @@ if (!isset($_SESSION["usuario"])) {
             font-weight: 600;
             letter-spacing: 0.5px;
         }
+
+        .btn-primary {
+            background-color: #a37030 !important;
+            border: none !important;
+        }
+
+        .btn-primary:hover {
+            background-color:rgb(133, 90, 38) !important;
+        }
     </style>
 </head>
 

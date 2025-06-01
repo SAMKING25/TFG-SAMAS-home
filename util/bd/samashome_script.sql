@@ -88,15 +88,14 @@ CREATE TABLE detalle_pedidos (
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto)
 );
 
+-- 100%
 INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Armarios',"armarios.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas y sillas',"mesas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas y colchones',"colchones.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Escritorios y sillas de escritorio', "sillas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás y sillones',"sofas.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Iluminación',"iluminacion.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Muebles de baño',"muebles-banio.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Productos de jardín',"jardin.jpg");
-INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Cocinas y electrodomésticos',"cocina.jpeg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Mesas',"mesas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Camas',"colchones.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillas',"sillas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sofás',"sofas.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Sillones',"sillones.jpg");
+INSERT INTO categorias (nombre_categoria,img_categoria) VALUES ('Cómodas',"comodas.png");
 
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Verano', 20);
 INSERT INTO ofertas (nombre, porcentaje) VALUES ('Invierno', 30);
@@ -106,15 +105,15 @@ INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("Premium", 10
 INSERT INTO suscripciones (nombre, precio, max_usos_plano) VALUES ("VIP", 25, -1); -- (-1 = Va a ser nuestro infinito)
 
 -- Después de crear una cuenta de empresa
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario", 433.00, "Armarios", 7, "Armario con medidas adecuadas.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.jpg", 1);
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Cama Moderna", 325.00, "Camas y colchones", 11, "Cama viscoelástica.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "cama.jpg");
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Cama Vintage", 340.00, "Camas y colchones", 5, "Cama viscoelástica retro.", '{"alto": "50", "ancho": "190", "largo": "135"}', 1, "colchones.jpg", 2);
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Mesa Redonda", 75.00, "Mesas y sillas", 25, "Mesa redonda pequeña para disfrutar de una deliciosa merienda.", '{"alto": "50", "ancho": "67", "largo": "67"}', 1, "mesa.jpg");
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Mesa Ovalada", 88.00, "Mesas y sillas", 15, "Mesa ovalada para compartir una deliciosa comida en familia.", '{"alto": "60", "ancho": "160", "largo": "75"}', 1, "mesas.jpg");
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario Vintage", 433.00, "Armarios", 7, "Armario de madera de nogal.", '{"alto": "230", "ancho": "180", "largo": "110"}', 1, "armarios.jpg", 1);
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Cama Moderna", 325.00, "Camas", 11, "Cama viscoelástica.", '{"alto": "50", "ancho": "135", "largo": "190"}', 1, "cama.jpg");
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Cama Vintage", 340.00, "Camas", 5, "Cama viscoelástica retro.", '{"alto": "50", "ancho": "135", "largo": "190"}', 1, "colchones.jpg", 2);
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Mesa Minimalista", 75.00, "Mesas", 25, "Mesa minimalista pequeña para disfrutar de una deliciosa merienda.", '{"alto": "50", "ancho": "67", "largo": "67"}', 1, "mesa.jpg");
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Mesa Vintage", 88.00, "Mesas", 15, "Mesa vintage para compartir una deliciosa comida en familia.", '{"alto": "60", "ancho": "160", "largo": "75"}', 1, "mesas.jpg");
 INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Armario Vintage", 210.00, "Armarios", 6, "Armario vintage blanco para un cuarto acogedor.", '{"alto": "210", "ancho": "120", "largo": "60"}', 1, "mueble.jpeg", 1);
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sillón Blanco", 88.00, "Sofás y sillones", 24, "Sillón blanco particular y especial.", '{"alto": "115", "ancho": "80", "largo": "80"}', 1, "sillon-blanco.jpg");
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Sofá Gris", 320.00, "Sofás y sillones", 7, "Sofá gris minimalisa", '{"alto": "130", "ancho": "100", "largo": "30"}', 1, "sofa.jpg", 2);
-INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sofá Celeste", 299.00, "Sofás y sillones", 1, "Sofá celeste perfecto para salones abiertos al aire libre", '{"alto": "60", "ancho": "30", "largo": "100"}', 1, "sofas.jpg");
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sillón Blanco", 88.00, "Sillones", 24, "Sillón blanco particular y especial.", '{"alto": "115", "ancho": "80", "largo": "80"}', 1, "sillon-blanco.jpg");
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto, id_oferta) VALUES ("Sofá Gris", 320.00, "Sofás", 7, "Sofá gris minimalisa", '{"alto": "130", "ancho": "200", "largo": "75"}', 1, "sofa.jpg", 2);
+INSERT INTO productos (nombre, precio, categoria, stock, descripcion, medidas, id_proveedor, img_producto) VALUES ("Sofá Celeste", 299.00, "Sofás", 1, "Sofá celeste perfecto para salones abiertos al aire libre", '{"alto": "60", "ancho": "190", "largo": "85"}', 1, "sofas.jpg");
 
 SELECT * FROM detalle_pedidos;
 SELECT * FROM pedidos;
@@ -138,7 +137,7 @@ DROP TABLE categorias;
 
 -- Reiniciar usos del plano
 UPDATE usuarios SET usos_plano = 0 WHERE id_usuario = 1;
-UPDATE usuarios SET id_suscripcion = 2 WHERE id_usuario = 1;
+UPDATE usuarios SET id_suscripcion = 3 WHERE id_usuario = 1;
 
 DELETE FROM usuarios WHERE id_usuario = 2;
 

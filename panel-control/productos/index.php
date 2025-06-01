@@ -17,6 +17,19 @@ include('../layout/sidebar.php');
 $producto_eliminado = false;
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_producto = $_POST["id_producto"];
+
+    // Obtener el nombre de la imagen antes de borrar el producto
+    $sql_img = "SELECT img_producto FROM productos WHERE id_producto = '$id_producto'";
+    $res_img = $_conexion->query($sql_img);
+    if ($res_img && $row_img = $res_img->fetch_assoc()) {
+        $img_producto = $row_img['img_producto'];
+        $ruta_imagen = "../../img/productos/" . $img_producto;
+        if (file_exists($ruta_imagen) && $img_producto != "") {
+            unlink($ruta_imagen);
+        }
+    }
+
+    // Ahora sí elimina el producto
     $sql = "DELETE FROM productos WHERE id_producto = '$id_producto'";
     $_conexion->query($sql);
     $producto_eliminado = true;
@@ -37,7 +50,8 @@ if (isset($_GET["busqueda"]) && $_GET["busqueda"] !== "") {
 
 
 // Consulta SQL
-$sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";;
+$sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";
+;
 $resultado = $_conexion->query($sql);
 ?>
 <!DOCTYPE html>

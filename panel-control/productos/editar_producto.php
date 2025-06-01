@@ -192,14 +192,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     if ($nuevo_nombre_imagen == "") {
-        // No se subió una nueva imagen, NO marcar error, solo mantener la actual
-        // $img_actual ya tiene el valor correcto
+    // No se subió una nueva imagen, NO marcar error, solo mantener la actual
+    // $img_actual ya tiene el valor correcto
     } else {
         if (strlen($nuevo_nombre_imagen) > 60) {
             $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
         } else {
+            // Elimina la imagen anterior si existe
+            $ruta_anterior = "../../img/productos/" . $img_actual;
+            if (file_exists($ruta_anterior) && $img_actual != "") {
+                unlink($ruta_anterior);
+            }
+            // Mantén el mismo nombre de archivo (ej: 2_22.jpg)
+            $extension = strtolower(pathinfo($nuevo_nombre_imagen, PATHINFO_EXTENSION));
+            $nuevo_nombre_final = pathinfo($img_actual, PATHINFO_FILENAME) . "." . $extension;
+            $ubicacion_final = "../../img/productos/" . $nuevo_nombre_final;
             move_uploaded_file($ubicacion_temporal, $ubicacion_final);
-            $img_actual = $nuevo_nombre_imagen;
+            $img_actual = $nuevo_nombre_final;
             $sql = "UPDATE productos SET img_producto = '$img_actual' WHERE id_producto = $id_producto";
             $_conexion->query($sql);
         }
