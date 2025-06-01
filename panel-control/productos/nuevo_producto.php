@@ -154,15 +154,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (strlen($nombre_imagen) > 60) {
             $err_imagen = "La ruta de la imagen no puede tener mas de 60 caracteres";
         } else {
-            move_uploaded_file($ubicacion_temporal, $ubicacion_final);
-            $img_producto = $nombre_imagen;
+            // No muevas la imagen aún, espera a tener el ID del producto
+            $img_producto = $nombre_imagen; // Temporal, se actualizará después
         }
     }
 
     if (isset($nombre) && isset($precio) && isset($categoria) && isset($img_producto) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
-        // Inserta un nuevo producto
+        // Inserta el producto SIN imagen primero
         $sql = "INSERT INTO productos (nombre, precio, categoria, stock, img_producto, descripcion, medidas, id_proveedor, id_oferta)
-            VALUES ('$nombre', $precio, '$categoria', $stock, '$img_producto', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
+        VALUES ('$nombre', $precio, '$categoria', $stock, '', '$descripcion', '" . json_encode($medidas) . "', $id_proveedor, $oferta)";
+        $_conexion->query($sql);
+
+        // Obtén el ID del producto recién insertado
+        $id_producto = $_conexion->insert_id;
+
+        // Renombra la imagen como ID_proveedor_ID_producto.ext
+        $extension = strtolower(pathinfo($nombre_imagen, PATHINFO_EXTENSION));
+        $nuevo_nombre_imagen = $id_proveedor . "_" . $id_producto . "." . $extension;
+        $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
+        move_uploaded_file($ubicacion_temporal, $ubicacion_final);
+
+        // Actualiza el producto con el nombre de la imagen correcto
+        $sql = "UPDATE productos SET img_producto = '$nuevo_nombre_imagen' WHERE id_producto = $id_producto";
         $_conexion->query($sql);
 
         header("location: /panel-control/productos/?creado=ok");
@@ -443,8 +456,8 @@ while ($fila = $resultado->fetch_assoc()) {
                                     echo "<span class='error'>$err_descripcion</span>"; ?>
                             </div>
                             <div class="d-flex justify-content-between align-items-center mt-4">
-                                <a href="./" class="btn btn-outline-secondary px-4"><i
-                                        class="bi bi-arrow-left"></i> Cancelar</a>
+                                <a href="./" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left"></i>
+                                    Cancelar</a>
                                 <button type="submit" class="btn btn-success px-4"><i class="bi bi-check-circle"></i>
                                     Guardar producto</button>
                             </div>
@@ -461,18 +474,18 @@ while ($fila = $resultado->fetch_assoc()) {
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');
             const inputFile = document.getElementById('img_producto');
-            fotoWrapper.addEventListener('click', function() {
+            fotoWrapper.addEventListener('click', function () {
                 inputFile.click();
             });
-            inputFile.addEventListener('change', function(e) {
+            inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = function (ev) {
                         fotoProducto.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);

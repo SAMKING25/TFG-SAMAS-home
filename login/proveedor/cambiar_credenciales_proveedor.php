@@ -16,7 +16,7 @@
     require('../../util/conexion.php');
     require('../../util/funciones/utilidades.php');
 
-    define('IMG_USUARIO', '/img/usuario/');
+    define('IMG_PROVEEDOR', '/img/proveedor/');
 
     session_start();
     if (!isset($_SESSION["proveedor"])) {
@@ -233,7 +233,7 @@
 
         $nuevo_nombre_imagen = $_FILES["nueva_img_proveedor"]["name"];
         $ubicacion_temporal = $_FILES["nueva_img_proveedor"]["tmp_name"];
-        $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
+        $ubicacion_final = "../../img/proveedor/$nuevo_nombre_imagen";
 
         if ($nuevo_email_proveedor == "") {
             $err_email_proveedor = "El email es obligatorio";
@@ -284,10 +284,22 @@
         if ($nuevo_nombre_imagen == "") {
             $err_img_proveedor = "La imagen es obligatoria";
         } else {
-            if (strlen($nuevo_nombre_imagen) > 60) {
-                $err_img_proveedor = "La ruta de la imagen no puede tener mas de 60 caracteres";
+            // Forzar extensión a .png si el archivo subido es PNG, o usar la extensión original
+            $extension = strtolower(pathinfo($nuevo_nombre_imagen, PATHINFO_EXTENSION));
+            if ($extension !== "png" && $extension !== "jpg" && $extension !== "jpeg" && $extension !== "webp") {
+                $err_img_proveedor = "Solo se permiten imágenes PNG, JPG, JPEG o WEBP";
             } else {
-                move_uploaded_file($ubicacion_temporal, to: $ubicacion_final);
+                $nuevo_nombre_imagen = $id_proveedor . ".png"; // Siempre guardar como PNG
+                $ubicacion_final = "../../img/proveedor/$nuevo_nombre_imagen";
+
+                // Elimina la imagen anterior si no es la predeterminada
+                if (!empty($img_proveedor_actual) && $img_proveedor_actual !== "estandar.png") {
+                    $ruta_anterior = "../../img/proveedor/" . $img_proveedor_actual;
+                    if (file_exists($ruta_anterior)) {
+                        unlink($ruta_anterior);
+                    }
+                }
+                move_uploaded_file($ubicacion_temporal, $ubicacion_final);
                 $img_proveedor_actual = $nuevo_nombre_imagen;
                 $sql = "UPDATE proveedores SET img_proveedor = '$img_proveedor_actual' WHERE id_proveedor = $id_proveedor";
                 $_conexion->query($sql);
@@ -335,7 +347,7 @@
                                             <div id="foto-perfil-wrapper"
                                                 style="width: 185px; height: 185px; margin: 0 auto; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
                                                 <img id="foto-perfil"
-                                                    src="<?php echo IMG_USUARIO . $img_proveedor_actual ?>"
+                                                    src="<?php echo IMG_PROVEEDOR . $img_proveedor_actual ?>"
                                                     style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%; border: 2px solid #ccc;"
                                                     alt="Foto de perfil" class="img-fluid" />
                                             </div>
@@ -421,7 +433,7 @@
         let modo_edicion = false;
 
         // Validación de errores
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nuevo_nombre_proveedor');
             const emailInput = document.getElementById('nuevo_email_proveedor');
@@ -429,7 +441,7 @@
 
             const botonCambiar = document.getElementById('cambiar_datos');
 
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -484,13 +496,13 @@
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function(error) {
+                errores.forEach(function (error) {
                     error.remove();
                 });
             }
 
             // "Cambiar datos" ==> "Aplicar cambios"
-            botonCambiar.addEventListener('click', function(event) {
+            botonCambiar.addEventListener('click', function (event) {
                 if (!modo_edicion) {
                     event.preventDefault();
 
@@ -511,7 +523,7 @@
     </script>
     <script>
         // Foto de perfil: click para cambiar imagen
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
             const fotoPerfil = document.getElementById('foto-perfil');
             const inputFile = document.getElementById('nueva_img_proveedor');
@@ -530,7 +542,7 @@
             actualizarCursor();
 
             // Permitir click en la foto SOLO si modo_edicion es true
-            fotoPerfilWrapper.addEventListener('click', function() {
+            fotoPerfilWrapper.addEventListener('click', function () {
                 if (typeof modo_edicion !== 'undefined' && modo_edicion) {
                     inputFile.click();
                 }
@@ -538,17 +550,17 @@
 
             // Actualiza el cursor cuando cambie el modo
             if (botonCambiar) {
-                botonCambiar.addEventListener('click', function() {
+                botonCambiar.addEventListener('click', function () {
                     setTimeout(actualizarCursor, 10);
                 });
             }
 
             // Previsualización de la imagen seleccionada
-            inputFile.addEventListener('change', function(e) {
+            inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = function (ev) {
                         fotoPerfil.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
@@ -557,7 +569,7 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             let cropper;
             const inputFile = document.getElementById('nueva_img_proveedor');
             const fotoPerfil = document.getElementById('foto-perfil');
@@ -565,11 +577,11 @@
             const cropperImage = document.getElementById('cropper-image');
             const cropperApply = document.getElementById('cropper-apply');
 
-            inputFile.addEventListener('change', function(e) {
+            inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = function (ev) {
                         cropperImage.src = ev.target.result;
                         cropperModal.show();
                     }
@@ -577,7 +589,7 @@
                 }
             });
 
-            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function () {
                 cropper = new Cropper(cropperImage, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -589,14 +601,14 @@
                 });
             });
 
-            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function () {
                 if (cropper) {
                     cropper.destroy();
                     cropper = null;
                 }
             });
 
-            cropperApply.addEventListener('click', function() {
+            cropperApply.addEventListener('click', function () {
                 if (cropper) {
                     const canvas = cropper.getCroppedCanvas({
                         width: 300,
@@ -604,9 +616,9 @@
                         imageSmoothingQuality: 'high'
                     });
                     fotoPerfil.src = canvas.toDataURL();
-                    canvas.toBlob(function(blob) {
+                    canvas.toBlob(function (blob) {
                         const fileInput = document.getElementById('nueva_img_proveedor');
-                        const file = new File([blob], "recorte.png", {
+                        const file = new File([blob], "logo_recortado.png", {
                             type: "image/png"
                         });
                         const dataTransfer = new DataTransfer();

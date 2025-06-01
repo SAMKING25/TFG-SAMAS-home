@@ -229,7 +229,7 @@
         $nueva_contrasena_usuario = $_POST["nueva_contrasena_usuario"];
         $nueva_img_usuario = "estandar.png";
         $nuevo_id_suscripcion = 1; //Suscripción básica por defecto
-
+    
         $nuevo_nombre_imagen = $_FILES["nueva_img_usuario"]["name"];
         $ubicacion_temporal = $_FILES["nueva_img_usuario"]["tmp_name"];
         $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
@@ -283,9 +283,21 @@
         if ($nuevo_nombre_imagen == "") {
             $err_foto_usuario = "La imagen es obligatoria";
         } else {
-            if (strlen($nuevo_nombre_imagen) > 60) {
-                $err_foto_usuario = "La ruta de la imagen no puede tener mas de 60 caracteres";
+            // Forzar extensión a .png si el archivo subido es PNG, o usar la extensión original
+            $extension = strtolower(pathinfo($nuevo_nombre_imagen, PATHINFO_EXTENSION));
+            if ($extension !== "png" && $extension !== "jpg" && $extension !== "jpeg" && $extension !== "webp") {
+                $err_foto_usuario = "Solo se permiten imágenes PNG, JPG, JPEG o WEBP";
             } else {
+                $nuevo_nombre_imagen = $id_usuario . ".png"; // Siempre guardar como PNG
+                $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
+
+                // Elimina la imagen anterior si no es la predeterminada
+                if (!empty($img_usuario_actual) && $img_usuario_actual !== "estandar.png") {
+                    $ruta_anterior = "../../img/usuario/" . $img_usuario_actual;
+                    if (file_exists($ruta_anterior)) {
+                        unlink($ruta_anterior);
+                    }
+                }
                 move_uploaded_file($ubicacion_temporal, $ubicacion_final);
                 $img_usuario_actual = $nuevo_nombre_imagen;
                 $sql = "UPDATE usuarios SET img_usuario = '$img_usuario_actual' WHERE id_usuario = $id_usuario";
@@ -419,7 +431,7 @@
         let modo_edicion = false;
 
         // Validación de errores
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nuevo_nombre_usuario');
             const emailInput = document.getElementById('nuevo_email_usuario');
@@ -427,7 +439,7 @@
 
             const botonCambiar = document.getElementById('cambiar_datos');
 
-            form.addEventListener('submit', function(e) {
+            form.addEventListener('submit', function (e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -482,13 +494,13 @@
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function(error) {
+                errores.forEach(function (error) {
                     error.remove();
                 });
             }
 
             // "Cambiar datos" ==> "Aplicar cambios"
-            botonCambiar.addEventListener('click', function(event) {
+            botonCambiar.addEventListener('click', function (event) {
                 if (!modo_edicion) {
                     event.preventDefault();
 
@@ -509,7 +521,7 @@
     </script>
     <script>
         // Foto de perfil: click para cambiar imagen
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
             const fotoPerfil = document.getElementById('foto-perfil');
             const inputFile = document.getElementById('nueva_img_usuario');
@@ -528,7 +540,7 @@
             actualizarCursor();
 
             // Permitir click en la foto SOLO si modo_edicion es true
-            fotoPerfilWrapper.addEventListener('click', function() {
+            fotoPerfilWrapper.addEventListener('click', function () {
                 if (typeof modo_edicion !== 'undefined' && modo_edicion) {
                     inputFile.click();
                 }
@@ -536,17 +548,17 @@
 
             // Actualiza el cursor cuando cambie el modo
             if (botonCambiar) {
-                botonCambiar.addEventListener('click', function() {
+                botonCambiar.addEventListener('click', function () {
                     setTimeout(actualizarCursor, 10);
                 });
             }
 
             // Previsualización de la imagen seleccionada
-            inputFile.addEventListener('change', function(e) {
+            inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = function (ev) {
                         fotoPerfil.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
@@ -555,7 +567,7 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             let cropper;
             const inputFile = document.getElementById('nueva_img_usuario');
             const fotoPerfil = document.getElementById('foto-perfil');
@@ -563,11 +575,11 @@
             const cropperImage = document.getElementById('cropper-image');
             const cropperApply = document.getElementById('cropper-apply');
 
-            inputFile.addEventListener('change', function(e) {
+            inputFile.addEventListener('change', function (e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function(ev) {
+                    reader.onload = function (ev) {
                         cropperImage.src = ev.target.result;
                         cropperModal.show();
                     }
@@ -575,7 +587,7 @@
                 }
             });
 
-            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function () {
                 cropper = new Cropper(cropperImage, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -587,14 +599,14 @@
                 });
             });
 
-            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function () {
                 if (cropper) {
                     cropper.destroy();
                     cropper = null;
                 }
             });
 
-            cropperApply.addEventListener('click', function() {
+            cropperApply.addEventListener('click', function () {
                 if (cropper) {
                     const canvas = cropper.getCroppedCanvas({
                         width: 300,
@@ -603,9 +615,9 @@
                     });
                     fotoPerfil.src = canvas.toDataURL();
                     // Opcional: actualizar el input file con la imagen recortada para enviar al servidor
-                    canvas.toBlob(function(blob) {
+                    canvas.toBlob(function (blob) {
                         const fileInput = document.getElementById('nueva_img_usuario');
-                        const file = new File([blob], "recorte.png", {
+                        const file = new File([blob], "logo_recortado.png", {
                             type: "image/png"
                         });
                         // Crea un DataTransfer para reemplazar el archivo en el input
