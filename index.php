@@ -27,7 +27,7 @@
 	if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart"])) {
 		// Si el usuario no está logueado, redirige al login
 		if (!isset($_SESSION["usuario"])) {
-			header("Location: ./login/usuario/iniciar_sesion_usuario.php");
+			header("Location: ./login/usuario/iniciar_sesion_usuario");
 			exit;
 		}
 		$id_producto = intval($_POST["id_producto"]);

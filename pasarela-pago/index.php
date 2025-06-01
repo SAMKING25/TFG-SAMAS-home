@@ -6,7 +6,7 @@ require('../util/conexion.php');
 session_start();
 
 if (!isset($_POST['importe'])) {
-  echo "No se recibió el importe. <a href='/carrito/index.php'>Volver al carrito</a>";
+  echo "No se recibió el importe. <a href='/carrito/'>Volver al carrito</a>";
   exit;
 }
 $importe = floatval($_POST['importe']);
@@ -181,7 +181,7 @@ $importe = floatval($_POST['importe']);
           formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
           formData.append('paypal_email', detalles.payer.email_address);
 
-          fetch('enviar_correo.php', {
+          fetch('enviar_correo', {
               method: 'POST',
               body: formData
             })
@@ -198,7 +198,7 @@ $importe = floatval($_POST['importe']);
               formData2.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
               formData2.append('paypal_email', detalles.payer.email_address);
 
-              return fetch('/pedidos/tramitar-pedido.php', {
+              return fetch('/pedidos/tramitar-pedido', {
                 method: 'POST',
                 body: formData2
               });
@@ -206,7 +206,7 @@ $importe = floatval($_POST['importe']);
             .then(response => response.json())
             .then(data => {
               if (data.success) {
-                window.location.href = "/pasarela-pago/completado.html";
+                window.location.href = "/pasarela-pago/completado";
               } else {
                 alert("Error al guardar el pedido");
               }

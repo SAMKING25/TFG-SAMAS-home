@@ -201,7 +201,7 @@ $pedidos = $stmt->get_result();
                         <div class="d-flex align-items-center justify-content-center" style="min-width:90px;">
                             <div class="text-center">
                                 <div class="fw-semibold text-secondary small mb-1">Detalles</div>
-                                <a href="ver_pedido.php?id_pedido=<?php echo $pedido['id_pedido']; ?>" title="Ver pedido"
+                                <a href="ver_pedido?id_pedido=<?php echo $pedido['id_pedido']; ?>" title="Ver pedido"
                                     class="btn btn-eye-pedido d-flex align-items-center justify-content-center mx-auto">
                                     <i class="bi bi-eye pedido-icon" style="font-size:1.3rem; margin:0;"></i>
                                 </a>

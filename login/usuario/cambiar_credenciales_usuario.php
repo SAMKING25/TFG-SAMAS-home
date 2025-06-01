@@ -19,7 +19,7 @@
 
     session_start();
     if (!isset($_SESSION["usuario"])) {
-        header("location: ../login/usuario/iniciar_sesion_usuario.php");
+        header("location: ../login/usuario/iniciar_sesion_usuario");
         exit;
     }
 
@@ -282,7 +282,7 @@
         $redirect_url = $_SESSION['redirect_after_login'];
         unset($_SESSION['redirect_after_login']);
     } else {
-        $redirect_url = "/index.php";
+        $redirect_url = "/";
     }
     ?>
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">

@@ -46,6 +46,8 @@ $datos_usuario = [
     'telefono'  => $_POST['telefono'] ?? '',
     'direccion' => $_POST['direccion'] ?? ''
 ];
+
+
 $datos_usuario_json = json_encode($datos_usuario, JSON_UNESCAPED_UNICODE);
 
 // 3. Insertar el pedido (añade datos_usuario)
@@ -87,6 +89,6 @@ unset($_SESSION['carrito']);
 
 // 7. Confirmar éxito
 // echo '<p>Pedido guardado correctamente. Carrito vaciado.</p>';
-// echo '<a href="/pedidos/index.php">Ir a mis pedidos</a>';
+// echo '<a href="/pedidos/">Ir a mis pedidos</a>';
 echo json_encode(['success' => true]);
 exit;

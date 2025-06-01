@@ -3,7 +3,7 @@ require('../util/conexion.php');
 session_start();
 
 if (!isset($_SESSION['usuario'])) {
-    header('Location: /login/usuario/registro_usuario.php');
+    header('Location: /login/usuario/registro_usuario');
     exit;
 }
 

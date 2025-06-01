@@ -59,7 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"]))
     $stmt = $_conexion->prepare("DELETE FROM carrito WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("ii", $id_usuario, $id_producto);
     $stmt->execute();
-    header("Location: index.php?eliminado=1");
+    header("Location: /?eliminado=1");
     exit;
 }
 
@@ -77,14 +77,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     $stmt->close();
 
     if ($nueva_cantidad > $stock_disponible) {
-        header("Location: index.php?stock=1");
+        header("Location: /?stock=1");
         exit;
     }
 
     $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = ? WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("iii", $nueva_cantidad, $id_usuario, $id_producto);
     $stmt->execute();
-    header("Location: index.php?actualizado=1");
+    header("Location: /?actualizado=1");
     exit;
 }
 ?>
@@ -273,7 +273,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
                                                 <?php echo number_format($producto["subtotal"], 2, ',', '.'); ?> €</p>
                                         </div>
                                         <!-- Botón de eliminar -->
-                                        <!-- filepath: c:\xampp\htdocs\carrito\index.php -->
+                                        <!-- filepath: c:\xampp\htdocs\carrito\ -->
                                         <form method="post" action="" class="form-eliminar-producto d-inline"
                                             style="margin-left:10px;">
                                             <input type="hidden" name="eliminar_producto"

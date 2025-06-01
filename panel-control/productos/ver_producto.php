@@ -6,7 +6,7 @@ require('../../util/conexion.php');
 
 session_start();
 if (!isset($_SESSION["proveedor"])) {
-    header("location: ../../login/proveedor/iniciar_sesion_proveedor.php");
+    header("location: ../../login/proveedor/iniciar_sesion_proveedor");
     exit;
 }
 
@@ -23,7 +23,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     while ($fila = $resultado->fetch_assoc()) {
         unlink("../../img/productos/" . $fila['img_producto']);
     }
-    header("location: ../index.php");
+    header("location: ../");
 }
 
 include("../layout/header.php");
@@ -184,7 +184,7 @@ $resultado = $sql->get_result();
         <?php while ($fila = $resultado->fetch_assoc()) { ?>
             <div class="card product-card shadow-lg border-0">
                 <!-- Botón flotante de volver -->
-                <a href="../index.php" class="btn btn-back shadow-sm">
+                <a href="../" class="btn btn-back shadow-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
                 <div class="row g-0">
@@ -239,7 +239,7 @@ $resultado = $sql->get_result();
                                 </span>
                             </div>
                             <div class="d-flex gap-2">
-                                <a href="../editar_producto.php?id_producto=<?php echo $fila["id_producto"] ?>"
+                                <a href="../editar_producto?id_producto=<?php echo $fila["id_producto"] ?>"
                                     class="btn btn-primary flex-fill">
                                     <i class="bi bi-pencil-square"></i> Editar
                                 </a>

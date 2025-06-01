@@ -19,7 +19,7 @@
 
     session_start();
     if (!isset($_SESSION["proveedor"])) {
-        header("location: ../login/proveedor/iniciar_sesion_proveedor.php");
+        header("location: ../login/proveedor/iniciar_sesion_proveedor");
         exit;
     }
 

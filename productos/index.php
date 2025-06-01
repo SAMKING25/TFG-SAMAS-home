@@ -16,10 +16,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["add_to_cart_id"])) {
 
     if (!isset($_SESSION["usuario"])) {
         if ($isAjax) {
-            echo json_encode(['status' => 'login', 'url' => '../login/usuario/iniciar_sesion_usuario.php']);
+            echo json_encode(['status' => 'login', 'url' => '../login/usuario/iniciar_sesion_usuario']);
             exit;
         } else {
-            header("Location: ../login/usuario/iniciar_sesion_usuario.php");
+            header("Location: ../login/usuario/iniciar_sesion_usuario");
             exit;
         }
     }

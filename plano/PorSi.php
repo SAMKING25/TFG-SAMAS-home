@@ -59,7 +59,7 @@
 
     session_start();
     if (!isset($_SESSION["usuario"])) {
-        header("location: ../login/usuario/iniciar_sesion_usuario.php");
+        header("location: ../login/usuario/iniciar_sesion_usuario");
         exit;
     }
     ?>

@@ -273,7 +273,7 @@
                                     <?php
                                         if (!$hay_usuarios || $usuario_no_logueado) {
                                             // Usuario no logueado
-                                            echo '<a href="/login/usuario/registro_usuario.php" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
+                                            echo '<a href="/login/usuario/registro_usuario" class="btn btn-custom ' . $suscripcion['nombre'] . ' w-100" style="max-width:220px;">Activar</a>';
                                             echo '<div style="height:1.5em;"></div>';
                                         } else {
                                             if ($id_suscripcion_usuario === $id_suscripcion) {
@@ -326,7 +326,7 @@
                     cancelButtonColor: '#198754'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '/suscripcion/cancelar.php';
+                        window.location.href = '/suscripcion/cancelar';
                     }
                 });
             });
@@ -349,7 +349,7 @@
                     cancelButtonColor: '#198754'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        window.location.href = '/suscripcion/cancelar.php';
+                        window.location.href = '/suscripcion/cancelar';
                     }
                 });
             });
