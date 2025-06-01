@@ -4,6 +4,18 @@ session_start();
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
+if (isset($_POST['id_suscripcion']) && isset($_SESSION['usuario'])) {
+    require('../util/conexion.php');
+    $id_usuario = $_SESSION['usuario'];
+    $id_suscripcion = intval($_POST['id_suscripcion']);
+
+    // Actualiza la suscripción del usuario
+    $stmt = $_conexion->prepare("UPDATE usuarios SET id_suscripcion = ? WHERE id_usuario = ?");
+    $stmt->bind_param("ii", $id_suscripcion, $id_usuario);
+    $stmt->execute();
+    $stmt->close();
+}
+
 // 1. Comprobar usuario logueado
 if (!isset($_SESSION['usuario'])) {
     die('Usuario no logueado');
@@ -35,15 +47,22 @@ while ($item = $resultado->fetch_assoc()) {
 // echo "Total: $total<br>";
 
 if (empty($carrito)) {
-    die('El carrito está vacío o no existe');
+    // Si es una suscripción, consideramos el pedido realizado correctamente
+    if (isset($_POST['id_suscripcion'])) {
+        echo json_encode(['success' => true, 'suscripcion' => true]);
+        exit;
+    } else {
+        echo json_encode(['success' => false, 'error' => 'El carrito está vacío o no existe']);
+        exit;
+    }
 }
 
 // Recoger datos del comprador del POST
 $datos_usuario = [
-    'nombre'    => $_POST['nombre'] ?? '',
+    'nombre' => $_POST['nombre'] ?? '',
     'apellidos' => $_POST['apellidos'] ?? '',
-    'email'     => $_POST['email'] ?? '',
-    'telefono'  => $_POST['telefono'] ?? '',
+    'email' => $_POST['email'] ?? '',
+    'telefono' => $_POST['telefono'] ?? '',
     'direccion' => $_POST['direccion'] ?? ''
 ];
 

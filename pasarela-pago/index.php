@@ -97,6 +97,7 @@ $importe = floatval($_POST['importe']);
     <div class="form-card">
       <h3 class="mb-4 text-center">Datos para la compra</h3>
       <form id="datosForm" novalidate>
+        <input type="hidden" name="id_suscripcion" id="id_suscripcion" value="<?php echo isset($_POST['id_suscripcion']) ? intval($_POST['id_suscripcion']) : ''; ?>">
         <div class="mb-3">
           <label for="nombre" class="form-label">Nombre</label>
           <input type="text" class="form-control" id="nombre" name="nombre" required>
