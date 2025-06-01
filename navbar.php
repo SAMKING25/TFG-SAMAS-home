@@ -70,7 +70,8 @@ if (isset($_SESSION['usuario'])) {
                 </li>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
-                        <a class="nav-link subraya util-nav-icons" href="/plano/confirmacion_plano">Plano</a>
+                        <a class="nav-link subraya util-nav-icons" href="/plano/confirmacion_plano"
+                            id="enlace-plano">Plano</a>
                     </li>
                 <?php } ?>
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
@@ -196,12 +197,58 @@ if (isset($_SESSION['usuario'])) {
                                 if (link.href === window.location.href) {
                                     window.location.reload();
                                 } else {
-                                    window.location.href = link.href;
+                                    window.location.href = '/';
                                 }
                             }
                             // Si cancela, no hace nada
                         });
                     });
+                });
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const enlacePlano = document.getElementById('enlace-plano');
+            if (enlacePlano) {
+                enlacePlano.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    fetch('/util/funciones/sumar_uso_plano.php', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Permitir acceso al plano
+                                window.location.href = '/plano/confirmacion_plano';
+                            } else if (data.limit) {
+                                // Mostrar modal de límite alcanzado
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Has gastado todos tus usos mensuales del plano",
+                                    text: "No puedes acceder al plano hasta renovar tu suscripción.",
+                                    confirmButtonText: "Aceptar"
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Error",
+                                    text: data.error || "Ha ocurrido un error inesperado.",
+                                    confirmButtonText: "Aceptar"
+                                });
+                            }
+                        })
+                        .catch(() => {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Error",
+                                text: "No se pudo comprobar el acceso al plano.",
+                                confirmButtonText: "Aceptar"
+                            });
+                        });
                 });
             }
         });
