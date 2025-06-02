@@ -1,4 +1,6 @@
+<!-- Carga de iconos FontAwesome para los iconos de la navbar -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
 <?php
 // Guarda la URL actual para redirigir después del login
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
@@ -8,8 +10,10 @@ define('IMG_USUARIO', '/img/usuario/');
 define('IMG_PROVEEDOR', '/img/proveedor/');
 define('FUNCIONES', '/util/funciones/');
 
+// Inicialización de variables para el tipo de sesión y datos del usuario/proveedor
 $tipo_sesion = null;
 $datos = null;
+
 
 // Detecta si hay sesión de usuario o proveedor y obtiene sus datos
 if (isset($_SESSION['usuario'])) {
@@ -31,6 +35,7 @@ if (isset($_SESSION['usuario'])) {
 }
 ?>
 
+<!-- Estilos personalizados para el menú desplegable de usuario/proveedor -->
 <style>
     /* Estilos para el menú desplegable del navbar */
     .dropdown-menu {
@@ -52,27 +57,29 @@ if (isset($_SESSION['usuario'])) {
 <nav
     class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
     <div class="container">
-        <!-- Logo a la izquierda -->
+        <!-- Logo de la empresa a la izquierda -->
         <a class="navbar-brand d-flex align-items-center" href="/">
             <img src="/img/logos/loguito_gris.png" alt="Logo" height="40px" class="me-2" />
             <span class="fw-bold" style="font-size: 1.3rem; letter-spacing: 2px;">SAMAS HOME</span>
         </a>
 
-        <!-- Botón hamburguesa para responsive -->
+        <!-- Botón hamburguesa para menú responsive en móviles -->
         <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="fas fa-bars fa-lg"></i>
         </button>
 
-        <!-- Menú centrado -->
+        <!-- Menú de navegación centrado -->
         <div class="collapse navbar-collapse rounded-bottom" id="navbarNav">
             <ul class="navbar-nav mx-auto">
+                <!-- Enlaces principales de navegación -->
                 <li class="nav-item">
                     <a class="nav-link subraya util-nav-icons" href="/">Inicio</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link subraya util-nav-icons" href="/productos">Productos</a>
                 </li>
+                <!-- Solo usuarios pueden ver Plano y Suscripción -->
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <li class="nav-item">
                         <a class="nav-link subraya util-nav-icons" href="/plano">Plano</a>
@@ -83,6 +90,7 @@ if (isset($_SESSION['usuario'])) {
                         <a class="nav-link subraya util-nav-icons" href="/suscripcion">Suscripción</a>
                     </li>
                 <?php } else { ?>
+                    <!-- Solo proveedores ven Panel de control -->
                     <li class="nav-item">
                         <a class="nav-link subraya util-nav-icons" href="/panel-control">Panel de control</a>
                     </li>
@@ -91,24 +99,29 @@ if (isset($_SESSION['usuario'])) {
                     <a class="nav-link subraya util-nav-icons" href="/contacto">Contacto</a>
                 </li>
             </ul>
-            <!-- Iconos a la derecha -->
+            <!-- Iconos a la derecha de la navbar -->
             <div class="d-flex align-items-center ms-auto navbar-icons">
+                <!-- Icono de búsqueda -->
                 <div class="me-3" style="font-size: 1rem;">
                     <a href="/productos?focus=1" title="Ir a productos" class="text-white nav-link icon-grow">
                         <i class="bi bi-search util-nav-icons"></i>
                     </a>
                 </div>
+                <!-- Icono de carrito solo para usuarios -->
                 <?php if ($tipo_sesion !== 'proveedor') { ?>
                     <a href="/carrito" class="nav-link me-3 icon-grow">
                         <i class="bi bi-cart2 util-nav-icons"></i>
                     </a>
                 <?php } ?>
+                <!-- Menú desplegable de usuario/proveedor -->
                 <div class="dropdown">
                     <a class="dropdown-toggle text-light text-decoration-none" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                         <?php if (!$datos) { ?>
+                            <!-- Icono por defecto si no hay sesión -->
                             <i class="bi bi-person-circle util-nav-icons"></i>
                         <?php } else { ?>
+                            <!-- Foto y nombre si hay sesión activa -->
                             <img src="<?php echo $tipo_sesion === 'usuario'
                                             ? IMG_USUARIO . $datos['img_usuario']
                                             : IMG_PROVEEDOR . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
@@ -121,13 +134,13 @@ if (isset($_SESSION['usuario'])) {
                         <?php } ?>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
+                        <!-- Opciones de menú según el tipo de sesión -->
                         <?php if ($tipo_sesion === 'usuario') { ?>
                             <li><a class="dropdown-item" href="/login/usuario/cambiar_credenciales_usuario">Ajustes de
                                     perfil</a></li>
                             <li><a class="dropdown-item" href="/pedidos/">Mis pedidos</a></li>
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Cambiar de cuenta</a>
                             </li>
-
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -143,6 +156,7 @@ if (isset($_SESSION['usuario'])) {
                             </li>
                             <li><a class="dropdown-item" href="/util/funciones/cerrar_sesion">Cerrar sesión</a></li>
                         <?php } else { ?>
+                            <!-- Opciones para visitantes (no logueados) -->
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar sesión</a>
                             </li>
                             <li><a class="dropdown-item" href="/login/usuario/registro_usuario">Registrarse</a></li>
@@ -153,8 +167,11 @@ if (isset($_SESSION['usuario'])) {
         </div>
     </div>
 </nav>
-<!-- Pop-up de cookies incluido-->
+
+<!-- Inclusión del pop-up de cookies -->
 <?php include('cookies.php'); ?>
+
+<!-- SweetAlert2 para alertas y confirmaciones -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php
@@ -175,6 +192,7 @@ if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos[
                     cancelButtonText: "Cancelar"
                 }).then((result) => {
                     if (result.isConfirmed) {
+                        // Si confirma, registra el uso del plano vía fetch
                         fetch('/util/funciones/sumar_uso_plano', {
                                 method: 'POST',
                                 headers: {
@@ -186,11 +204,13 @@ if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos[
                                 if (data.success) {
                                     // Permite el acceso, no hace nada porque ya está en /plano
                                 } else if (data.limit) {
+                                    // Si se alcanzó el límite, muestra aviso y redirige
                                     Swal.fire("Límite alcanzado", "Has alcanzado el máximo de usos del plano para tu suscripción este mes.", "info")
                                         .then(() => {
                                             window.location.href = '/'; // Redirige a inicio u otra página
                                         });
                                 } else {
+                                    // Error al registrar el uso
                                     Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
                                         .then(() => {
                                             window.location.href = '/';
@@ -198,17 +218,20 @@ if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos[
                                 }
                             })
                             .catch(() => {
+                                // Error de red o fetch
                                 Swal.fire("Error", "No se pudo registrar el uso del plano.", "error")
                                     .then(() => {
                                         window.location.href = '/';
                                     });
                             });
                     } else {
-                        window.location.href = '/'; // Redirige si cancela
+                        // Si cancela, redirige a inicio
+                        window.location.href = '/';
                     }
                 });
             }
         });
+
 
         document.addEventListener('DOMContentLoaded', function() {
             // Solo si estamos en /plano o /plano/

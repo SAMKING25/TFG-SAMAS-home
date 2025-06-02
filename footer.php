@@ -1,4 +1,5 @@
 <?php
+
 // Si hay sesión de proveedor, obtener sus datos para personalizar el footer
 if (isset($_SESSION['proveedor'])) {
     $id = $_SESSION['proveedor'];
@@ -12,6 +13,7 @@ if (isset($_SESSION['proveedor'])) {
 ?>
 
 <style>
+
     /* Hace que el footer quede pegado abajo si la página es corta */
     body {
         display: flex;
@@ -24,6 +26,7 @@ if (isset($_SESSION['proveedor'])) {
         text-align: center;
     }
 </style>
+
 
 <!-- Footer principal del sitio -->
 <footer class="text-white pt-5 pb-4">
@@ -38,6 +41,7 @@ if (isset($_SESSION['proveedor'])) {
                     Mucho más que muebles, Somos SAMAS home y operamos en toda la provincia de Málaga haciendo de tu
                     reforma de casa algo más simple y fácil de lograr.
                 </p>
+
             </div>
             <!-- Columna: Secciones del sitio -->
             <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">

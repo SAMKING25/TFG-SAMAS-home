@@ -31,9 +31,13 @@ document.getElementById('toggle-sidebar-btn').addEventListener('click', function
 ajustarCanvasSegunSidebar();
 
 const rotateIcon = "/img/plano/voltear.png";
+const cloneIcon = "/img/plano/duplicar.png";
 
 const rotateImg = document.createElement('img');
 rotateImg.src = rotateIcon;
+
+const cloneImg = document.createElement('img');
+cloneImg.src = cloneIcon;
 
 function agregarProducto(imagenURL, medidas) {
     medidas = JSON.parse(medidas);
@@ -59,6 +63,7 @@ function agregarProducto(imagenURL, medidas) {
             lockSkewingY: true,
             lockScalingFlip: true,
             lockRotation: false,
+            isProducto: true
         });
 
         img.controls.rotateControl = new fabric.Control({
@@ -69,6 +74,17 @@ function agregarProducto(imagenURL, medidas) {
             cursorStyle: 'pointer',
             mouseUpHandler: rotarImagen,
             render: renderIcon(rotateImg),
+            cornerSize: 24,
+        });
+
+        img.controls.cloneControl = new fabric.Control({
+            x: -0.5,
+            y: -0.5,
+            offsetY: -16,
+            offsetX: -16,
+            cursorStyle: 'pointer',
+            mouseUpHandler: clonar,
+            render: renderIcon(cloneImg),
             cornerSize: 24,
         });
 
@@ -108,42 +124,6 @@ function renderIcon(icon) {
         ctx.restore();
     };
 }
-
-function seleccionMultiple() {
-    const activeObject = canvas.getActiveObject();
-    if (activeObject && activeObject.type === 'activeSelection') {
-        activeObject.forEachObject(function (obj) {
-            if (typeof obj.actualizarMedida === 'function') {
-                obj.actualizarMedida();
-            }
-        });
-    }
-    canvas.requestRenderAll();
-}
-
-canvas.on('selection:created', function (e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
-
-canvas.on('selection:updated', function (e) {
-    if (e.target && e.target.type === 'activeSelection') {
-        seleccionMultiple();
-    }
-});
-
-canvas.on('object:moving', function(e) {
-    const target = e.target;
-    if (target && target.type === 'activeSelection') {
-        target.forEachObject(function(obj) {
-            if (typeof obj.actualizarMedida === 'function') {
-                obj.actualizarMedida();
-            }
-        });
-        canvas.requestRenderAll();
-    }
-});
 
 function borrarObjeto() {
     const activeObject = canvas.getActiveObject();
@@ -236,7 +216,30 @@ function agregarPared() {
         strokeWidth: 2,
         originX: 'center',
         originY: 'center',
-        selectable: false
+        selectable: false,
+    });
+
+    
+    pared.controls.rotateControl = new fabric.Control({
+        x: 0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: 16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: rotarImagen,
+        render: renderIcon(rotateImg),
+        cornerSize: 24,
+    });
+
+    pared.controls.cloneControl = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: -16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: clonar,
+        render: renderIcon(cloneImg),
+        cornerSize: 24,
     });
 
     const grupo = new fabric.Group([pared], {
@@ -272,7 +275,8 @@ function agregarPared() {
         selectable: false,
         evented: false,
         excludeFromExport: false,
-        visible: medidasVisibles
+        visible: medidasVisibles,
+        isPared: true
     });
 
     canvas.add(textoMedida);
@@ -304,7 +308,29 @@ function agregarVentana() {
         strokeWidth: 2,
         originX: 'center',
         originY: 'center',
-        selectable: false
+        selectable: false,
+    });
+
+    ventana.controls.rotateControl = new fabric.Control({
+        x: 0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: 16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: rotarImagen,
+        render: renderIcon(rotateImg),
+        cornerSize: 24,
+    });
+
+    ventana.controls.cloneControl = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: -16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: clonar,
+        render: renderIcon(cloneImg),
+        cornerSize: 24,
     });
 
     const grupo = new fabric.Group([ventana], {
@@ -383,6 +409,17 @@ function agregarPuerta() {
         cursorStyle: 'pointer',
         mouseUpHandler: rotarImagen,
         render: renderIcon(rotateImg),
+        cornerSize: 24,
+    });
+
+    puerta.controls.cloneControl = new fabric.Control({
+        x: -0.5,
+        y: -0.5,
+        offsetY: -16,
+        offsetX: -16,
+        cursorStyle: 'pointer',
+        mouseUpHandler: clonar,
+        render: renderIcon(cloneImg),
         cornerSize: 24,
     });
 
@@ -610,11 +647,14 @@ canvas.on('object:modified', function () {
     canvas.renderAll();
 });
 
-// Funciones auxiliares para dibujar guías
-function drawVerticalGuide(x) {
-    guiaX = new fabric.Line([x, 0, x, canvas.getHeight()], {
+function drawVerticalGuide(screenX) {
+    // Convierte screenX (pantalla) a coordenada canvas (mundo)
+    const canvasX = canvas.viewportTransform
+        ? (screenX - canvas.viewportTransform[4]) / canvas.getZoom()
+        : screenX;
+    guiaX = new fabric.Line([canvasX, 0, canvasX, canvas.getHeight() / canvas.getZoom()], {
         stroke: 'red',
-        strokeWidth: 1,
+        strokeWidth: 1 / canvas.getZoom(),
         selectable: false,
         evented: false,
         excludeFromExport: true
@@ -622,10 +662,14 @@ function drawVerticalGuide(x) {
     canvas.add(guiaX);
 }
 
-function drawHorizontalGuide(y) {
-    guiaY = new fabric.Line([0, y, canvas.getWidth(), y], {
+function drawHorizontalGuide(screenY) {
+    // Convierte screenY (pantalla) a coordenada canvas (mundo)
+    const canvasY = canvas.viewportTransform
+        ? (screenY - canvas.viewportTransform[5]) / canvas.getZoom()
+        : screenY;
+    guiaY = new fabric.Line([0, canvasY, canvas.getWidth() / canvas.getZoom(), canvasY], {
         stroke: 'red',
-        strokeWidth: 1,
+        strokeWidth: 1 / canvas.getZoom(),
         selectable: false,
         evented: false,
         excludeFromExport: true
@@ -775,10 +819,10 @@ canvas.on('object:moving', function (e) {
     restringirZonaBloqueada(e.target);
 });
 
-canvas.on('object:moving', function(e) {
+canvas.on('object:moving', function (e) {
     const target = e.target;
     if (target && target.type === 'activeSelection') {
-        target.forEachObject(function(obj) {
+        target.forEachObject(function (obj) {
             if (typeof obj.actualizarMedida === 'function') {
                 obj.actualizarMedida();
             }
@@ -789,10 +833,10 @@ canvas.on('object:moving', function(e) {
     canvas.requestRenderAll();
 });
 
-canvas.on('object:modified', function(e) {
+canvas.on('object:modified', function (e) {
     const target = e.target;
     if (target && target.type === 'activeSelection') {
-        target.forEachObject(function(obj) {
+        target.forEachObject(function (obj) {
             if (typeof obj.actualizarMedida === 'function') {
                 obj.actualizarMedida();
             }
@@ -909,47 +953,145 @@ document.getElementById('reset-view-btn').addEventListener('click', function () 
     canvas.requestRenderAll();
 });
 
-let clipboard = null;
+let objetoCopiado = null;
+let controlesCopiados = null;
+let controlesVisibilidadCopiados = null;
+let textosRelacionadosCopiados = null;
 
 // Copiar (Ctrl+C)
 document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
-        const activeObject = canvas.getActiveObject();
-        if (activeObject) {
-            activeObject.clone(function (cloned) {
-                clipboard = cloned;
-            });
-            e.preventDefault();
-        }
+        copiarObjeto();
     }
 });
 
-// Pegar (Ctrl+V)
 document.addEventListener('keydown', function (e) {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'v') {
-        if (clipboard) {
-            clipboard.clone(function (clonedObj) {
-                canvas.discardActiveObject();
-                clonedObj.set({
-                    left: clonedObj.left + 20,
-                    top: clonedObj.top + 20,
-                    evented: true
-                });
-                if (clonedObj.type === 'activeSelection') {
-                    // Multi-selection
-                    clonedObj.canvas = canvas;
-                    clonedObj.forEachObject(function (obj) {
-                        canvas.add(obj);
-                    });
-                    // Group to selection
-                    clonedObj.setCoords();
-                } else {
-                    canvas.add(clonedObj);
-                }
-                canvas.setActiveObject(clonedObj);
-                canvas.requestRenderAll();
-            });
-            e.preventDefault();
-        }
+        pegarObjeto();
     }
 });
+
+function clonar() {
+    copiarObjeto();
+    setTimeout(() => {
+        pegarObjeto();
+    }, 10);
+}
+
+function copiarObjeto() {
+
+    const activeObject = canvas.getActiveObject();
+    if (activeObject) {
+        activeObject.clone((cloned) => {
+            objetoCopiado = cloned;
+            controlesCopiados = activeObject.controls ? { ...activeObject.controls } : null;
+            controlesVisibilidadCopiados = activeObject._controlsVisibility ? { ...activeObject._controlsVisibility } : null;
+            // Guardar los textos relacionados (si existen)
+            if (activeObject.relatedTexts) {
+                textosRelacionadosCopiados = activeObject.relatedTexts.map(txt => txt);
+            } else {
+                textosRelacionadosCopiados = null;
+            }
+        });
+    }
+}
+
+function pegarObjeto() {
+    if (objetoCopiado) {
+        objetoCopiado.clone((clonedObj) => {
+            clonedObj.left += 20;
+            clonedObj.top += 20;
+            if (controlesCopiados) clonedObj.controls = { ...controlesCopiados };
+            if (controlesVisibilidadCopiados && clonedObj.setControlsVisibility) {
+                clonedObj.setControlsVisibility(controlesVisibilidadCopiados);
+            }
+
+            // --- Si es un producto (imagen) ---
+            if (clonedObj.isProducto && objetoCopiado.medidaTexto) {
+                objetoCopiado.medidaTexto.clone((clonedMedida) => {
+                    clonedMedida.left += 20;
+                    clonedMedida.top += 20;
+                    canvas.add(clonedMedida);
+                    clonedObj.medidaTexto = clonedMedida;
+
+                    // Reasigna la función actualizarMedida
+                    clonedObj.actualizarMedida = function () {
+                        const ancho = clonedObj.width * clonedObj.scaleX;
+                        const metros = (ancho / 100).toFixed(2) + ' m';
+                        clonedMedida.text = metros;
+                        clonedMedida.left = clonedObj.left + (clonedObj.width * clonedObj.scaleX) / 2;
+                        clonedMedida.top = clonedObj.top + (clonedObj.height * clonedObj.scaleY) + 10;
+                        canvas.requestRenderAll();
+                    };
+
+                    clonedObj.on('scaling', clonedObj.actualizarMedida);
+                    clonedObj.on('modified', clonedObj.actualizarMedida);
+                    clonedObj.on('moving', clonedObj.actualizarMedida);
+                    clonedObj.on('rotating', clonedObj.actualizarMedida);
+
+                    clonedObj.actualizarMedida();
+
+                    canvas.add(clonedObj);
+                    canvas.setActiveObject(clonedObj);
+                    canvas.requestRenderAll();
+                });
+                return;
+            }
+
+            // --- Si es un grupo (pared, ventana, puerta) ---
+            if (textosRelacionadosCopiados && Array.isArray(textosRelacionadosCopiados)) {
+                clonedObj.relatedTexts = [];
+                let textosClonados = 0;
+                textosRelacionadosCopiados.forEach((txt, idx) => {
+                    txt.clone((clonedTxt) => {
+                        clonedTxt.left += 20;
+                        clonedTxt.top += 20;
+                        clonedTxt.selectable = false;
+                        clonedTxt.evented = false;
+                        canvas.add(clonedTxt);
+                        clonedObj.relatedTexts.push(clonedTxt);
+                        textosClonados++;
+                        // Cuando todos los textos estén clonados, agrega el grupo y asocia actualizarMedida
+                        if (textosClonados === textosRelacionadosCopiados.length) {
+                            // Busca el rectángulo base del grupo
+                            let baseRect = null;
+                            if (clonedObj.type === 'group' && clonedObj._objects && clonedObj._objects.length > 0) {
+                                baseRect = clonedObj._objects.find(o => o.type === 'rect');
+                            }
+                            let offset = 10;
+                            if (baseRect && baseRect.fill === 'transparent') offset = 33; // Puerta
+                            else if (baseRect && baseRect.width === 120) offset = 10; // Ventana
+
+                            // Asigna la función actualizarMedida
+                            clonedObj.actualizarMedida = function () {
+                                if (baseRect && clonedObj.relatedTexts[0]) {
+                                    actualizarMedidaComun(baseRect, clonedObj, clonedObj.relatedTexts[0], offset);
+                                }
+                            };
+
+                            // Asocia los eventos
+                            clonedObj.on('scaling', clonedObj.actualizarMedida);
+                            clonedObj.on('modified', clonedObj.actualizarMedida);
+                            clonedObj.on('moving', clonedObj.actualizarMedida);
+                            clonedObj.on('rotating', clonedObj.actualizarMedida);
+
+                            // Llama una vez para actualizar la medida
+                            clonedObj.actualizarMedida();
+
+                            canvas.add(clonedObj);
+                            canvas.discardActiveObject();
+                            canvas.setActiveObject(clonedObj);
+                            canvas.requestRenderAll();
+                        }
+                    });
+                });
+                return;
+            }
+
+            // Si no es producto ni grupo con textos, solo añade el objeto
+            canvas.add(clonedObj);
+            canvas.setActiveObject(clonedObj);
+            canvas.requestRenderAll();
+        });
+    }
+}
