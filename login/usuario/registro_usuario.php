@@ -1,17 +1,21 @@
 <?php
+// --- Configuración de errores y carga de utilidades ---
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 
+// --- Procesamiento del formulario de registro ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Depuración y validación de campos recibidos
     $tmp_email_usuario = depurar($_POST["email_usuario"]);
     $tmp_nombre_usuario = depurar($_POST["nombre_usuario"]);
     $tmp_contrasena_usuario = $_POST["contrasena_usuario"];
     $img_usuario = "estandar.png";
-    $id_suscripcion = 1; //Suscripción básica por defecto
+    $id_suscripcion = 1; // Suscripción básica por defecto
 
+    // Validación del email
     if ($tmp_email_usuario == "") {
         $err_email_usuario = "El email es obligatorio";
     } else {
@@ -29,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del nombre de usuario
     if ($tmp_nombre_usuario == "") {
         $err_nombre_usuario = "El nombre es obligatorio";
     } else {
@@ -47,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la contraseña
     if ($tmp_contrasena_usuario == "") {
         $err_contrasena_usuario = "La contraseña es obligatoria";
     } else {
@@ -62,11 +68,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Si no hay errores, se genera el código de verificación y se envía el email
     if (isset($email_usuario) && isset($nombre_usuario) && isset($contrasena_usuario_cifrada)) {
-        // Generar código de verificación
+        // --- Generar código de verificación ---
         $codigo_verificacion = rand(100000, 999999);
 
-        // Guardar datos temporales en sesión
+        // --- Guardar datos temporales en sesión ---
         session_start();
         $_SESSION['registro_email'] = $email_usuario;
         $_SESSION['registro_nombre'] = $nombre_usuario;
@@ -75,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['registro_img_usuario'] = $img_usuario;
         $_SESSION['registro_codigo'] = $codigo_verificacion;
 
-        // Enviar email con el código
+        // --- Enviar email con el código de verificación ---
         $asunto = "Código de verificación SAMAS home";
         $logo_url = "https://samas-home.com/img/logos/logo-marron-nobg.png"; // Cambia por la URL real de tu logo
         $mensaje = '
@@ -108,7 +115,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $cabeceras .= "From: no-reply@samas-home.com\r\n";
         mail($email_usuario, $asunto, $mensaje, $cabeceras);
 
-        // Redirigir a la página de verificación
+        // --- Redirigir a la página de verificación ---
         header("Location: verificar_codigo");
         exit;
     }
@@ -119,6 +126,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 
 <head>
+    <!-- --- Metadatos, favicon, fuentes y estilos --- -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
@@ -127,6 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
+        /* --- Estilos generales de la página y formulario --- */
         html,
         body {
             height: 100%;
@@ -178,7 +187,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 0.75rem 1.25rem;
             transition: border-color 0.2s;
             color: #6d4c1b;
-            /* color acorde a la paleta */
         }
 
         .form-control:focus {
@@ -243,8 +251,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .side-panel {
             background: linear-gradient(135deg, #a39082 0%, #927447 100%);
             color: #fff;
-            /* border-top-right-radius: 2rem;
-            border-bottom-right-radius: 2rem; */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -284,7 +290,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 0.5rem;
         }
 
-        /* Links de regístrate y eres una empresa */
+        /* --- Links de regístrate y eres una empresa --- */
         .login-links {
             margin-top: 2rem;
         }
@@ -322,6 +328,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem !important;
@@ -367,12 +374,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+    <!-- --- Estructura principal del formulario de registro --- -->
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
+                            <!-- --- Columna izquierda: Formulario de registro --- -->
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
@@ -425,6 +434,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 type="submit">Registrarse</button>
                                         </div>
 
+                                        <!-- --- Enlaces de navegación (login, inicio) --- -->
                                         <div class="login-links">
                                             <p>
                                                 <i class="bi bi-person-check"></i>
@@ -443,6 +453,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </form>
                                 </div>
                             </div>
+                            <!-- --- Columna derecha: Panel informativo lateral --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Mucho más que muebles</h4>
@@ -456,23 +467,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
+    <!-- --- Inclusión de aviso de cookies --- -->
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Validación del formulario en el cliente ---
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nombre_usuario');
             const emailInput = document.getElementById('email_usuario');
             const contrasenaInput = document.getElementById('contrasena_usuario');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
 
-                // Nombre
+                // Validación del nombre
                 const nombreValor = nombreInput.value.trim();
                 const nombrePatron = /^[a-zA-Z0-9 áéióúÁÉÍÓÚñÑüÜ]+$/;
                 if (nombreValor === '') {
@@ -483,7 +496,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     tieneErrores = true;
                 }
 
-                // Email
+                // Validación del email
                 const emailValor = emailInput.value.trim();
                 const emailPatron = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (emailValor === '') {
@@ -494,7 +507,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     tieneErrores = true;
                 }
 
-                // Contraseña
+                // Validación de la contraseña
                 const contrasenaValor = contrasenaInput.value;
                 const contrasenaPatron = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
                 if (contrasenaValor === '') {
@@ -522,14 +535,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
         });
     </script>
     <script>
-        // Mostrar/ocultar contraseña
+        // --- Mostrar/ocultar contraseña ---
         // Inicializa el icono según el estado inicial del input
         const passwordInput = document.getElementById('contrasena_usuario');
         const icon = document.getElementById('togglePasswordIcon');
@@ -541,7 +554,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             icon.classList.add('bi-eye');
         }
 
-        document.getElementById('togglePassword').addEventListener('click', function () {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.remove('bi-eye-slash');
