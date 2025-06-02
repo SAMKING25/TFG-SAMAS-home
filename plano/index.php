@@ -78,6 +78,15 @@ if (!isset($_SESSION["usuario"])) {
             justify-content: center;
             box-shadow: 0 2px 8px rgba(169, 124, 80, 0.08);
             transition: left 0.3s, background 0.2s, color 0.2s;
+            position: fixed;
+            top: 32px;
+            left: 400px;
+            z-index: 1050;
+        }
+
+        #sidebar.collapsed+#toggle-sidebar-btn,
+        #toggle-sidebar-btn.sidebar-collapsed {
+            left: 10px !important;
         }
 
         #toggle-sidebar-btn:hover {
@@ -299,6 +308,20 @@ if (!isset($_SESSION["usuario"])) {
         .btn-primary:hover {
             background-color: rgb(133, 90, 38) !important;
         }
+
+        /* Precio total Sidebar */
+        .sidebar-total-sticky {
+            position: sticky;
+            bottom: 0;
+            background: #fff8f1;
+            border-top: 2px solid #e0d6c3 !important;
+            padding-top: 18px !important;
+            font-size: 1.25rem;
+            color: #198754;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -325,13 +348,13 @@ if (!isset($_SESSION["usuario"])) {
         }
 
         if (esTablet()) {
-            document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('mouse-mode-btn')?.classList.add('d-none');
                 document.getElementById('move-mode-btn')?.classList.add('d-none');
                 document.getElementById('reset-view-btn')?.classList.add('d-none');
                 document.getElementById('detalle-producto-float')?.classList.add('d-none');
             });
-        }        
+        }
     </script>
     <?php
     include('../navbar.php');
@@ -365,49 +388,50 @@ if (!isset($_SESSION["usuario"])) {
     <!-- Contenedor principal -->
     <div class="d-flex productos-sidebar main-content" style="height: 100vh; position: relative;">
         <!-- Sidebar de productos -->
-        <div id="sidebar" class="p-3">
+        <div id="sidebar" class="p-3" style="position:relative;">
             <div class="d-flex align-items-center justify-content-between mb-3">
                 <h5 class="mb-0">Productos</h5>
-                <!-- Botón para ocultar/mostrar sidebar SIEMPRE visible -->
-                <button id="toggle-sidebar-btn" class="btn btn-outline-secondary btn-sm"
-                    style="position: absolute; top: 24px; left: 400px; z-index: 50; transition: left 0.3s;"
-                    title="Ocultar barra">
-                    <i class="bi bi-chevron-left" id="toggle-sidebar-icon"></i>
-                </button>
             </div>
-            <div id="productos" class="list-group">
-                <?php if (empty($productos)): ?>
-                    <div class="text-center py-5">
-                        <p class="mb-3 text-muted fs-5">Carrito vacío</p>
-                        <a href="/productos/" class="btn btn-primary">Añadir productos</a>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($productos as $producto): ?>
-                        <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
-                            data-id="<?php echo $producto['id_producto']; ?>" onclick="agregarProducto('../../img/plano/<?php echo $producto['categoria']; ?>.png',
-                            <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
-                            <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
-                                alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
-                            <span>
-                                <?php echo htmlspecialchars($producto['nombre']); ?><br>
-                                <small class="text-muted cantidad-label">Cantidad: <span
-                                        class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
-                            </span>
+            <!-- Contenedor scrollable de productos -->
+            <div id="productos-scroll" style="overflow-y:auto; max-height: calc(100vh - 220px);">
+                <div id="productos" class="list-group">
+                    <?php if (empty($productos)): ?>
+                        <div class="text-center py-5">
+                            <p class="mb-3 text-muted fs-5">Carrito vacío</p>
+                            <a href="/productos/" class="btn btn-primary">Añadir productos</a>
                         </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php else: ?>
+                        <?php foreach ($productos as $producto): ?>
+                            <div class="list-group-item list-group-item-action d-flex align-items-center" style="cursor:pointer;"
+                                data-id="<?php echo $producto['id_producto']; ?>" onclick="agregarProducto('../../img/plano/<?php echo $producto['categoria']; ?>.png',
+                        <?php echo htmlspecialchars(json_encode($producto['medidas'])); ?>)">
+                                <img src="../img/productos/<?php echo $producto['img_producto']; ?>"
+                                    alt="<?php echo htmlspecialchars($producto['nombre']); ?>" class="me-2">
+                                <span>
+                                    <?php echo htmlspecialchars($producto['nombre']); ?><br>
+                                    <small class="text-muted cantidad-label">Cantidad: <span
+                                            class="cantidad-num"><?php echo $producto['cantidad']; ?></span></small>
+                                </span>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </div>
             </div>
-            <!-- Tarjeta flotante de detalle de producto -->
-            <div id="detalle-producto-float" style="display:none; position:fixed; z-index:9999;"></div>
-            <!-- Nombre en el hover del producto del canvas-->
-            <div id="canvas-product-tooltip"
-                style="display:none; position:fixed; z-index:10000; background:#222; color:#fff; padding:6px 14px; border-radius:8px; font-size:1rem; pointer-events:none; box-shadow:0 2px 8px rgba(0,0,0,0.18);">
-            </div>
-            <!-- Total abajo -->
-            <div class="mt-4 border-top pt-3 text-end">
+            <!-- Total abajo, sticky -->
+            <div class="mt-4 border-top pt-3 text-end sidebar-total-sticky">
                 <strong>Total: <?php echo number_format($total, 2, ',', '.'); ?>€</strong>
             </div>
         </div>
+
+        <!-- Botón para ocultar/mostrar sidebar SIEMPRE visible -->
+        <button id="toggle-sidebar-btn" class="btn btn-outline-secondary btn-sm"
+            style="position: absolute; top: 24px; left: 400px; z-index: 50; transition: left 0.3s;"
+            title="Ocultar barra">
+            <i class="bi bi-chevron-left" id="toggle-sidebar-icon"></i>
+        </button>
+
+        <!-- Detalle flotante del producto -->
+        <div id="detalle-producto-float" style="display:none; position:fixed; left:0; top:0; z-index:9999;"></div>
 
         <!-- Contenedor del canvas -->
         <div id="canvas-container" class="p-3 flex-grow-1">
@@ -480,8 +504,8 @@ if (!isset($_SESSION["usuario"])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Muestra la tarjeta de detalle del producto al pasar el mouse
-        document.querySelectorAll('#productos .list-group-item').forEach(function (item) {
-            item.addEventListener('mouseenter', function (e) {
+        document.querySelectorAll('#productos .list-group-item').forEach(function(item) {
+            item.addEventListener('mouseenter', function(e) {
                 const id = this.getAttribute('data-id');
                 const producto = <?php echo json_encode($productos); ?>.find(p =>
                     String(p.id_producto) === String(id)
@@ -531,7 +555,7 @@ if (!isset($_SESSION["usuario"])) {
                 document.addEventListener('mousemove', moveDetalle);
             });
 
-            item.addEventListener('mouseleave', function () {
+            item.addEventListener('mouseleave', function() {
                 const detalle = document.getElementById('detalle-producto-float');
                 detalle.style.display = 'none';
                 detalle.innerHTML = '';
@@ -548,15 +572,14 @@ if (!isset($_SESSION["usuario"])) {
         const icon = document.getElementById('toggle-sidebar-icon');
         const canvasButtons = document.getElementById('canvas-buttons');
 
-        toggleBtn.addEventListener('click', function () {
+        toggleBtn.addEventListener('click', function() {
             sidebar.classList.toggle('collapsed');
+            toggleBtn.classList.toggle('sidebar-collapsed');
             if (sidebar.classList.contains('collapsed')) {
-                toggleBtn.style.left = '10px';
                 icon.classList.remove('bi-chevron-left');
                 icon.classList.add('bi-chevron-right');
-                canvasButtons.style.marginLeft = '56px'; // Ajusta según el ancho del botón
+                canvasButtons.style.marginLeft = '56px';
             } else {
-                toggleBtn.style.left = '400px';
                 icon.classList.remove('bi-chevron-right');
                 icon.classList.add('bi-chevron-left');
                 canvasButtons.style.marginLeft = '0';
