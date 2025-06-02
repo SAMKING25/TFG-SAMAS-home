@@ -1,10 +1,13 @@
 <?php
+// Muestra todos los errores en pantalla
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluye la conexión a la base de datos
 require('../util/conexion.php');
 session_start();
 
+// Verifica si el usuario está logueado
 if (!isset($_SESSION["usuario"])) {
     header("Location: /login/usuario/iniciar_sesion_usuario");
     exit;
@@ -27,8 +30,9 @@ $resultado = $stmt->get_result();
 $productos = [];
 $total = 0;
 
+// Recorre los productos del carrito y calcula totales y subtotales
 while ($fila = $resultado->fetch_assoc()) {
-    $cantidad = $fila["cantidad"]; // <--- Corrección aquí
+    $cantidad = $fila["cantidad"];
     $precio = $fila["precio"];
     $porcentaje = $fila["porcentaje"];
 
@@ -50,10 +54,11 @@ while ($fila = $resultado->fetch_assoc()) {
         "porcentaje" => $porcentaje,
         "precio_final" => $precio_final,
         "subtotal" => $subtotal,
-        "stock" => $fila["stock"] // <-- Añadido
+        "stock" => $fila["stock"] // Stock disponible del producto
     ];
 }
 
+// Procesa la eliminación de un producto del carrito
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"])) {
     $id_producto = intval($_POST["eliminar_producto"]);
     $stmt = $_conexion->prepare("DELETE FROM carrito WHERE id_usuario = ? AND id_producto = ?");
@@ -63,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["eliminar_producto"]))
     exit;
 }
 
-// Procesar actualización de cantidad
+// Procesa la actualización de la cantidad de un producto en el carrito
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"])) {
     $id_producto = intval($_POST["id_producto"]);
     $nueva_cantidad = max(1, intval($_POST["nueva_cantidad"])); // Evita cantidades menores a 1
@@ -76,11 +81,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     $stmt->fetch();
     $stmt->close();
 
+    // Si la cantidad solicitada supera el stock, redirige con mensaje de error
     if ($nueva_cantidad > $stock_disponible) {
         header("Location: /carrito/?stock=1");
         exit;
     }
 
+    // Actualiza la cantidad en el carrito
     $stmt = $_conexion->prepare("UPDATE carrito SET cantidad = ? WHERE id_usuario = ? AND id_producto = ?");
     $stmt->bind_param("iii", $nueva_cantidad, $id_usuario, $id_producto);
     $stmt->execute();
@@ -103,6 +110,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     <link rel="stylesheet" href="/css/landing.css" />
 </head>
 <style>
+    /* Estilos generales y responsivos para el carrito */
     body {
         background: #f9f6f2;
     }
@@ -186,7 +194,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     }
 
     .btn-sm:hover {
-        border:none;
+        border: none;
     }
 
     .form-control:focus {
@@ -224,8 +232,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
             max-width: 100% !important;
             width: 100% !important;
             height: auto !important;
-            max-height: 220px !important;   /* Más grande que antes */
-            padding: 18px !important;       /* Un poco más de espacio */
+            max-height: 220px !important;
+            /* Más grande que antes */
+            padding: 18px !important;
+            /* Un poco más de espacio */
             background: none !important;
             display: block !important;
             margin-left: auto !important;
@@ -234,7 +244,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
         }
 
         .card-body,
-        .card-body > div,
+        .card-body>div,
         .card-body form,
         .card-body p,
         .card-body h5,
@@ -460,6 +470,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     <?php if (isset($_GET['actualizado']) && $_GET['actualizado'] == '1'): ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            // Notificación de cantidad actualizada
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -481,6 +492,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     <?php if (isset($_GET['eliminado']) && $_GET['eliminado'] == '1'): ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            // Notificación de producto eliminado
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -502,6 +514,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
     <?php if (isset($_GET['stock']) && $_GET['stock'] == '1'): ?>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
+            // Notificación de error de stock
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -534,6 +547,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["actualizar_cantidad"]
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+    // Confirmación visual antes de eliminar un producto del carrito
     document.querySelectorAll('.btn-eliminar-producto').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
             e.preventDefault();

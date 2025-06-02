@@ -14,17 +14,17 @@ if (isset($_GET["id_producto"])) {
         LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta
         LEFT JOIN proveedores pr ON p.id_proveedor = pr.id_proveedor
         WHERE p.id_producto = $id";
-$resultado = $_conexion->query($sql);
+    $resultado = $_conexion->query($sql);
 
-if ($resultado->num_rows > 0) {
-    $producto = $resultado->fetch_assoc();
-    $medidas = json_decode($producto["medidas"], true);
-    $precio = $producto["precio"];
-    $porcentaje = $producto["porcentaje"];
-    $nombre_proveedor = $producto["nombre_proveedor"];
-} else {
-    die("Producto no encontrado.");
-}
+    if ($resultado->num_rows > 0) {
+        $producto = $resultado->fetch_assoc();
+        $medidas = json_decode($producto["medidas"], true);
+        $precio = $producto["precio"];
+        $porcentaje = $producto["porcentaje"];
+        $nombre_proveedor = $producto["nombre_proveedor"];
+    } else {
+        die("Producto no encontrado.");
+    }
 
     // Ahora procesamos el POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -271,6 +271,7 @@ if ($hayOferta) {
     <?php include('../navbar.php'); ?>
 
     <div class="container main-content py-5">
+        <!-- Script para mostrar notificaciones con SweetAlert2 según el resultado de añadir al carrito -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             <?php if (isset($mensaje) && $mensaje == "success"): ?>
@@ -305,8 +306,10 @@ if ($hayOferta) {
 
         <div class="row justify-content-center">
             <div class="col-lg-10">
+                <!-- Card principal con la información del producto -->
                 <div class="card shadow-lg border-0 rounded-5 p-4 mb-5" style="background: #fffbe9;">
                     <div class="row g-4 align-items-center">
+                        <!-- Imagen del producto y etiqueta de oferta si aplica -->
                         <div class="col-md-6 position-relative">
                             <div class="bg-light rounded-4 p-3 d-flex align-items-center justify-content-center"
                                 style="min-height: 450px;">
@@ -321,6 +324,7 @@ if ($hayOferta) {
                                 <?php endif; ?>
                             </div>
                         </div>
+                        <!-- Información textual y formulario de compra -->
                         <div class="col-md-6">
                             <h1 class="fw-bold mb-2" style="color: #b88c4a;"><?php echo $producto["nombre"]; ?></h1>
                             <p class="fs-5 text-muted mb-3"><?php echo $producto["descripcion"]; ?></p>
@@ -354,6 +358,7 @@ if ($hayOferta) {
                                     <?php echo htmlspecialchars($nombre_proveedor); ?>
                                 </li>
                             </ul>
+                            <!-- Formulario para seleccionar cantidad y añadir al carrito -->
                             <form action="" method="post" class="d-flex align-items-end gap-3">
                                 <div>
                                     <label for="cantidad" class="form-label mb-1 fw-semibold">Cantidad</label>
@@ -394,18 +399,21 @@ if ($hayOferta) {
             <h3 class="mb-4" style="color:#b88c4a;">Productos similares</h3>
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                 <?php
+                // Obtiene la categoría y el id del producto actual
                 $categoria = $producto["categoria"];
                 $id_actual = $producto["id_producto"];
+                // Consulta hasta 3 productos similares (misma categoría, distinto id)
                 $sql_similares = "SELECT p.*, o.porcentaje 
-                                  FROM productos p 
-                                  LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta 
-                                  WHERE p.categoria = ? AND p.id_producto != ?
-                                  LIMIT 3";
+                          FROM productos p 
+                          LEFT JOIN ofertas o ON p.id_oferta = o.id_oferta 
+                          WHERE p.categoria = ? AND p.id_producto != ?
+                          LIMIT 3";
                 $stmt_similares = $_conexion->prepare($sql_similares);
                 $stmt_similares->bind_param("si", $categoria, $id_actual);
                 $stmt_similares->execute();
                 $result_similares = $stmt_similares->get_result();
 
+                // Si no hay productos similares, muestra un aviso
                 if ($result_similares->num_rows === 0): ?>
                     <div class="col">
                         <div class="alert alert-warning text-center w-100" role="alert">
@@ -414,6 +422,7 @@ if ($hayOferta) {
                     </div>
                     <?php
                 else:
+                    // Recorre los productos similares y los muestra
                     while ($sim = $result_similares->fetch_assoc()):
                         $hayOfertaSim = !is_null($sim["porcentaje"]);
                         $precioFinalSim = $hayOfertaSim ? $sim["precio"] * (1 - $sim["porcentaje"] / 100) : $sim["precio"];
@@ -424,6 +433,7 @@ if ($hayOferta) {
                                 <div class="card h-100 shadow-sm border-0 rounded-4 position-relative hover-shadow"
                                     style="transition: box-shadow .2s;">
                                     <?php if ($hayOfertaSim): ?>
+                                        <!-- Etiqueta de porcentaje de descuento si hay oferta -->
                                         <span class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
                                             -<?php echo $sim["porcentaje"]; ?>%
                                         </span>
@@ -436,6 +446,7 @@ if ($hayOferta) {
                                         <h6 class="card-title fw-bold mb-2"><?php echo $sim["nombre"]; ?></h6>
                                         <div class="card-text fs-6">
                                             <?php if ($hayOfertaSim): ?>
+                                                <!-- Muestra precio original y precio con oferta -->
                                                 <span class="text-muted text-decoration-line-through me-2">
                                                     <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
                                                 </span>
@@ -443,6 +454,7 @@ if ($hayOferta) {
                                                     <?php echo number_format($precioFinalSim, 2, ',', '.'); ?> €
                                                 </span>
                                             <?php else: ?>
+                                                <!-- Solo precio normal si no hay oferta -->
                                                 <span class="text-success fw-semibold">
                                                     <?php echo number_format($sim["precio"], 2, ',', '.'); ?> €
                                                 </span>
@@ -454,6 +466,7 @@ if ($hayOferta) {
                         </div>
                 <?php endwhile;
                 endif;
+                // Cierra el statement de productos similares
                 $stmt_similares->close();
                 ?>
             </div>

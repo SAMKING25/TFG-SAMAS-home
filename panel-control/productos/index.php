@@ -1,9 +1,12 @@
 <?php
+// Muestra todos los errores en pantalla
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluye la conexión a la base de datos
 require('../../util/conexion.php');
 
+// Inicia sesión y verifica si el proveedor está logueado
 session_start();
 if (!isset($_SESSION["proveedor"])) {
     header("location: ../../login/proveedor/iniciar_sesion_proveedor");
@@ -11,10 +14,13 @@ if (!isset($_SESSION["proveedor"])) {
 }
 ?>
 <?php
+// Incluye el header y el sidebar del panel
 include('../layout/header.php');
 include('../layout/sidebar.php');
 
+// Variable para mostrar alerta si se elimina un producto
 $producto_eliminado = false;
+// Si se recibe un POST, elimina el producto correspondiente y su imagen
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_producto = $_POST["id_producto"];
 
@@ -48,10 +54,8 @@ if (isset($_GET["busqueda"]) && $_GET["busqueda"] !== "") {
     }
 }
 
-
-// Consulta SQL
+// Consulta SQL para obtener los productos del proveedor (con filtro si aplica)
 $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "' $filtro";
-;
 $resultado = $_conexion->query($sql);
 ?>
 <!DOCTYPE html>
@@ -129,6 +133,7 @@ $resultado = $_conexion->query($sql);
             <p class="mb-0">Administra, busca y edita tus productos fácilmente</p>
         </div>
 
+        <!-- Formulario de búsqueda -->
         <form method="GET" class="row g-2 mb-4 justify-content-center">
             <div class="col-md-4">
                 <input type="text" class="form-control" name="busqueda" placeholder="Buscar por ID o nombre"
@@ -147,6 +152,7 @@ $resultado = $_conexion->query($sql);
         </div>
 
         <?php if ($resultado->num_rows === 0): ?>
+            <!-- Estado vacío: no hay productos -->
             <div class="d-flex flex-column align-items-center justify-content-center" style="height: 40vh;">
                 <p class="fs-4 mb-4 text-center empty-state">
                     <i class="bi bi-box-seam fs-1 mb-2"></i><br>
@@ -158,6 +164,7 @@ $resultado = $_conexion->query($sql);
                 </a>
             </div>
         <?php else: ?>
+            <!-- Lista de productos del proveedor -->
             <div class="row g-4">
                 <?php while ($fila = $resultado->fetch_assoc()): ?>
                     <?php $medidas = json_decode($fila["medidas"], true); ?>
@@ -209,6 +216,7 @@ $resultado = $_conexion->query($sql);
                                     </div>
                                 </div>
                             </a>
+                            <!-- Botón para eliminar producto -->
                             <form method="POST" class="d-inline position-absolute" style="top: 10px; right: 10px;">
                                 <input type="hidden" name="id_producto" value="<?php echo $fila["id_producto"]; ?>">
                                 <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar"><i
@@ -226,6 +234,7 @@ $resultado = $_conexion->query($sql);
     <?php include('../../udify-bot.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Notificación de producto creado correctamente
         <?php if (isset($_GET['creado']) && $_GET['creado'] === 'ok'): ?>
             Swal.fire({
                 toast: true,
@@ -250,6 +259,7 @@ $resultado = $_conexion->query($sql);
             }
         <?php endif; ?>
 
+        // Notificación de producto editado correctamente
         <?php if (isset($_GET['editado']) && $_GET['editado'] === 'ok'): ?>
             Swal.fire({
                 toast: true,
@@ -274,6 +284,7 @@ $resultado = $_conexion->query($sql);
             }
         <?php endif; ?>
 
+        // Notificación de producto eliminado correctamente
         <?php if (!empty($producto_eliminado)): ?>
             Swal.fire({
                 toast: true,
