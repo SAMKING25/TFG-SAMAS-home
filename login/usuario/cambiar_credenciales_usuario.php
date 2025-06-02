@@ -9,6 +9,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <?php
+    // --- Configuración de errores y carga de utilidades ---
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
@@ -17,12 +18,14 @@
 
     define('IMG_USUARIO', '/img/usuario/');
 
+    // --- Comprobación de sesión de usuario ---
     session_start();
     if (!isset($_SESSION["usuario"])) {
         header("location: ../login/usuario/iniciar_sesion_usuario");
         exit;
     }
 
+    // --- Obtención de datos actuales del usuario ---
     $id_usuario = $_SESSION['usuario'];
 
     $sql = $_conexion->prepare("SELECT * FROM usuarios WHERE id_usuario = ?");
@@ -39,6 +42,7 @@
     }
     ?>
     <style>
+        /* --- Estilos generales y responsive para el formulario y panel lateral --- */
         html,
         body {
             height: 100%;
@@ -168,6 +172,7 @@
             transition: filter 0.2s;
         }
 
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem;
@@ -184,11 +189,13 @@
             .side-panel .texto-largo {
                 display: none !important;
             }
+
             .side-panel {
                 text-align: center;
                 padding: 0.7rem 0.7rem !important;
                 min-height: 60px !important;
             }
+
             .side-panel .px-3,
             .side-panel .py-4,
             .side-panel .p-md-5,
@@ -196,12 +203,14 @@
                 padding: 0 !important;
                 margin: 0 !important;
             }
+
             .side-panel h4,
             .side-panel p,
             .side-panel hr {
                 margin-bottom: 0.4rem !important;
                 margin-top: 0.4rem !important;
             }
+
             .side-panel hr {
                 margin: 0.2rem 0 !important;
             }
@@ -223,17 +232,19 @@
 
 <body>
     <?php
+    // --- Procesamiento del formulario para cambiar credenciales ---
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nuevo_email_usuario = depurar($_POST["nuevo_email_usuario"]);
         $nuevo_nombre_usuario = depurar($_POST["nuevo_nombre_usuario"]);
         $nueva_contrasena_usuario = $_POST["nueva_contrasena_usuario"];
         $nueva_img_usuario = "estandar.png";
         $nuevo_id_suscripcion = 1; //Suscripción básica por defecto
-    
+
         $nuevo_nombre_imagen = $_FILES["nueva_img_usuario"]["name"];
         $ubicacion_temporal = $_FILES["nueva_img_usuario"]["tmp_name"];
         $ubicacion_final = "../../img/usuario/$nuevo_nombre_imagen";
 
+        // --- Validación y actualización de email ---
         if ($nuevo_email_usuario == "") {
             $err_email_usuario = "El email es obligatorio";
         } else {
@@ -248,6 +259,7 @@
             }
         }
 
+        // --- Validación y actualización de nombre ---
         if ($nuevo_nombre_usuario == "") {
             $err_nombre_usuario = "El nombre es obligatorio";
         } else {
@@ -263,6 +275,7 @@
             }
         }
 
+        // --- Validación y actualización de contraseña ---
         if ($nueva_contrasena_usuario == "") {
             $err_contrasena_usuario = "La contraseña es obligatoria";
         } else {
@@ -280,8 +293,8 @@
             }
         }
 
+        // --- Validación y actualización de imagen de usuario ---
         if ($nuevo_nombre_imagen == "") {
-            $err_foto_usuario = "La imagen es obligatoria";
         } else {
             // Forzar extensión a .png si el archivo subido es PNG, o usar la extensión original
             $extension = strtolower(pathinfo($nuevo_nombre_imagen, PATHINFO_EXTENSION));
@@ -306,7 +319,7 @@
         }
     }
 
-    // Redirige a donde quería ir el usuario
+    // --- Redirección tras cambios ---
     if (isset($_SESSION['redirect_after_login'])) {
         $redirect_url = $_SESSION['redirect_after_login'];
         unset($_SESSION['redirect_after_login']);
@@ -320,6 +333,7 @@
                 <div class="col-xl-10">
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
+                            <!-- --- Panel lateral con información y consejos --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Ajustes</h4>
@@ -339,6 +353,7 @@
                                 </div>
                             </div>
 
+                            <!-- --- Formulario para cambiar credenciales y foto de perfil --- -->
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
@@ -402,7 +417,7 @@
             </div>
         </div>
     </section>
-    <!-- Modal para recortar imagen -->
+    <!-- --- Modal para recortar imagen de perfil --- -->
     <div class="modal fade" id="cropperModal" tabindex="-1" aria-labelledby="cropperModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -428,10 +443,10 @@
     <!-- Cropper.js JS -->
     <script src="https://cdn.jsdelivr.net/npm/cropperjs@1.6.2/dist/cropper.min.js"></script>
     <script>
+        // --- Validación y habilitación de edición de campos ---
         let modo_edicion = false;
 
-        // Validación de errores
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nuevo_nombre_usuario');
             const emailInput = document.getElementById('nuevo_email_usuario');
@@ -439,7 +454,7 @@
 
             const botonCambiar = document.getElementById('cambiar_datos');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -494,13 +509,13 @@
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
 
-            // "Cambiar datos" ==> "Aplicar cambios"
-            botonCambiar.addEventListener('click', function (event) {
+            // --- Botón para habilitar edición de datos ---
+            botonCambiar.addEventListener('click', function(event) {
                 if (!modo_edicion) {
                     event.preventDefault();
 
@@ -520,8 +535,8 @@
         });
     </script>
     <script>
-        // Foto de perfil: click para cambiar imagen
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Lógica para cambiar y previsualizar la foto de perfil ---
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoPerfilWrapper = document.getElementById('foto-perfil-wrapper');
             const fotoPerfil = document.getElementById('foto-perfil');
             const inputFile = document.getElementById('nueva_img_usuario');
@@ -540,7 +555,7 @@
             actualizarCursor();
 
             // Permitir click en la foto SOLO si modo_edicion es true
-            fotoPerfilWrapper.addEventListener('click', function () {
+            fotoPerfilWrapper.addEventListener('click', function() {
                 if (typeof modo_edicion !== 'undefined' && modo_edicion) {
                     inputFile.click();
                 }
@@ -548,17 +563,17 @@
 
             // Actualiza el cursor cuando cambie el modo
             if (botonCambiar) {
-                botonCambiar.addEventListener('click', function () {
+                botonCambiar.addEventListener('click', function() {
                     setTimeout(actualizarCursor, 10);
                 });
             }
 
             // Previsualización de la imagen seleccionada
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoPerfil.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);
@@ -567,7 +582,8 @@
         });
     </script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Cropper.js: recorte de imagen de perfil antes de subir ---
+        document.addEventListener('DOMContentLoaded', function() {
             let cropper;
             const inputFile = document.getElementById('nueva_img_usuario');
             const fotoPerfil = document.getElementById('foto-perfil');
@@ -575,11 +591,11 @@
             const cropperImage = document.getElementById('cropper-image');
             const cropperApply = document.getElementById('cropper-apply');
 
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         cropperImage.src = ev.target.result;
                         cropperModal.show();
                     }
@@ -587,7 +603,7 @@
                 }
             });
 
-            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function () {
+            document.getElementById('cropperModal').addEventListener('shown.bs.modal', function() {
                 cropper = new Cropper(cropperImage, {
                     aspectRatio: 1,
                     viewMode: 1,
@@ -599,14 +615,14 @@
                 });
             });
 
-            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('cropperModal').addEventListener('hidden.bs.modal', function() {
                 if (cropper) {
                     cropper.destroy();
                     cropper = null;
                 }
             });
 
-            cropperApply.addEventListener('click', function () {
+            cropperApply.addEventListener('click', function() {
                 if (cropper) {
                     const canvas = cropper.getCroppedCanvas({
                         width: 300,
@@ -615,7 +631,7 @@
                     });
                     fotoPerfil.src = canvas.toDataURL();
                     // Opcional: actualizar el input file con la imagen recortada para enviar al servidor
-                    canvas.toBlob(function (blob) {
+                    canvas.toBlob(function(blob) {
                         const fileInput = document.getElementById('nueva_img_usuario');
                         const file = new File([blob], "logo_recortado.png", {
                             type: "image/png"

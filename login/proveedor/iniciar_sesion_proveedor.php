@@ -1,24 +1,30 @@
 <?php
+// --- Configuración de errores y carga de utilidades ---
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 
+// --- Procesamiento del formulario de inicio de sesión de proveedor ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_proveedor = depurar($_POST["email_proveedor"]);
     $contrasena_proveedor = $_POST["contrasena_proveedor"];
 
+    // --- Consulta proveedor por email ---
     $sql = "SELECT * FROM proveedores WHERE email_proveedor ='$email_proveedor'";
     $resultado = $_conexion->query($sql);
 
     if ($resultado->num_rows == 0) {
+        // --- Email no encontrado ---
         $err_email_proveedor = "El correo y la contraseña no coinciden";
     } else {
         $datos_usuario = $resultado->fetch_assoc();
+        // --- Verifica la contraseña ---
         $acceso_concedido = password_verify($contrasena_proveedor, $datos_usuario["contrasena_proveedor"]);
 
         if ($acceso_concedido) {
+            // --- Manejo de sesión segura ---
             session_start();
 
             session_unset();
@@ -27,9 +33,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             session_start();
 
             $_SESSION["proveedor"] = $datos_usuario["id_proveedor"];
+            // --- Redirección tras login exitoso ---
             header("location: ../../");
             exit;
         } else {
+            // --- Contraseña incorrecta ---
             $err_email_proveedor = "El correo y la contraseña no coinciden";
         }
     }
@@ -40,6 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 
 <head>
+    <!-- --- Metadatos, favicon, fuentes y estilos --- -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesion proveedor</title>
@@ -48,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
+        /* --- Estilos generales y responsive para el formulario y panel lateral --- */
         html,
         body {
             height: 100%;
@@ -243,6 +253,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem !important;
@@ -294,6 +305,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-xl-10">
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
+                            <!-- --- Columna izquierda: Formulario de login de proveedor --- -->
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
 
@@ -340,6 +352,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
+                                        <!-- --- Enlaces de navegación (usuario normal, info empresa) --- -->
                                         <div class="login-links">
                                             <p>
                                                 <i class="bi bi-person-plus"></i>
@@ -355,6 +368,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </form>
                                 </div>
                             </div>
+                            <!-- --- Columna derecha: Panel informativo lateral --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Mucho más que muebles</h4>
@@ -368,20 +382,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
-    <!-- Pop-up de cookies incluido-->
+    <!-- --- Inclusión de aviso de cookies --- -->
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Validación del formulario en el cliente ---
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_proveedor');
             const passwordInput = document.getElementById('contrasena_proveedor');
             const emailError = document.getElementById('email-error');
             const passwordError = document.getElementById('password-error');
 
-            form.addEventListener('submit', function (event) {
+            form.addEventListener('submit', function(event) {
                 let valid = true;
 
                 // Limpia los errores previos (incluyendo los de PHP)
@@ -412,7 +427,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     </script>
     <script>
-        // Mostrar/ocultar contraseña
+        // --- Mostrar/ocultar contraseña ---
         // Inicializa el icono según el estado inicial del input
         const passwordInput = document.getElementById('contrasena_proveedor');
         const icon = document.getElementById('togglePasswordIcon');
@@ -424,7 +439,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             icon.classList.add('bi-eye');
         }
 
-        document.getElementById('togglePassword').addEventListener('click', function () {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.remove('bi-eye-slash');
