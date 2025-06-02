@@ -17,6 +17,9 @@
         background-color: #1C64F2 !important;
         position: fixed !important;
         z-index: 10000 !important;
+        border-radius: 1.5rem !important;
+        /* Esquinas redondeadas */
+        overflow: hidden !important;
     }
 
     /* Estilos para la ventana flotante del chatbot */
@@ -25,5 +28,12 @@
         height: 40rem !important;
         position: fixed !important;
         z-index: 9999 !important;
+        border-radius: 1.5rem !important;
+        /* Esquinas redondeadas */
+        overflow: hidden !important;
+        box-shadow: 0 8px 32px 0 rgba(28, 100, 242, 0.15);
+        background-clip: padding-box !important;
+        background-color: #fff !important;
+        /* Fondo blanco para evitar esquinas negras */
     }
 </style>
