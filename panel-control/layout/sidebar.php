@@ -16,14 +16,16 @@ define('BASE_URL', '/panel-control/');
     .offcanvas {
         z-index: 1100 !important;
         box-shadow: 2px 0 12px rgba(81, 53, 19, 0.08);
-        border-radius: 18px 0 0 18px;
+        border-radius: 0 0 0 18px;
+        /* Solo redondea abajo a la izquierda */
     }
 
     /* Estilos generales del sidebar */
     .sidebar {
         background: linear-gradient(180deg, #f8f5f2 80%, #e9e2d8 100%);
         min-height: 100vh;
-        border-radius: 18px 0 0 18px;
+        border-radius: 0 0 0 18px;
+        /* Solo redondea abajo a la izquierda */
         box-shadow: 2px 0 12px rgba(81, 53, 19, 0.10);
     }
 
