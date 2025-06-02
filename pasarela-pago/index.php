@@ -2,9 +2,11 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluye la conexión a la base de datos y la sesión
 require('../util/conexion.php');
 session_start();
 
+// Verifica que se haya recibido el importe por POST
 if (!isset($_POST['importe'])) {
   echo "No se recibió el importe. <a href='/carrito/'>Volver al carrito</a>";
   exit;
@@ -18,10 +20,12 @@ $importe = floatval($_POST['importe']);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Completa tu compra | SAMAS HOME</title>
+  <!-- Bootstrap y estilos principales -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
   <link rel="shortcut icon" href="./img/logos/logo-marron-nobg.ico" />
   <link rel="stylesheet" href="../css/landing.css" />
+  <!-- SDK de PayPal -->
   <script src="https://www.paypal.com/sdk/js?client-id=AZiNIbkuxCM_s2y_iYwPg7V4zhQKzZbSJhN_y0P7_Pl5hDT7l3bAdsy8VoRzicjIA7r3JnzwT8e_TTJK&currency=EUR"></script>
   <style>
     body {
@@ -96,6 +100,7 @@ $importe = floatval($_POST['importe']);
   <div class="main-content">
     <div class="form-card">
       <h3 class="mb-4 text-center">Datos para la compra</h3>
+      <!-- Formulario de datos del comprador -->
       <form id="datosForm" novalidate>
         <input type="hidden" name="id_suscripcion" id="id_suscripcion" value="<?php echo isset($_POST['id_suscripcion']) ? intval($_POST['id_suscripcion']) : ''; ?>">
         <div class="mb-3">
@@ -150,10 +155,11 @@ $importe = floatval($_POST['importe']);
       }, false);
     })();
 
+    // Configuración de los botones de PayPal
     paypal.Buttons({
       createOrder: function(data, actions) {
         var form = document.getElementById('datosForm');
-        // Validación 
+        // Validación del formulario antes de crear la orden
         if (!form.checkValidity()) {
           form.classList.add('was-validated');
           form.reportValidity();
@@ -168,6 +174,7 @@ $importe = floatval($_POST['importe']);
         });
       },
       onApprove: function(data, actions) {
+        // Cuando el pago es aprobado por PayPal
         return actions.order.capture().then(function(detalles) {
           // 2. Tramitar pedido solo si el correo fue exitoso
           var form = document.getElementById('datosForm');
@@ -182,11 +189,12 @@ $importe = floatval($_POST['importe']);
           formData2.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
           formData2.append('paypal_email', detalles.payer.email_address);
 
+          // Envía los datos del pedido al backend para tramitarlo
           return fetch('/pedidos/tramitar-pedido', {
-            method: 'POST',
-            body: formData2
-          })
-          .then(response => response.json())
+              method: 'POST',
+              body: formData2
+            })
+            .then(response => response.json())
             .then(data => {
               if (!data.success) {
                 alert("Error al tramitar pedido: " + (data.error || ""));
@@ -207,6 +215,7 @@ $importe = floatval($_POST['importe']);
               formData.append('paypal_name', detalles.payer.name.given_name + ' ' + detalles.payer.name.surname);
               formData.append('paypal_email', detalles.payer.email_address);
 
+              // Envía los datos para enviar el correo de confirmación
               return fetch('enviar_correo', {
                 method: 'POST',
                 body: formData
@@ -215,6 +224,7 @@ $importe = floatval($_POST['importe']);
             .then(response => response.json())
             .then(data => {
               if (data.success) {
+                // Redirige a la página de compra completada si todo fue bien
                 window.location.href = "/pasarela-pago/completado";
               } else {
                 alert("Error al guardar el pedido");
@@ -226,6 +236,7 @@ $importe = floatval($_POST['importe']);
         });
       },
       onCancel: function(data) {
+        // Si el usuario cancela el pago en PayPal
         alert("Pago cancelado");
         console.log(data);
       }

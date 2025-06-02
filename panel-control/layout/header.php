@@ -1,5 +1,7 @@
-<?php $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-// Consulta SQL
+<?php
+// Guarda la URL actual para redirigir después del login
+$_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
+// Consulta SQL para obtener los datos del proveedor actual
 $id_proveedor = $_SESSION['proveedor'];
 
 $sql = $_conexion->prepare("SELECT * FROM proveedores WHERE id_proveedor = ?");
@@ -7,11 +9,11 @@ $sql->bind_param("i", $id_proveedor);
 $sql->execute();
 $resultado = $sql->get_result();
 
+// Define constantes de rutas
 define('IMG_PROVEEDOR', '/img/proveedor/');
 define('USUARIO', '/login/');
 define('FUNCIONES', '/util/funciones/');
 define('INICIO', '/');
-
 ?>
 <style>
   /* Navbar madera profesional y translúcido */
@@ -80,21 +82,26 @@ define('INICIO', '/');
   }
 </style>
 
+<!-- Hoja de estilos adicional para el panel -->
 <link rel="stylesheet" href="/panel-control/css/panel.css">
 
+<!-- Header principal del panel de control -->
 <header class="sticky-top navbar-madera px-3 py-2 d-flex align-items-center justify-content-between"
   style="z-index:1050;">
   <div class="d-flex align-items-center gap-2">
+    <!-- Botón para abrir el menú lateral (offcanvas) -->
     <a class="btn btn-outline-light d-flex align-items-center justify-content-center me-2" data-bs-toggle="offcanvas"
       href="#offcanvasExample" aria-controls="offcanvasExample">
       <i class="bi bi-list fs-4"></i>
     </a>
+    <!-- Logo y nombre de la empresa -->
     <a href="/" class="text-decoration-none d-flex align-items-center gap-2">
       <img src="/img/logos/loguito_gris.png" alt="Logo" height="38" class="me-1" />
       <span class="fw-bold fs-5 text-white">SAMAS home</span>
     </a>
   </div>
   <div class="dropdown text-end">
+    <!-- Avatar y nombre del proveedor con menú desplegable -->
     <a href="#" class="align-items-center text-white text-decoration-none dropdown-toggle d-flex" id="dropdownUser1"
       data-bs-toggle="dropdown" aria-expanded="false">
       <?php while ($fila = $resultado->fetch_assoc()) { ?>
@@ -105,6 +112,7 @@ define('INICIO', '/');
         </strong>
       <?php } ?>
     </a>
+    <!-- Menú desplegable de usuario -->
     <ul class="dropdown-menu dropdown-menu-end text-small shadow navbar-madera-dropdown"
       aria-labelledby="dropdownUser1">
       <li>

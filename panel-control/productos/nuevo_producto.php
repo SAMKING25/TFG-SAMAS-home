@@ -1,16 +1,22 @@
 <?php
+// Muestra todos los errores en pantalla
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
+
+// Incluye la conexión y utilidades
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 
+// Inicia sesión y verifica si el proveedor está logueado
 session_start();
 if (!isset($_SESSION["proveedor"])) {
     header("location: ../../login/proveedor/iniciar_sesion_proveedor");
     exit;
 }
 
+// Si el formulario fue enviado por POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Depura y recoge los datos del formulario
     $tmp_nombre = depurar($_POST["nombre"]);
     $tmp_precio = depurar($_POST["precio"]);
     if (isset($_POST["categoria"]))
@@ -30,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
     $ubicacion_final = "../../img/productos/$nombre_imagen";
 
+    // Validación del nombre
     if ($tmp_nombre == '') {
         $err_nombre = "El nombre es obligatorio";
     } else {
@@ -45,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del precio
     if ($tmp_precio == '') {
         $err_precio = "El precio es obligatorio";
     } else {
@@ -60,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la categoría
     if ($tmp_categoria == '') {
         $err_categoria = "La categoria es obligatoria";
     } else {
@@ -82,6 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del stock
     if ($tmp_stock == '' || $tmp_stock == 0) {
         $stock = 0;
     } else {
@@ -96,6 +106,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la descripción
     if ($tmp_descripcion == '') {
         $err_descripcion = "La descripcion es obligatoria";
     } else {
@@ -106,6 +117,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del largo
     if ($tmp_largo == '') {
         $err_largo = "El largo es obligatorio";
     } else {
@@ -120,6 +132,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del ancho
     if ($tmp_ancho == '') {
         $err_ancho = "El ancho es obligatorio";
     } else {
@@ -134,6 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del alto
     if ($tmp_alto == '') {
         $err_alto = "El alto es obligatorio";
     } else {
@@ -148,6 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la imagen
     if ($nombre_imagen == "") {
         $err_imagen = "La imagen es obligatoria";
     } else {
@@ -159,6 +174,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Si todo está validado, inserta el producto
     if (isset($nombre) && isset($precio) && isset($categoria) && isset($img_producto) && isset($descripcion) && isset($largo) && isset($ancho) && isset($alto) && isset($id_proveedor)) {
         // Inserta el producto SIN imagen primero
         $sql = "INSERT INTO productos (nombre, precio, categoria, stock, img_producto, descripcion, medidas, id_proveedor, id_oferta)
@@ -183,9 +199,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+// Incluye el header y el sidebar del panel
 include('../layout/header.php');
 include('../layout/sidebar.php');
 
+// Obtiene todas las categorías
 $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
 $resultado = $_conexion->query($sql);
 $categorias = [];
@@ -194,6 +212,7 @@ while ($fila = $resultado->fetch_assoc()) {
     array_push($categorias, $fila["nombre_categoria"]);
 }
 
+// Obtiene todas las ofertas
 $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
 $resultado = $_conexion->query($sql);
 $ofertas = [];
@@ -216,6 +235,7 @@ while ($fila = $resultado->fetch_assoc()) {
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* Estilos generales del fondo y tarjetas */
         body {
             background: linear-gradient(135deg, #f7e5cb 0%, #f3f0e5 100%);
             min-height: 100vh;
@@ -474,18 +494,19 @@ while ($fila = $resultado->fetch_assoc()) {
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // Script para previsualizar la imagen seleccionada antes de subirla
+        document.addEventListener('DOMContentLoaded', function() {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');
             const inputFile = document.getElementById('img_producto');
-            fotoWrapper.addEventListener('click', function () {
+            fotoWrapper.addEventListener('click', function() {
                 inputFile.click();
             });
-            inputFile.addEventListener('change', function (e) {
+            inputFile.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    reader.onload = function (ev) {
+                    reader.onload = function(ev) {
                         fotoProducto.src = ev.target.result;
                     }
                     reader.readAsDataURL(file);

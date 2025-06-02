@@ -1,11 +1,14 @@
 <?php
+// Muestra todos los errores en pantalla
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluye la conexión y utilidades
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 define('IMG_PRODUCTOS', '/img/productos/');
 
+// Inicia sesión y verifica si el proveedor está logueado
 session_start();
 if (!isset($_SESSION["proveedor"])) {
     header("location: ../../login/proveedor/iniciar_sesion_proveedor");
@@ -15,10 +18,12 @@ if (!isset($_SESSION["proveedor"])) {
 // --- TODA LA LÓGICA DE CONSULTA Y PROCESAMIENTO DEL FORMULARIO AQUÍ ---
 // Incluye la lógica de edición, validaciones, updates, y el header("Location: ...")
 
+// Obtiene el id del producto a editar
 $id_producto = $_GET["id_producto"];
 $sql = "SELECT * FROM productos WHERE id_producto = '$id_producto'";
 $resultado = $_conexion->query($sql);
 
+// Obtiene los datos actuales del producto
 while ($datos_actuales = $resultado->fetch_assoc()) {
     $nombre_actual = $datos_actuales["nombre"];
     $precio_actual = $datos_actuales["precio"];
@@ -30,6 +35,7 @@ while ($datos_actuales = $resultado->fetch_assoc()) {
     $oferta_actual = $datos_actuales["id_oferta"];
 }
 
+// Obtiene todas las categorías
 $sql = "SELECT * FROM categorias ORDER BY nombre_categoria";
 $resultado = $_conexion->query($sql);
 $categorias = [];
@@ -38,6 +44,7 @@ while ($fila = $resultado->fetch_assoc()) {
     array_push($categorias, $fila["nombre_categoria"]);
 }
 
+// Obtiene todas las ofertas
 $sql = "SELECT id_oferta, nombre FROM ofertas ORDER BY id_oferta";
 $resultado = $_conexion->query($sql);
 $ofertas = [];
@@ -46,7 +53,9 @@ while ($fila = $resultado->fetch_assoc()) {
     $ofertas[] = $fila;  // Guarda todo el array con id_oferta y nombre
 }
 
+// Si el formulario fue enviado por POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Depura y recoge los datos del formulario
     $nuevo_nombre = depurar($_POST["nuevo_nombre"]);
     $nuevo_precio = depurar($_POST["nuevo_precio"]);
     if (isset($_POST["nueva_categoria"]))
@@ -64,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $ubicacion_temporal = $_FILES["img_producto"]["tmp_name"];
     $ubicacion_final = "../../img/productos/$nuevo_nombre_imagen";
 
+    // Validación del nombre
     if ($nuevo_nombre == '') {
         $err_nombre = "El nombre es obligatorio";
     } else {
@@ -82,6 +92,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del precio
     if ($nuevo_precio == '') {
         $err_precio = "El precio es obligatorio";
     } else {
@@ -100,6 +111,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la categoría
     if ($nueva_categoria == '') {
         $err_categoria = "La categoria es obligatoria";
     } else {
@@ -113,6 +125,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del stock
     if ($nuevo_stock == '' || $nuevo_stock == 0) {
         $stock_actual = 0;
     } else {
@@ -130,6 +143,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación de la descripción
     if ($nueva_descripcion == "") {
         $err_descripcion = "La descripcion es obligatoria";
     } else {
@@ -143,6 +157,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del largo
     if ($nuevo_largo == '') {
         $err_largo = "El largo es obligatorio";
     } else {
@@ -157,6 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del ancho
     if ($nuevo_ancho == '') {
         $err_ancho = "El ancho es obligatorio";
     } else {
@@ -171,6 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación del alto
     if ($nuevo_alto == '') {
         $err_alto = "El alto es obligatorio";
     } else {
@@ -185,15 +202,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Si las medidas están definidas, actualiza en la base de datos
     if (isset($largo_actual) && isset($ancho_actual) && isset($alto_actual)) {
         $medidas = array('largo' => intval($largo_actual), 'ancho' => intval($ancho_actual), 'alto' => intval($alto_actual));
         $sql = "UPDATE productos SET medidas = '" . json_encode($medidas) . "' WHERE id_producto = '$id_producto'";
         $_conexion->query($sql);
     }
 
+    // Validación y actualización de la imagen
     if ($nuevo_nombre_imagen == "") {
-    // No se subió una nueva imagen, NO marcar error, solo mantener la actual
-    // $img_actual ya tiene el valor correcto
+        // No se subió una nueva imagen, NO marcar error, solo mantener la actual
+        // $img_actual ya tiene el valor correcto
     } else {
         if (strlen($nuevo_nombre_imagen) > 60) {
             $err_foto_proveedor = "La ruta de la img no puede tener mas de 60 caracteres";
@@ -215,6 +234,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // Validación y actualización de la oferta
     if ($nueva_oferta === "" || $nueva_oferta === null) {
         // Sin oferta seleccionada, guarda NULL en la base de datos
         $sql = "UPDATE productos SET id_oferta = NULL WHERE id_producto = $id_producto";
@@ -226,7 +246,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $oferta_actual = $nueva_oferta;
     }
 
-    // Al final de todas las validaciones y actualizaciones:
+    // Si no hay errores, redirige al listado de productos con mensaje de éxito
     if (
         !isset($err_nombre) && !isset($err_precio) && !isset($err_categoria) &&
         !isset($err_stock) && !isset($err_descripcion) &&
@@ -255,6 +275,7 @@ include('../layout/sidebar.php');
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* Estilos generales del fondo y tarjetas */
         body {
             background: linear-gradient(135deg, #f7e5cb 0%, #f3f0e5 100%);
             min-height: 100vh;
@@ -515,6 +536,7 @@ include('../layout/sidebar.php');
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Script para previsualizar la imagen seleccionada antes de subirla
         document.addEventListener('DOMContentLoaded', function() {
             const fotoWrapper = document.getElementById('foto-producto-wrapper');
             const fotoProducto = document.getElementById('foto-producto');

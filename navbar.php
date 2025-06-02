@@ -5,7 +5,7 @@
 // Guarda la URL actual para redirigir después del login
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
-// Definición de constantes para rutas de imágenes y utilidades
+// Definiciones de rutas de imágenes y utilidades
 define('IMG_USUARIO', '/img/usuario/');
 define('IMG_PROVEEDOR', '/img/proveedor/');
 define('FUNCIONES', '/util/funciones/');
@@ -14,7 +14,8 @@ define('FUNCIONES', '/util/funciones/');
 $tipo_sesion = null;
 $datos = null;
 
-// Comprobación de sesión activa de usuario o proveedor y obtención de sus datos
+
+// Detecta si hay sesión de usuario o proveedor y obtiene sus datos
 if (isset($_SESSION['usuario'])) {
     $id = $_SESSION['usuario'];
     $tipo_sesion = 'usuario';
@@ -36,6 +37,7 @@ if (isset($_SESSION['usuario'])) {
 
 <!-- Estilos personalizados para el menú desplegable de usuario/proveedor -->
 <style>
+    /* Estilos para el menú desplegable del navbar */
     .dropdown-menu {
         background-color: #fff !important;
         color: #000 !important;
@@ -51,7 +53,7 @@ if (isset($_SESSION['usuario'])) {
     }
 </style>
 
-<!-- NAVBAR PRINCIPAL -->
+<!-- Navbar principal -->
 <nav
     class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
     <div class="container">
@@ -173,10 +175,9 @@ if (isset($_SESSION['usuario'])) {
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <?php
-// Script de confirmación para el uso del plano solo para usuarios sin suscripción ilimitada
+// Si el usuario NO es proveedor y NO tiene suscripción VIP, muestra avisos y controles especiales para el plano
 if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
     <script>
-        // Al entrar en /plano, muestra confirmación antes de consumir un uso
         document.addEventListener('DOMContentLoaded', function() {
             // Detecta si la URL es exactamente /plano o termina con /plano/
             if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
@@ -231,7 +232,7 @@ if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos[
             }
         });
 
-        // Al intentar salir de /plano, muestra confirmación para evitar perder cambios
+
         document.addEventListener('DOMContentLoaded', function() {
             // Solo si estamos en /plano o /plano/
             if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {

@@ -1,4 +1,4 @@
-/* Fuentes */
+/* Fuentes y variables globales */
 /*@font-face {
   font-family: "TrebuchetMS";
   src: url("../fonts/TrebuchetMS.ttf");
@@ -18,7 +18,8 @@
 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cardo:wght@700&display=swap');
-/* Variables */
+
+/* Variables de color y tamaño */
 :root {
   --max-width: 1500px;
   --max-width-tablet: 1024px;
@@ -39,28 +40,36 @@
   --color-shadow: rgba(0, 0, 0, 0.1);
 }
 
-html, body {
+/* Estilos generales para html y body */
+html,
+body {
   font-family: 'Inter', sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   margin: 0;
   padding: 0;
 }
+
+/* Fuente Cardo para títulos */
 .cardo-title {
-  font-family: 'Cardo', serif 
+  font-family: 'Cardo', serif
 }
+
+/* Subtítulo del banner */
 .banner-subtext {
   color: #fff !important;
   font-size: 1rem;
 }
+
+/* Botón del banner */
 .banner-btn {
-  font-size: 0.95rem; 
+  font-size: 0.95rem;
 }
 
-/* Navbar */
+/* Navbar principal */
 .navbar {
   background: rgba(0, 0, 0, 0.5) !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
   backdrop-filter: blur(4px);
   padding: 6px 16px;
   min-height: 60px;
@@ -68,6 +77,7 @@ html, body {
   transition: background 0.8s ease-in-out, box-shadow 0.8s ease-in-out;
 }
 
+/* Navbar transparente para la home */
 .navbar.navbar-home {
   background: transparent !important;
   box-shadow: none !important;
@@ -75,21 +85,25 @@ html, body {
   transition: background 0.8s, box-shadow 0.8s;
 }
 
-/* Para TODAS las páginas excepto la principal */
+/* Espaciado para el contenido principal según la página */
 body:not(.navbar-home-body) .main-content {
-  margin-top: 80px; /* Igual a la altura del navbar normal */
+  margin-top: 80px;
+  /* Igual a la altura del navbar normal */
 }
 
-/* Para la principal, menos espacio */
 body.navbar-home-body .main-content {
-  margin-top: 60px; /* Igual a la altura del navbar-home */
+  margin-top: 60px;
+  /* Igual a la altura del navbar-home */
 }
 
+/* Colores de texto e iconos en navbar */
 .navbar,
 .navbar * {
   color: #fff !important;
   fill: #fff !important;
 }
+
+/* Marca de la navbar */
 .navbar-brand {
   color: var(--color-highlight);
   text-shadow: 2px 2px 3px #000;
@@ -98,10 +112,12 @@ body.navbar-home-body .main-content {
 
 .navbar-brand span {
   text-shadow: none !important;
-  font-size: 1rem !important; /* Tamaño más pequeño */
+  font-size: 1rem !important;
+  /* Tamaño más pequeño */
   letter-spacing: 2px;
 }
 
+/* Navegación centrada */
 .navbar-nav {
   width: 100%;
   justify-content: center;
@@ -109,27 +125,33 @@ body.navbar-home-body .main-content {
   display: flex;
 }
 
+/* Logo de la navbar */
 .navbar-brand img {
-  height: 40px;         /* Ajusta el logo para que no sobresalga */
+  height: 40px;
+  /* Ajusta el logo para que no sobresalga */
   max-height: 36px;
 }
 
+/* Enlaces de la navbar */
 .nav-link {
   padding-top: 2px;
   padding-bottom: 2px;
-  font-size: 1rem;     /* Opcional: tamaño de fuente más pequeño */
+  font-size: 1rem;
+  /* Opcional: tamaño de fuente más pequeño */
 }
 
 .nav-link:hover {
   color: var(--color-accent);
 }
 
+/* Navbar scrolled */
 .navbar.scrolled {
   background: rgba(0, 0, 0, 0.5) !important;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25) !important;
   backdrop-filter: blur(4px);
 }
 
+/* Subrayado animado para enlaces */
 .subraya {
   position: relative;
   overflow: hidden;
@@ -139,7 +161,8 @@ body.navbar-home-body .main-content {
 .subraya::before {
   content: "";
   position: absolute;
-  left: 10%;              /* Centra la línea (100%-80%)/2 = 10% */
+  left: 10%;
+  /* Centra la línea (100%-80%)/2 = 10% */
   bottom: 0;
   width: 0%;
   height: 2px;
@@ -150,7 +173,8 @@ body.navbar-home-body .main-content {
 
 .subraya:hover::before,
 .subraya.active::before {
-  width: 80%;             /* Solo 80% del ancho */
+  width: 80%;
+  /* Solo 80% del ancho */
 }
 
 .subraya:hover {
@@ -158,6 +182,7 @@ body.navbar-home-body .main-content {
   transform: none;
 }
 
+/* Efecto de crecimiento para iconos */
 .icon-grow {
   transition: transform 0.3s;
   display: inline-flex;
@@ -169,7 +194,7 @@ body.navbar-home-body .main-content {
   transform: scale(1.15);
 }
 
-/* Banner */
+/* Banner principal */
 .index-section {
   background-image: url("../img/portada-samas.png");
   background-size: cover;
@@ -180,6 +205,7 @@ body.navbar-home-body .main-content {
   align-items: center;
 }
 
+/* Texto del banner */
 .section-banner {
   color: #fff !important;
   font-size: 2rem;
@@ -191,13 +217,13 @@ body.navbar-home-body .main-content {
   color: #fff !important;
 }
 
-/* Carrusel */
+/* Carrusel de imágenes */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {
   background-color: #000;
 }
 
-/* Cards */
+/* Tarjetas de productos */
 .product-card {
   box-shadow: 0 4px 6px var(--color-shadow);
   border-radius: 10px;
@@ -247,13 +273,16 @@ footer {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 35%; /* Más corta inicialmente */
+  width: 35%;
+  /* Más corta inicialmente */
   height: 0.22em;
   background: var(--color-accent, #ffb74d);
   border-radius: 2px;
   z-index: -1;
-  transition: width 1.5s cubic-bezier(.77,0,.18,1); /* Más lento */
+  transition: width 1.5s cubic-bezier(.77, 0, .18, 1);
+  /* Más lento */
 }
+
 .titulo-subrayado.animar-subrayado::after {
   width: 100%;
 }
@@ -265,10 +294,11 @@ footer {
   gap: 2rem;
 }
 
+/* Tarjeta de producto nuevo */
 .nuevo-producto-card {
   background: #fff;
   border-radius: 1.3rem;
-  box-shadow: 0 4px 18px rgba(60,60,60,0.10);
+  box-shadow: 0 4px 18px rgba(60, 60, 60, 0.10);
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -279,7 +309,7 @@ footer {
 
 .nuevo-producto-card:hover {
   transform: translateY(-6px) scale(1.03);
-  box-shadow: 0 8px 32px rgba(60,60,60,0.13);
+  box-shadow: 0 8px 32px rgba(60, 60, 60, 0.13);
 }
 
 .nuevo-producto-img {
@@ -335,7 +365,8 @@ footer {
   padding: 0.5rem 1.2rem;
 }
 
-.nuevo-producto-btn:hover, .nuevo-producto-btn:focus {
+.nuevo-producto-btn:hover,
+.nuevo-producto-btn:focus {
   background: var(--color-accent);
   color: #222;
 }
@@ -352,13 +383,16 @@ footer {
   padding-left: 8px;
   padding-right: 8px;
 }
+
 .categorias-scroll::-webkit-scrollbar {
   height: 12px;
 }
+
 .categorias-scroll::-webkit-scrollbar-thumb {
   background: #bbb;
   border-radius: 6px;
 }
+
 .categorias-scroll::-webkit-scrollbar-track {
   background: #eee;
   border-radius: 6px;
@@ -373,7 +407,7 @@ footer {
   max-width: 90vw;
   background: #f8f8f8;
   border-radius: 1.5rem;
-  box-shadow: 0 2px 12px rgba(60,60,60,0.10);
+  box-shadow: 0 2px 12px rgba(60, 60, 60, 0.10);
   transition: transform 0.18s, box-shadow 0.18s;
   display: flex;
   align-items: flex-end;
@@ -381,25 +415,28 @@ footer {
   overflow: hidden;
   cursor: pointer;
 }
+
 .categoria-card-lg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
+
 .categoria-card-lg:hover {
   transform: translateY(-6px) scale(0.97);
-  box-shadow: 0 8px 24px rgba(60,60,60,0.13);
+  box-shadow: 0 8px 24px rgba(60, 60, 60, 0.13);
   -webkit-transform: translateY(-6px) scale(0.97);
   -moz-transform: translateY(-6px) scale(0.97);
   -ms-transform: translateY(-6px) scale(0.97);
   -o-transform: translateY(-6px) scale(0.97);
 }
+
 .categoria-label {
-  background: rgba(255,255,255,0.97);
+  background: rgba(255, 255, 255, 0.97);
   color: #222;
   font-size: 1.15rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   pointer-events: none;
   min-width: 70%;
   max-width: 90%;
@@ -411,7 +448,7 @@ footer {
 @media (max-width: 991.98px) {
   .navbar-collapse {
     background: linear-gradient(135deg, var(--color-footer) 0%, #a67c52 100%) !important;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
     border-radius: 0 0 18px 18px;
     transition: padding 0s;
     transition: 0.3s;
@@ -422,7 +459,7 @@ footer {
     padding-top: 1.2rem;
   }
 
-  .util-nav-icons{
+  .util-nav-icons {
     color: #fff !important;
     font-size: 1.15rem;
     text-align: right;
@@ -443,6 +480,7 @@ footer {
   }
 }
 
+/* Responsive para tarjetas y categorías en móvil */
 @media (max-width: 600px) {
   .categoria-card-lg {
     width: 170px;
@@ -450,6 +488,7 @@ footer {
     min-width: 170px;
     min-height: 180px;
   }
+
   .categoria-label {
     font-size: 1rem;
     padding: 0.5rem 1rem;
@@ -459,9 +498,8 @@ footer {
     grid-template-columns: 1fr;
     gap: 1.2rem;
   }
+
   .nuevo-producto-img {
     height: 120px;
   }
 }
-
-  
