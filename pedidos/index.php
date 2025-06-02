@@ -1,18 +1,23 @@
 <?php
+// Mostrar todos los errores de PHP para depuración
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluir archivo de conexión a la base de datos
 require('../util/conexion.php');
+// Iniciar sesión
 session_start();
 
+// Verificar si el usuario está logueado, si no redirigir a inicio de sesión
 if (!isset($_SESSION['usuario'])) {
     header("Location: /login/usuario/iniciar_sesion_usuario");
     exit;
 }
 
+// Obtener el ID del usuario desde la sesión
 $id_usuario = $_SESSION['usuario'];
 
-// Obtener todos los pedidos del usuario
+// Obtener todos los pedidos del usuario ordenados por fecha descendente
 $sql = "SELECT id_pedido, fecha, total, datos_usuario FROM pedidos WHERE id_usuario = ? ORDER BY fecha DESC";
 $stmt = $_conexion->prepare($sql);
 $stmt->bind_param("i", $id_usuario);
@@ -26,38 +31,42 @@ $pedidos = $stmt->get_result();
     <meta charset="UTF-8">
     <title>Mis pedidos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Bootstrap CSS principal -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon del sitio -->
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <style>
+        /* Estilos generales del body */
         body {
             background: linear-gradient(120deg, #f8f6f2 0%, #f4e5cc 100%);
             font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
             color: #222;
         }
 
+        /* Contenedor principal de la tabla de pedidos */
         .pedidos-table-container {
             background: #fffbe9;
             border-radius: 2rem;
             box-shadow: 0 4px 24px 0 #bfa16a22;
             padding: 3.5rem 2.5rem;
-            /* Aumentado */
             margin-top: 6rem;
             margin-bottom: 4rem;
-            /* Nuevo: */
             max-width: 900px;
             margin-left: auto;
             margin-right: auto;
         }
 
+        /* Estilos para las cards de pedidos en móvil */
         .card.mb-3.shadow-sm {
             margin-left: 0.5rem;
             margin-right: 0.5rem;
         }
 
+        /* Tabla de pedidos para escritorio */
         .table-pedidos {
             border-radius: 1.5rem;
             overflow: hidden;
@@ -67,9 +76,7 @@ $pedidos = $stmt->get_result();
         .table-pedidos th,
         .table-pedidos td {
             text-align: center;
-            /* Centra el contenido horizontalmente */
             vertical-align: middle !important;
-            /* Centra el contenido verticalmente */
         }
 
         .table-pedidos th {
@@ -86,9 +93,9 @@ $pedidos = $stmt->get_result();
             font-size: 1.08rem;
             border: none;
             height: 56px;
-            /* Altura uniforme para las celdas */
         }
 
+        /* Icono de pedido */
         .pedido-icon {
             color: #b88c4a;
             font-size: 1.5rem;
@@ -96,6 +103,7 @@ $pedidos = $stmt->get_result();
             vertical-align: middle;
         }
 
+        /* Colores de encabezados de tabla */
         .th-pedido {
             background: #c8ad7f !important;
         }
@@ -112,6 +120,7 @@ $pedidos = $stmt->get_result();
             background: #d6b77b !important;
         }
 
+        /* Botón de ver pedido */
         .btn-eye-pedido {
             background: rgb(233, 215, 192);
             color: #fff !important;
@@ -132,6 +141,7 @@ $pedidos = $stmt->get_result();
             transform: scale(1.08);
         }
 
+        /* Responsive para móvil */
         @media (max-width: 600px) {
             .pedidos-table-container {
                 padding: 1rem 0.3rem;
@@ -144,10 +154,8 @@ $pedidos = $stmt->get_result();
         }
 
         @media (max-width: 700px) {
-
             .pedidos-table-container {
                 padding: 1.5rem 0.7rem !important;
-                /* Más padding en móvil */
             }
 
             .card.mb-3.shadow-sm {
@@ -182,6 +190,7 @@ $pedidos = $stmt->get_result();
 </head>
 
 <body>
+    <!-- Incluir barra de navegación -->
     <?php include('../navbar.php'); ?>
     <div class="container pedidos-table-container">
         <h2 class="mb-4 fw-bold" style="color:#b88c4a; letter-spacing:1px;">Mis pedidos</h2>
@@ -195,6 +204,7 @@ $pedidos = $stmt->get_result();
                 ?>
                 <?php while ($pedido = $pedidos->fetch_assoc()): ?>
                     <?php
+                    // Decodificar los datos del usuario si existen
                     $datos = [];
                     if (!empty($pedido['datos_usuario'])) {
                         $datos = json_decode($pedido['datos_usuario'], true);
@@ -239,11 +249,13 @@ $pedidos = $stmt->get_result();
             <!-- Vista horizontal para escritorio -->
             <div class="d-none d-md-flex flex-column gap-4">
                 <?php
+                // Reiniciar el puntero del resultado para escritorio
                 $stmt->execute();
                 $pedidos = $stmt->get_result();
                 ?>
                 <?php while ($pedido = $pedidos->fetch_assoc()): ?>
                     <?php
+                    // Decodificar los datos del usuario si existen
                     $datos = [];
                     if (!empty($pedido['datos_usuario'])) {
                         $datos = json_decode($pedido['datos_usuario'], true);
@@ -298,13 +310,16 @@ $pedidos = $stmt->get_result();
                 <?php endwhile; ?>
             </div>
         <?php else: ?>
+            <!-- Mensaje si no hay pedidos -->
             <div class="alert alert-info mt-4">No tienes pedidos realizados.</div>
         <?php endif; ?>
     </div>
+    <!-- Incluir pie de página, cookies y bot -->
     <?php include('../footer.php'); ?>
     <?php include('../cookies.php'); ?>
     <?php include('../udify-bot.php'); ?>
 
+    <!-- Scripts de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

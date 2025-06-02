@@ -1,7 +1,10 @@
 <?php
+// Mostrar todos los errores de PHP para depuración
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
+// Incluir archivo de conexión a la base de datos
 require('../util/conexion.php');
+// Iniciar sesión
 session_start();
 ?>
 
@@ -12,11 +15,16 @@ session_start();
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>SAMAS HOME - Contacto</title>
+	<!-- Bootstrap CSS principal -->
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<!-- Iconos de Bootstrap -->
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+	<!-- Favicon del sitio -->
 	<link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
+	<!-- Archivo CSS personalizado -->
 	<link rel="stylesheet" href="/css/landing.css" />
 	<style>
+		/* Estilos personalizados para la página de contacto */
 		.contact-main {
 			max-width: 950px;
 			margin: 0 auto;
@@ -210,12 +218,12 @@ session_start();
 </head>
 
 <body>
+	<!-- Incluir barra de navegación -->
 	<?php include('../navbar.php'); ?>
-	
 
 	<div class="container main-content">
 		<div class="contact-main mt-4">
-			<!-- Panel de información -->
+			<!-- Panel de información de contacto -->
 			<div class="contact-info-panel">
 				<div class="logo-contacto">
 					<img src="/img/logos/loguito_gris.png" alt="Logo SAMAS HOME">
@@ -243,17 +251,17 @@ session_start();
 					</div>
 				</div>
 				<div class="contact-social">
-					<a href="https://wa.me/34645867244" target="_blank" title="WhatsApp"><i
-							class="bi bi-whatsapp"></i></a>
+					<!-- Enlaces a redes sociales y contacto -->
+					<a href="https://wa.me/34645867244" target="_blank" title="WhatsApp"><i class="bi bi-whatsapp"></i></a>
 					<a href="mailto:samashome1@gmail.com" title="Email"><i class="bi bi-envelope-fill"></i></a>
-					<a href="https://www.instagram.com/" target="_blank" title="Instagram"><i
-							class="bi bi-instagram"></i></a>
+					<a href="https://www.instagram.com/" target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
 				</div>
 			</div>
-			
-			<!-- Panel de formulario -->
+
+			<!-- Panel de formulario de contacto -->
 			<div class="contact-form-panel">
 				<h2>Envíanos un mensaje</h2>
+				<!-- Formulario de contacto -->
 				<form class="contact-form" action="datos" method="post" enctype="multipart/form-data" novalidate>
 					<div class="row">
 						<div class="col-md-6 mb-2">
@@ -290,16 +298,32 @@ session_start();
 		</div>
 	</div>
 
+	<!-- Scripts de Bootstrap y validación de formulario -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
+		document.addEventListener('DOMContentLoaded', function() {
 			const form = document.querySelector('.contact-form');
-			const fields = [
-				{ name: 'nombre', label: 'El nombre es obligatorio.' },
-				{ name: 'apellido', label: 'El apellido es obligatorio.' },
-				{ name: 'email', label: 'El email es obligatorio.', email: true },
-				{ name: 'asunto', label: 'El asunto es obligatorio.' },
-				{ name: 'mensaje', label: 'El mensaje es obligatorio.' }
+			const fields = [{
+					name: 'nombre',
+					label: 'El nombre es obligatorio.'
+				},
+				{
+					name: 'apellido',
+					label: 'El apellido es obligatorio.'
+				},
+				{
+					name: 'email',
+					label: 'El email es obligatorio.',
+					email: true
+				},
+				{
+					name: 'asunto',
+					label: 'El asunto es obligatorio.'
+				},
+				{
+					name: 'mensaje',
+					label: 'El mensaje es obligatorio.'
+				}
 			];
 
 			// Elimina errores previos
@@ -308,7 +332,8 @@ session_start();
 				form.querySelectorAll('.form-control').forEach(e => e.classList.remove('is-invalid'));
 			}
 
-			form.addEventListener('submit', function (event) {
+			// Validación del formulario al enviar
+			form.addEventListener('submit', function(event) {
 				clearErrors();
 				let valid = true;
 
@@ -340,6 +365,7 @@ session_start();
 			});
 		});
 	</script>
+	<!-- Incluir pie de página, cookies y bot -->
 	<?php include('../footer.php'); ?>
 	<?php include('../cookies.php'); ?>
 	<?php include('../udify-bot.php'); ?>

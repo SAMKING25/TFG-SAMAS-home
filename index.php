@@ -14,7 +14,7 @@
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
 
-	<!--Conexion con BD-->
+	<!-- Conexion con BD y lógica de carrito -->
 	<?php
 	error_reporting(E_ALL);
 	ini_set("display_errors", 1);
@@ -54,7 +54,7 @@
 		} else {
 			$stmt = $_conexion->prepare(
 				"INSERT INTO carrito (id_usuario, id_producto, cantidad) VALUES (?, ?, ?)
-						ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)"
+                        ON DUPLICATE KEY UPDATE cantidad = VALUES(cantidad)"
 			);
 			$stmt->bind_param("iii", $id_usuario, $id_producto, $cantidad);
 
@@ -70,12 +70,14 @@
 	?>
 
 	<style>
+		/* Estilos para títulos con fuente Montserrat */
 		.montserrat-title {
 			font-family: 'Montserrat', Arial, sans-serif !important;
 			font-weight: 700;
 			letter-spacing: -1px;
 		}
 
+		/* Card de oferta */
 		.oferta-card {
 			border-radius: 1.2rem !important;
 			overflow: hidden;
@@ -93,6 +95,7 @@
 			padding-bottom: 30px;
 		}
 
+		/* Botones personalizados del carrusel */
 		.custom-carousel-btn {
 			width: 48px;
 			height: 48px;
@@ -160,10 +163,11 @@
 		<div class="container mt-5">
 			<h2 class="mb-4 text-start fw-bold titulo-subrayado" style="font-size:2rem;">Últimas Ofertas</h2>
 			<?php
+			// Consulta para obtener productos en oferta
 			$sql = "SELECT p.*, o.porcentaje
-					FROM productos p
-					INNER JOIN ofertas o ON p.id_oferta = o.id_oferta
-					ORDER BY RAND() LIMIT 8";
+                    FROM productos p
+                    INNER JOIN ofertas o ON p.id_oferta = o.id_oferta
+                    ORDER BY RAND() LIMIT 8";
 			$resultado = $_conexion->query($sql);
 
 			$ofertas = [];
@@ -175,14 +179,14 @@
 				<div class="carousel-inner">
 					<?php for ($i = 0; $i < count($ofertas); $i += 2): ?>
 						<div class="carousel-item <?php if ($i === 0)
-							echo 'active'; ?>">
+														echo 'active'; ?>">
 							<div class="row g-4 justify-content-center">
 								<?php for ($j = $i; $j < $i + 2 && $j < count($ofertas); $j++):
 									$producto = $ofertas[$j];
 									$precio_original = $producto['precio'];
 									$porcentaje_descuento = $producto['porcentaje'];
 									$precio_final = $precio_original - ($precio_original * $porcentaje_descuento / 100);
-									?>
+								?>
 									<div class="col-12 col-lg-6">
 										<div class="card h-100 shadow oferta-card rounded-4 border-0">
 											<div class="position-relative">
@@ -226,7 +230,7 @@
 						</div>
 					<?php endfor; ?>
 				</div>
-				<!-- Controles personalizados -->
+				<!-- Controles personalizados del carrusel -->
 				<button class="carousel-control-prev custom-carousel-btn" type="button"
 					data-bs-target="#carruselOfertas" data-bs-slide="prev">
 					<i class="bi bi-chevron-left fs-2"></i>
@@ -242,12 +246,13 @@
 				<h2 class="fw-bold mb-4 text-start titulo-subrayado" style="font-size:2rem;">Categorías</h2>
 				<div class="categorias-scroll d-flex flex-row gap-4 overflow-auto pb-3">
 					<?php
+					// Consulta para obtener todas las categorías
 					$sql = "SELECT * FROM categorias";
 					$categorias = $_conexion->query($sql);
 					while ($categoria = $categorias->fetch_assoc()) {
 						$nombre = htmlspecialchars($categoria['nombre_categoria']);
 						$img = htmlspecialchars($categoria['img_categoria']);
-						?>
+					?>
 						<a href="productos?categoria=<?php echo urlencode($nombre); ?>"
 							class="text-decoration-none flex-shrink-0">
 							<div class="card categoria-card-lg border-0 shadow-sm position-relative overflow-hidden">
@@ -264,6 +269,7 @@
 			</div>
 
 			<?php
+			// Lógica para mostrar productos nuevos con paginación simple
 			$limite = isset($_GET['limite']) ? intval($_GET['limite']) : 8;
 
 			if (isset($_GET['ver_mas'])) {
@@ -287,6 +293,7 @@
 					<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 					<script>
 						<?php if (isset($mensaje) && $mensaje == "success"): ?>
+							// Mensaje de éxito al añadir al carrito
 							Swal.fire({
 								toast: true,
 								position: 'top-end',
@@ -303,6 +310,7 @@
 								}
 							});
 						<?php elseif (isset($mensaje) && $mensaje == "error"): ?>
+							// Mensaje de error al añadir al carrito
 							Swal.fire({
 								toast: true,
 								position: 'top-end',
@@ -316,6 +324,7 @@
 						<?php endif; ?>
 					</script>
 					<?php
+					// Mostrar productos nuevos
 					while ($producto = $productos->fetch_assoc()) { ?>
 						<div class="nuevo-producto-card">
 							<a href="./productos/ver_producto?id_producto=<?php echo $producto['id_producto']; ?>">
@@ -360,6 +369,7 @@
 	<!-- Bootstrap JS -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
+		// Efecto de paneles activos (si tienes paneles interactivos)
 		const panels = document.querySelectorAll(".panel");
 		let hoverTimeout;
 
@@ -380,10 +390,11 @@
 		}
 	</script>
 	<script>
-		document.addEventListener("DOMContentLoaded", function () {
+		// Cambia la clase del navbar al hacer scroll
+		document.addEventListener("DOMContentLoaded", function() {
 			const navbar = document.querySelector('.navbar-home');
 			if (!navbar) return;
-			window.addEventListener('scroll', function () {
+			window.addEventListener('scroll', function() {
 				if (window.scrollY > 30) {
 					navbar.classList.add('scrolled');
 				} else {
@@ -394,6 +405,7 @@
 	</script>
 
 	<script>
+		// Cambia el favicon según el tema del sistema
 		function updateFavicon(theme) {
 			const favicon = document.getElementById('favicon');
 			if (theme === 'dark') {
@@ -415,8 +427,9 @@
 		});
 	</script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('.titulo-subrayado').forEach(function (el) {
+		// Animación para subrayado de títulos
+		document.addEventListener('DOMContentLoaded', function() {
+			document.querySelectorAll('.titulo-subrayado').forEach(function(el) {
 				el.classList.add('animar-subrayado');
 			});
 		});

@@ -1,14 +1,18 @@
 <?php
+// Dirección de correo destino (empresa)
 $destino = "samashome1@gmail.com"; // Tu correo de empresa
 
+// Recoger datos del formulario con valores por defecto si no existen
 $nombre = $_POST["nombre"] ?? '';
 $apellido = $_POST["apellido"] ?? '';
 $correo = $_POST["email"] ?? ''; // Cambia a "email" si tu input se llama así
 $asunto = $_POST["asunto"] ?? 'Sin asunto';
 $mensaje = $_POST["mensaje"] ?? '';
 
+// URL del logo para el correo
 $logo_url = "https://samas-home.com/img/logos/logo-marron-nobg.png";
 
+// Construir el mensaje HTML del correo
 $mensajeCompleto = '
 <html>
 <head>
@@ -36,13 +40,16 @@ $mensajeCompleto = '
 </html>
 ';
 
+// Encabezados para el correo HTML
 $headers = "MIME-Version: 1.0\r\n";
 $headers .= "Content-type: text/html; charset=UTF-8\r\n";
 $headers .= "From: info@samas-home.com\r\n";
 $headers .= "Reply-To: $correo\r\n";
 
+// Enviar el correo
 $enviar = mail($destino, $asunto, $mensajeCompleto, $headers);
 
+// Redirigir según resultado del envío
 if ($enviar) {
     header("Location: /contacto/mensaje-enviado");
     exit;
@@ -50,4 +57,3 @@ if ($enviar) {
     header("Location: /contacto/?error=1");
     exit;
 }
-?>

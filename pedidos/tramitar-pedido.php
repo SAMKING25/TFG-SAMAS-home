@@ -1,9 +1,13 @@
 <?php
+// Incluir archivo de conexión a la base de datos
 require('../util/conexion.php');
+// Iniciar sesión
 session_start();
 
+// Configurar MySQLi para lanzar excepciones en caso de error
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
+// Si se recibe una suscripción y el usuario está logueado, actualizar la suscripción
 if (!empty($_POST['id_suscripcion']) && isset($_SESSION['usuario'])) {
     require('../util/conexion.php');
     $id_usuario = $_SESSION['usuario'];
@@ -34,6 +38,7 @@ $stmt->bind_param("i", $id_usuario);
 $stmt->execute();
 $resultado = $stmt->get_result();
 
+// Guardar los productos del carrito en un array
 $carrito = [];
 while ($item = $resultado->fetch_assoc()) {
     $carrito[] = $item;
@@ -44,6 +49,7 @@ while ($item = $resultado->fetch_assoc()) {
 // echo '</pre>';
 // echo "Total: $total<br>";
 
+// Si el carrito está vacío
 if (empty($carrito)) {
     // Si es una suscripción válida, consideramos el pedido realizado correctamente
     if (!empty($_POST['id_suscripcion'])) {
@@ -64,6 +70,7 @@ $datos_usuario = [
     'direccion' => $_POST['direccion'] ?? ''
 ];
 
+// Convertir los datos del usuario a JSON
 $datos_usuario_json = json_encode($datos_usuario, JSON_UNESCAPED_UNICODE);
 
 // Usar el importe recibido por POST en vez de calcularlo
