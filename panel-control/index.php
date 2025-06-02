@@ -5,17 +5,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
+    <!-- Bootstrap y estilos -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <?php
+    // Muestra errores en pantalla
     error_reporting(E_ALL);
     ini_set("display_errors", 1);
 
+    // Conexión a la base de datos
     require('../util/conexion.php');
 
+    // Inicia sesión y verifica si el proveedor está logueado
     session_start();
     if (!isset($_SESSION["proveedor"])) {
         header("location: ../login/usuario/iniciar_sesion_usuario");
@@ -71,9 +75,11 @@
 
 <body>
     <?php
+    // Incluye el header y el sidebar del panel
     include('./layout/header.php');
     include('./layout/sidebar.php');
 
+    // Si se recibe un POST, elimina el producto correspondiente
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $id_producto = $_POST["id_producto"];
 
@@ -81,6 +87,7 @@
         $_conexion->query($sql);
     }
 
+    // Consulta los productos del proveedor actual
     $sql = "SELECT * FROM productos WHERE id_proveedor = '" . $_SESSION['proveedor'] . "'";
     $resultado = $_conexion->query($sql);
     ?>
@@ -92,6 +99,7 @@
         </div>
 
         <?php if ($resultado->num_rows === 0): ?>
+            <!-- Estado vacío: no hay productos -->
             <div class="d-flex flex-column align-items-center justify-content-center" style="height: 40vh;">
                 <p class="fs-4 mb-4 text-center empty-state">
                     <i class="bi bi-box-seam fs-1 mb-2"></i><br>
@@ -103,6 +111,7 @@
                 </a>
             </div>
         <?php else: ?>
+            <!-- Lista de productos del proveedor -->
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2 class="mb-0">Mis productos</h2>
                 <a href="./productos/nuevo_producto" class="btn btn-gold">
@@ -140,6 +149,7 @@
     <?php include('../cookies.php'); ?>
     <?php include('../udify-bot.php'); ?>
 
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>

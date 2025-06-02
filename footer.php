@@ -1,5 +1,6 @@
 <?php
-// Si hay sesión de proveedor, obtenemos sus datos para mostrar opciones específicas en el footer
+
+// Si hay sesión de proveedor, obtener sus datos para personalizar el footer
 if (isset($_SESSION['proveedor'])) {
     $id = $_SESSION['proveedor'];
     $tipo_sesion = 'proveedor';
@@ -12,20 +13,22 @@ if (isset($_SESSION['proveedor'])) {
 ?>
 
 <style>
-    /* Estilos para que el footer quede siempre en la parte inferior de la página */
+
+    /* Hace que el footer quede pegado abajo si la página es corta */
     body {
         display: flex;
         flex-direction: column;
         min-height: 100vh;
     }
-    
+
     footer {
         margin-top: auto;
         text-align: center;
     }
 </style>
 
-<!-- Footer principal de la página -->
+
+<!-- Footer principal del sitio -->
 <footer class="text-white pt-5 pb-4">
     <div class="container">
         <div class="row">
@@ -38,8 +41,9 @@ if (isset($_SESSION['proveedor'])) {
                     Mucho más que muebles, Somos SAMAS home y operamos en toda la provincia de Málaga haciendo de tu
                     reforma de casa algo más simple y fácil de lograr.
                 </p>
+
             </div>
-            <!-- Columna: Secciones del sitio, cambia según el tipo de sesión -->
+            <!-- Columna: Secciones del sitio -->
             <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-4">
                 <h6 class="footer-title text-uppercase font-weight-bold mb-4">
                     Secciones
@@ -52,7 +56,7 @@ if (isset($_SESSION['proveedor'])) {
                     <p><a href="/suscripcion" class="footer-link">Suscripción</a></p>
                 <?php } else { ?>
                     <p><a href="/panel-control" class="footer-link">Panel de control</a></p>
-                <?php } ?>					
+                <?php } ?>
                 <p><a href="/contacto" class="footer-link">Contacto</a></p>
                 <p><a href="./util/archivos/politica-cookies" target="_blank" id="politica-cookies"
                         class="footer-link">Política de cookies</a></p>
