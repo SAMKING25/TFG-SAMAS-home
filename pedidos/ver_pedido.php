@@ -1,16 +1,22 @@
 <?php
+// Mostrar todos los errores de PHP para depuración
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluir archivo de conexión a la base de datos
 require('../util/conexion.php');
+// Iniciar sesión
 session_start();
 
+// Verificar si el usuario está logueado, si no redirigir a inicio de sesión
 if (!isset($_SESSION['usuario'])) {
     header("Location: /login/usuario/iniciar_sesion_usuario");
     exit;
 }
 
+// Obtener el ID del usuario desde la sesión
 $id_usuario = $_SESSION['usuario'];
+// Obtener el ID del pedido desde GET
 $id_pedido = isset($_GET['id_pedido']) ? intval($_GET['id_pedido']) : 0;
 
 // Verifica que el pedido pertenece al usuario
@@ -39,19 +45,24 @@ $productos = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Detalle del pedido</title>
+    <!-- Bootstrap CSS principal -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Favicon del sitio -->
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <!-- Archivo CSS personalizado -->
     <link rel="stylesheet" href="/css/landing.css" />
     <style>
+        /* Estilos generales del body */
         body {
             background: linear-gradient(120deg, #f8f6f2 0%, #f4e5cc 100%);
             font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
             color: #222;
         }
 
+        /* Contenedor principal del detalle del pedido */
         .pedido-detalle-container {
             background: #fffbe9;
             border-radius: 2rem;
@@ -65,11 +76,13 @@ $productos = $stmt->get_result();
             margin-right: auto;
         }
 
+        /* Card para productos en móvil */
         .card.mb-3.shadow-sm {
             margin-left: 0.5rem;
             margin-right: 0.5rem;
         }
 
+        /* Tabla de detalle de productos */
         .table-detalle {
             border-radius: 1.5rem;
             overflow: hidden;
@@ -91,6 +104,7 @@ $productos = $stmt->get_result();
             height: 54px;
         }
 
+        /* Colores de encabezados de tabla */
         .th-img {
             background: #c8ad7f !important;
         }
@@ -118,6 +132,7 @@ $productos = $stmt->get_result();
             height: 54px;
         }
 
+        /* Icono de cabecera */
         .icono-cabecera {
             color: #b88c4a;
             font-size: 1.3rem;
@@ -125,12 +140,14 @@ $productos = $stmt->get_result();
             vertical-align: middle;
         }
 
+        /* Título del detalle */
         .detalle-titulo {
             color: #b88c4a;
             letter-spacing: 1px;
             font-weight: bold;
         }
 
+        /* Botón volver */
         .btn-volver {
             background: linear-gradient(90deg, #bfa16a 60%, #ffc25a 100%);
             color: #fff !important;
@@ -154,6 +171,7 @@ $productos = $stmt->get_result();
             transform: scale(1.05);
         }
 
+        /* Responsive para tablets */
         @media (max-width: 900px) {
             .pedido-detalle-container {
                 padding: 2rem 0.7rem !important;
@@ -171,6 +189,7 @@ $productos = $stmt->get_result();
             }
         }
 
+        /* Responsive para móvil */
         @media (max-width: 600px) {
             .pedido-detalle-container {
                 padding: 1.2rem 0.3rem !important;
@@ -205,6 +224,7 @@ $productos = $stmt->get_result();
 </head>
 
 <body>
+    <!-- Incluir barra de navegación -->
     <?php include('../navbar.php'); ?>
     <div class="container pedido-detalle-container">
         <h2 class="mb-4 detalle-titulo">
@@ -225,6 +245,7 @@ $productos = $stmt->get_result();
             <i class="bi bi-arrow-left"></i> Volver a mis pedidos
         </a>
         <?php if ($productos->num_rows > 0): ?>
+            <!-- Tabla de productos para escritorio -->
             <div class="table-responsive d-none d-md-block">
                 <table class="table table-hover table-bordered table-detalle align-middle mb-0">
                     <thead>
@@ -251,6 +272,7 @@ $productos = $stmt->get_result();
                             <tr>
                                 <td>
                                     <?php
+                                    // Determinar la ruta de la imagen del producto
                                     $img = $prod['img_producto'];
                                     if ($img && strpos($img, '/') !== 0 && strpos($img, 'http') !== 0) {
                                         $img = '/img/productos/' . ltrim($img, '/');
@@ -282,6 +304,7 @@ $productos = $stmt->get_result();
                 ?>
                 <?php while ($prod = $productos->fetch_assoc()): ?>
                     <?php
+                    // Determinar la ruta de la imagen del producto para móvil
                     $img = $prod['img_producto'];
                     if ($img && strpos($img, '/') !== 0 && strpos($img, 'http') !== 0) {
                         $img = '/img/productos/' . ltrim($img, '/');
@@ -315,13 +338,16 @@ $productos = $stmt->get_result();
                 <?php endwhile; ?>
             </div>
         <?php else: ?>
+            <!-- Mensaje si no hay productos en el pedido -->
             <div class="alert alert-info mt-4">No hay productos en este pedido.</div>
         <?php endif; ?>
     </div>
+    <!-- Incluir pie de página, cookies y bot -->
     <?php include('../footer.php'); ?>
     <?php include('../cookies.php'); ?>
     <?php include('../udify-bot.php'); ?>
 
+    <!-- Scripts de Bootstrap -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
