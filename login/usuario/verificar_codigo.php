@@ -1,15 +1,17 @@
 <?php
+// --- Inicio de sesión y comprobación de datos previos ---
 session_start();
 if (!isset($_SESSION['registro_email'])) {
     header("Location: registro_usuario");
     exit;
 }
 
+// --- Procesamiento del formulario de verificación ---
 $mensaje = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $codigo_usuario = $_POST['codigo'];
     if ($codigo_usuario == $_SESSION['registro_codigo']) {
-        // Código correcto: insertar usuario en la base de datos
+        // --- Código correcto: inserta usuario en la base de datos ---
         require('../../util/conexion.php');
         $email = $_SESSION['registro_email'];
         $nombre = $_SESSION['registro_nombre'];
@@ -21,13 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 VALUES ('$email','$nombre','$contrasena',$id_suscripcion,'$img_usuario')";
         $_conexion->query($sql);
 
-        // Limpiar sesión
+        // --- Limpiar sesión tras registro exitoso ---
         session_unset();
         session_destroy();
 
-        // Indicar éxito para mostrar SweetAlert y redirigir con JS
+        // --- Indicar éxito para mostrar SweetAlert y redirigir con JS ---
         $verificado = true;
     } else {
+        // --- Código incorrecto ---
         $mensaje = "El código es incorrecto. Inténtalo de nuevo.";
     }
 }
@@ -36,12 +39,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="es">
 
 <head>
+    <!-- --- Metadatos, favicon, fuentes y estilos --- -->
     <meta charset="UTF-8">
     <title>Verificar código</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
+        /* --- Estilos generales y responsive para la página y formulario --- */
         html,
         body {
             height: 100%;
@@ -209,7 +215,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
-        /* RESPONSIVE */
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem !important;
@@ -273,22 +279,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <img src="/img/logos/logo-marron-nobg.png" style="width: 185px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
 
-
-
-
-                                        <!-- ALERTA BORRAR CÓDIGO -->
+                                        <!-- --- Mensaje temporal para mostrar el código de verificación (solo para pruebas) --- -->
                                         <?php
                                         if (isset($_SESSION['registro_codigo'])) {
                                             echo "<div class='alert alert-info'>Código de verificación: <strong>" . htmlspecialchars($_SESSION['registro_codigo']) . "</strong></div>";
                                         }
                                         ?>
-                                        <!-- ALERTA BORRAR CÓDIGO -->
-
-
-
-
+                                        <!-- --- Fin mensaje temporal --- -->
 
                                     </div>
+                                    <!-- --- Formulario para introducir el código de verificación --- -->
                                     <form method="post">
                                         <div class="mb-4">
                                             <label for="codigo" class="form-label">Código de verificación</label>
@@ -301,6 +301,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             <button class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3"
                                                 type="submit">Verificar</button>
                                         </div>
+                                        <!-- --- Enlaces de navegación (login, volver) --- -->
                                         <div class="login-links">
                                             <p>
                                                 <i class="bi bi-person-check"></i>
@@ -319,6 +320,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     </form>
                                 </div>
                             </div>
+                            <!-- --- Panel lateral con instrucciones de verificación --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Verifica tu correo</h4>
@@ -335,16 +337,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
+    <!-- --- Inclusión de aviso de cookies --- -->
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Validación del formulario en el cliente ---
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const codigoInput = document.getElementById('codigo');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 limpiarErrores();
                 if (codigoInput.value.trim() === '') {
                     mostrarError(codigoInput, 'El código es obligatorio.');
@@ -361,13 +365,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
         });
     </script>
     <?php if (isset($verificado) && $verificado): ?>
+        <!-- --- SweetAlert para mostrar éxito y redirigir tras verificación --- -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({

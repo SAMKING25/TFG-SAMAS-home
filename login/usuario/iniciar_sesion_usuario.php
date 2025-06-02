@@ -1,24 +1,30 @@
 <?php
+// --- Configuración de errores y carga de utilidades ---
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 
+// --- Procesamiento del formulario de inicio de sesión ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email_usuario = depurar($_POST["email_usuario"]);
     $contrasena_usuario = $_POST["contrasena_usuario"];
 
+    // --- Consulta usuario por email ---
     $sql = "SELECT * FROM usuarios WHERE email_usuario ='$email_usuario'";
     $resultado = $_conexion->query($sql);
 
     if ($resultado->num_rows == 0) {
+        // --- Usuario no encontrado ---
         $err_email_usuario = "El correo y la contraseña no coinciden";
     } else {
         $datos_usuario = $resultado->fetch_assoc();
+        // --- Verifica la contraseña ---
         $acceso_concedido = password_verify($contrasena_usuario, $datos_usuario["contrasena_usuario"]);
 
         if ($acceso_concedido) {
+            // --- Manejo de sesión segura ---
             session_start();
 
             session_unset();
@@ -28,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $_SESSION["usuario"] = $datos_usuario["id_usuario"];
 
-            // Redirige a donde quería ir el usuario
+            // --- Redirección tras login ---
             if (isset($_SESSION['redirect_after_login'])) {
                 $redirect_url = $_SESSION['redirect_after_login'];
                 unset($_SESSION['redirect_after_login']);
@@ -38,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             exit();
         } else {
+            // --- Contraseña incorrecta ---
             $err_email_usuario = "El correo y la contraseña no coinciden";
         }
     }
@@ -48,6 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 
 <head>
+    <!-- --- Metadatos, favicon, fuentes y estilos --- -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesion</title>
@@ -56,6 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
+        /* --- Estilos generales de la página y formulario --- */
         html,
         body {
             height: 100%;
@@ -253,6 +262,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem !important;
@@ -298,12 +308,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+    <!-- --- Estructura principal del formulario de inicio de sesión --- -->
     <section class="h-100 gradient-form" style="background-color: #F7E5CB;">
         <div class="container py-5 h-100">
             <div class="row d-flex justify-content-center align-items-center h-100">
                 <div class="col-xl-10">
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
+                            <!-- --- Columna izquierda: Formulario de login --- -->
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
 
@@ -350,6 +362,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
+                                        <!-- --- Enlaces de navegación (empresa, registro) --- -->
                                         <div class="login-links">
                                             <p>
                                                 <i class="bi bi-briefcase"></i>
@@ -370,6 +383,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 </div>
                             </div>
+                            <!-- --- Columna derecha: Panel informativo lateral --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Mucho más que muebles</h4>
@@ -383,11 +397,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
+    <!-- --- Inclusión de aviso de cookies --- -->
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
+        // --- Validación del formulario en el cliente ---
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const emailInput = document.getElementById('email_usuario');
@@ -426,7 +442,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     </script>
     <script>
-        // Mostrar/ocultar contraseña
+        // --- Mostrar/ocultar contraseña ---
         // Inicializa el icono según el estado inicial del input
         const passwordInput = document.getElementById('contrasena_usuario');
         const icon = document.getElementById('togglePasswordIcon');

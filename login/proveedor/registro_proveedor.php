@@ -1,16 +1,19 @@
 <?php
+// --- Configuración de errores y carga de utilidades ---
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require('../../util/conexion.php');
 require('../../util/funciones/utilidades.php');
 
+// --- Procesamiento del formulario de registro de proveedor ---
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tmp_email_proveedor = depurar($_POST["email_proveedor"]);
     $tmp_nombre_proveedor = depurar($_POST["nombre_proveedor"]);
     $tmp_contrasena_proveedor = $_POST["contrasena_proveedor"];
     $img_proveedor = "estandar.png";
 
+    // --- Validación del email ---
     if ($tmp_email_proveedor == "") {
         $err_email_proveedor = "El email es obligatorio";
     } else {
@@ -28,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // --- Validación del nombre de proveedor ---
     if ($tmp_nombre_proveedor == "") {
         $err_nombre_proveedor = "El nombre es obligatorio";
     } else {
@@ -46,6 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // --- Validación de la contraseña ---
     if ($tmp_contrasena_proveedor == "") {
         $err_contrasena_proveedor = "La contraseña es obligatoria";
     } else {
@@ -61,11 +66,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
+    // --- Inserción en la base de datos si no hay errores ---
     if (isset($email_proveedor) && isset($nombre_proveedor) && isset($contrasena_proveedor_cifrada)) {
         $sql = "INSERT INTO proveedores (email_proveedor, nombre_proveedor, contrasena_proveedor, img_proveedor) 
                 VALUES ('$email_proveedor','$nombre_proveedor','$contrasena_proveedor_cifrada','$img_proveedor')";
         $_conexion->query($sql);
-        $registro_ok = true; // <-- Añade esto
+        $registro_ok = true; // Indica registro exitoso para mostrar SweetAlert
     }
 }
 ?>
@@ -74,6 +80,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 
 <head>
+    <!-- --- Metadatos, favicon, fuentes y estilos --- -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
@@ -82,6 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link id="favicon" rel="shortcut icon" href="/img/logos/loguito_gris.png" />
     <style>
+        /* --- Estilos generales y responsive para el formulario y panel lateral --- */
         html,
         body {
             height: 100%;
@@ -239,7 +247,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             margin-top: 0.5rem;
         }
 
-        /* Links de regístrate y eres una empresa */
+        /* --- Links de navegación (registro, login, inicio) --- */
         .login-links {
             margin-top: 2rem;
         }
@@ -277,6 +285,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             opacity: 0.8;
         }
 
+        /* --- Responsive: ajustes para pantallas pequeñas --- */
         @media (max-width: 991.98px) {
             .side-panel {
                 border-radius: 0 0 2rem 2rem !important;
@@ -328,6 +337,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="col-xl-10">
                     <div class="card rounded-3 text-black">
                         <div class="row g-0">
+                            <!-- --- Columna izquierda: Formulario de registro de proveedor --- -->
                             <div class="col-lg-6">
                                 <div class="card-body p-md-5 mx-md-4">
                                     <div class="text-center">
@@ -385,6 +395,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 class="btn btn-primary btn-block fa-lg gradient-custom-2 mb-3">Volver</a>
                                         </div>
 
+                                        <!-- --- Enlaces de navegación (login, inicio) --- -->
                                         <div class="login-links">
                                             <p>
                                                 <i class="bi bi-person-check"></i>
@@ -404,6 +415,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                                 </div>
                             </div>
+                            <!-- --- Columna derecha: Panel informativo lateral --- -->
                             <div class="col-lg-6 d-flex align-items-center side-panel">
                                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                                     <h4 class="mb-4">Mucho más que muebles</h4>
@@ -417,18 +429,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </section>
+    <!-- --- Inclusión de aviso de cookies --- -->
     <?php include('../../cookies.php'); ?>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        // --- Validación del formulario en el cliente ---
+        document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const nombreInput = document.getElementById('nombre_proveedor');
             const emailInput = document.getElementById('email_proveedor');
             const contrasenaInput = document.getElementById('contrasena_proveedor');
 
-            form.addEventListener('submit', function (e) {
+            form.addEventListener('submit', function(e) {
                 let tieneErrores = false;
 
                 limpiarErrores();
@@ -483,14 +497,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             function limpiarErrores() {
                 const errores = document.querySelectorAll('.error');
-                errores.forEach(function (error) {
+                errores.forEach(function(error) {
                     error.remove();
                 });
             }
         });
     </script>
     <script>
-        // Mostrar/ocultar contraseña
+        // --- Mostrar/ocultar contraseña ---
         // Inicializa el icono según el estado inicial del input
         const passwordInput = document.getElementById('contrasena_proveedor');
         const icon = document.getElementById('togglePasswordIcon');
@@ -502,7 +516,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             icon.classList.add('bi-eye');
         }
 
-        document.getElementById('togglePassword').addEventListener('click', function () {
+        document.getElementById('togglePassword').addEventListener('click', function() {
             if (passwordInput.type === 'password') {
                 passwordInput.type = 'text';
                 icon.classList.remove('bi-eye-slash');
@@ -515,6 +529,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         });
     </script>
     <?php if (isset($registro_ok) && $registro_ok): ?>
+        <!-- --- SweetAlert para mostrar éxito y redirigir tras registro --- -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             Swal.fire({
