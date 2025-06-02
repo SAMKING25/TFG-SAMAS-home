@@ -1,15 +1,19 @@
 <?php
+// Muestra todos los errores en pantalla
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
+// Incluye la conexión a la base de datos
 require('../../util/conexion.php');
 
+// Inicia sesión y verifica si el proveedor está logueado
 session_start();
 if (!isset($_SESSION["proveedor"])) {
     header("location: ../../login/proveedor/iniciar_sesion_proveedor");
     exit;
 }
 
+// Si se recibe un POST, elimina el producto correspondiente y su imagen
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id_producto = $_POST["id_producto"];
     //  borrar el producto
@@ -26,11 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     header("location: ../");
 }
 
+// Incluye el header y el sidebar del panel
 include("../layout/header.php");
 include("../layout/sidebar.php");
 
+// Obtiene el id del producto a mostrar
 $id_producto = $_GET['id_producto'];
 
+// Consulta los datos del producto
 $sql = $_conexion->prepare("SELECT * FROM productos WHERE id_producto = $id_producto");
 $sql->execute();
 $resultado = $sql->get_result();

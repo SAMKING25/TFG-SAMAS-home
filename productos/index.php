@@ -852,6 +852,7 @@ $filtros = [
                         ?>
 
                         <?php if ($resultado && $resultado->num_rows > 0): ?>
+                            <!-- Si hay productos, muestra la cuadrícula de productos -->
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
                                 <?php while ($fila = $resultado->fetch_assoc()): ?>
                                     <?php
@@ -859,6 +860,7 @@ $filtros = [
                                     $porcentaje = $fila["porcentaje"];
 
                                     $hayOferta = false;
+                                    // Si el producto tiene oferta, calcula el precio final
                                     if (!is_null($porcentaje)) {
                                         $hayOferta = true;
                                         $precioFinal = $precio * (1 - $porcentaje / 100);
@@ -867,12 +869,14 @@ $filtros = [
                                     <div class="col">
                                         <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden position-relative">
                                             <?php if ($hayOferta): ?>
+                                                <!-- Etiqueta de porcentaje de descuento -->
                                                 <span style="z-index:80;"
                                                     class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start">
                                                     -<?php echo $porcentaje; ?>%
                                                 </span>
                                             <?php endif; ?>
 
+                                            <!-- Imagen y botón de añadir al carrito -->
                                             <a href="ver_producto?id_producto=<?php echo $fila["id_producto"]; ?>"
                                                 class="text-decoration-none text-dark">
                                                 <div class="card-img-container position-relative">
@@ -893,6 +897,7 @@ $filtros = [
                                                 <h5 class="card-title fw-bold fs-5 mb-2"><?php echo $fila["nombre"]; ?></h5>
                                                 <div class="card-text fs-5">
                                                     <?php
+                                                    // Muestra el precio original y el precio con oferta si aplica
                                                     if ($hayOferta) {
                                                     ?>
                                                         <span class="text-muted text-decoration-line-through me-2">
@@ -917,6 +922,7 @@ $filtros = [
                                 <?php endwhile; ?>
                             </div>
                         <?php else: ?>
+                            <!-- Si no hay productos, muestra un mensaje de alerta -->
                             <div class="alert alert-warning text-center" role="alert">
                                 No se encontraron productos.
                             </div>
@@ -939,6 +945,7 @@ $filtros = [
             if (input) input.focus();
         }
 
+        // Oculta el botón de filtro lateral cuando se abre el offcanvas y lo muestra al cerrarse
         document.addEventListener('DOMContentLoaded', function() {
             var offcanvas = document.getElementById('offcanvasFiltro');
             var btnFiltro = document.getElementById('btn-filtro-lateral');
@@ -955,6 +962,7 @@ $filtros = [
 
     <?php if (isset($mensaje) && $mensaje == "success"): ?>
         <script>
+            // Muestra un toast de éxito al añadir producto al carrito
             Swal.fire({
                 toast: true,
                 position: 'top-end',
@@ -973,6 +981,7 @@ $filtros = [
         </script>
     <?php elseif (isset($mensaje) && $mensaje == "error"): ?>
         <script>
+            // Muestra un toast de error si ocurre un problema al añadir al carrito
             Swal.fire({
                 toast: true,
                 position: 'top-end',

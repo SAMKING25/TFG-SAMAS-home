@@ -1,5 +1,7 @@
 <?php
+// Verifica si la petición es POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Obtiene los datos enviados por POST
     $nombre = $_POST['nombre'] ?? '';
     $apellidos = $_POST['apellidos'] ?? '';
     $email = $_POST['email'] ?? '';
@@ -9,11 +11,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $paypal_email = $_POST['paypal_email'] ?? '';
     $importe = number_format($_POST['importe'], 2, ',', '.');
 
+    // Asunto del correo
     $asunto = "Confirmación de compra - SAMAS HOME";
 
     // Cambia la URL del logo por la tuya
     $logo_url = "https://samas-home.com/img/logos/logo-marron-nobg.png";
 
+    // Cuerpo del mensaje en HTML
     $mensajeCompleto = '
     <html>
     <head>
@@ -53,13 +57,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </html>
     ';
 
+    // Cabeceras del correo
     $from = "From: info@samas-home.com\r\n";
     $from .= "Reply-To: $email\r\n";
     $from .= "MIME-Version: 1.0\r\n";
     $from .= "Content-Type: text/html; charset=UTF-8\r\n";
 
+    // Destinatario de la empresa
     $destino_empresa = "samashome1@gmail.com";
+    // Envía el correo a la empresa
     $enviado_empresa = mail($destino_empresa, $asunto, $mensajeCompleto, $from);
+    // Envía el correo al cliente
     $enviado_cliente = mail($email, $asunto, $mensajeCompleto, $from);
 
     // Devuelve JSON para AJAX

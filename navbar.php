@@ -1,7 +1,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <?php
+// Guarda la URL actual para redirigir después del login
 $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
 
+// Definiciones de rutas de imágenes y utilidades
 define('IMG_USUARIO', '/img/usuario/');
 define('IMG_PROVEEDOR', '/img/proveedor/');
 define('FUNCIONES', '/util/funciones/');
@@ -9,6 +11,7 @@ define('FUNCIONES', '/util/funciones/');
 $tipo_sesion = null;
 $datos = null;
 
+// Detecta si hay sesión de usuario o proveedor y obtiene sus datos
 if (isset($_SESSION['usuario'])) {
     $id = $_SESSION['usuario'];
     $tipo_sesion = 'usuario';
@@ -29,6 +32,7 @@ if (isset($_SESSION['usuario'])) {
 ?>
 
 <style>
+    /* Estilos para el menú desplegable del navbar */
     .dropdown-menu {
         background-color: #fff !important;
         color: #000 !important;
@@ -44,7 +48,7 @@ if (isset($_SESSION['usuario'])) {
     }
 </style>
 
-<!-- Navbar -->
+<!-- Navbar principal -->
 <nav
     class="navbar navbar-expand-lg fixed-top<?php echo (isset($navbar_home) && $navbar_home) ? ' navbar-home' : ''; ?>">
     <div class="container">
@@ -106,8 +110,8 @@ if (isset($_SESSION['usuario'])) {
                             <i class="bi bi-person-circle util-nav-icons"></i>
                         <?php } else { ?>
                             <img src="<?php echo $tipo_sesion === 'usuario'
-                                ? IMG_USUARIO . $datos['img_usuario']
-                                : IMG_PROVEEDOR . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
+                                            ? IMG_USUARIO . $datos['img_usuario']
+                                            : IMG_PROVEEDOR . $datos['img_proveedor']; ?>" alt="" width="32" height="32"
                                 class="rounded-circle me-2" style="object-fit: cover; aspect-ratio: 1 / 1;">
                             <strong class="util-nav-icons">
                                 <?php echo $tipo_sesion === 'usuario'
@@ -142,8 +146,7 @@ if (isset($_SESSION['usuario'])) {
                             <li><a class="dropdown-item" href="/login/usuario/iniciar_sesion_usuario">Iniciar sesión</a>
                             </li>
                             <li><a class="dropdown-item" href="/login/usuario/registro_usuario">Registrarse</a></li>
-                        <?php }
-                        ; ?>
+                        <?php }; ?>
                     </ul>
                 </div>
             </div>
@@ -154,9 +157,11 @@ if (isset($_SESSION['usuario'])) {
 <?php include('cookies.php'); ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<?php if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
+<?php
+// Si el usuario NO es proveedor y NO tiene suscripción VIP, muestra avisos y controles especiales para el plano
+if ($tipo_sesion !== 'proveedor' && (!isset($datos['id_suscripcion']) || $datos['id_suscripcion'] != 3)) { ?>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Detecta si la URL es exactamente /plano o termina con /plano/
             if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
                 Swal.fire({
@@ -171,11 +176,11 @@ if (isset($_SESSION['usuario'])) {
                 }).then((result) => {
                     if (result.isConfirmed) {
                         fetch('/util/funciones/sumar_uso_plano', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            }
-                        })
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                            })
                             .then(response => response.json())
                             .then(data => {
                                 if (data.success) {
@@ -205,16 +210,16 @@ if (isset($_SESSION['usuario'])) {
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             // Solo si estamos en /plano o /plano/
             if (window.location.pathname === '/plano' || window.location.pathname === '/plano/') {
                 let confirmandoSalida = false; // Para evitar bucles
                 // Aviso personalizado al pulsar cualquier enlace del navbar
-                document.querySelectorAll('a.nav-link, .dropdown-item, a.navbar-brand').forEach(function (link) {
+                document.querySelectorAll('a.nav-link, .dropdown-item, a.navbar-brand').forEach(function(link) {
                     // Ignora enlaces que abren en nueva pestaña
                     if (link.target === '_blank') return;
 
-                    link.addEventListener('click', function (e) {
+                    link.addEventListener('click', function(e) {
                         // Si ya estamos confirmando, deja pasar
                         if (confirmandoSalida) return;
 
@@ -232,7 +237,7 @@ if (isset($_SESSION['usuario'])) {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 confirmandoSalida = true;
-                                window.removeEventListener('beforeunload', () => { }); // Evita doble aviso
+                                window.removeEventListener('beforeunload', () => {}); // Evita doble aviso
                                 // Si es recarga (href actual), recarga, si no, navega
                                 if (link.href === window.location.href) {
                                     window.location.reload();
