@@ -1,0 +1,42 @@
+RewriteEngine On
+RewriteBase /
+
+# REDIRECCIÓN DE /index.php o /index.html EN LA RAÍZ
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s/index\.(php|html)\s [NC]
+RewriteRule ^index\.(php|html)$ / [R=301,L]
+
+# REDIRECCIÓN DE index.php o index.html EN CUALQUIER OTRA CARPETA A LA CARPETA PADRE
+RewriteCond %{THE_REQUEST} /(.+/)?index\.(php|html)\s [NC]
+RewriteRule ^(.+/)?index\.(php|html)$ /%1 [R=301,L]
+
+# OCULTAR .php Y .html EN URLS (si el archivo existe)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Reescribe si existe el archivo .php
+RewriteCond %{DOCUMENT_ROOT}/$1.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
+
+# Reescribe si existe el archivo .html
+RewriteCond %{DOCUMENT_ROOT}/$1.html -f
+RewriteRule ^(.+?)/?$ $1.html [L]
+
+# Reescribe si existe el archivo .html
+RewriteCond %{DOCUMENT_ROOT}/$1.pdf -f
+RewriteRule ^(.+?)/?$ $1.pdf [L]
+
+# REDIRECCIÓN DE .php y .html explícito a sin extensión
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,}\s([^.]+)\.(php|html|pdf)\s [NC]
+RewriteRule ^ %1 [R=301,L]
+
+# Prohibiendo acceso a archivos no HTML
+Options All -Indexes
+
+# Edición de errores
+ErrorDocument 400 /util/error.php?codigo=400.html
+ErrorDocument 401 /util/error.php?codigo=401.html
+ErrorDocument 403 /util/error.php?codigo=403.html
+ErrorDocument 404 /util/error.php?codigo=404.html
+ErrorDocument 500 /util/error.php?codigo=500.html
+ErrorDocument 502 /util/error.php?codigo=502.html
+ErrorDocument 503 /util/error.php?codigo=503.html
