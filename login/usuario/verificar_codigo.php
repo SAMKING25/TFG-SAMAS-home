@@ -278,15 +278,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <div class="text-center">
                                         <img src="/img/logos/logo-marron-nobg.png" style="width: 185px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
-
-                                        <!-- --- Mensaje temporal para mostrar el código de verificación (solo para pruebas) --- -->
-                                        <?php
-                                        if (isset($_SESSION['registro_codigo'])) {
-                                            echo "<div class='alert alert-info'>Código de verificación: <strong>" . htmlspecialchars($_SESSION['registro_codigo']) . "</strong></div>";
-                                        }
-                                        ?>
-                                        <!-- --- Fin mensaje temporal --- -->
-
                                     </div>
                                     <!-- --- Formulario para introducir el código de verificación --- -->
                                     <form method="post">
