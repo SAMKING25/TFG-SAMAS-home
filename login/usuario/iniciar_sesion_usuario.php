@@ -325,7 +325,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
                                     </div>
 
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post">
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="email_usuario">Email</label>
                                             <input type="text" id="email_usuario" name="email_usuario"
