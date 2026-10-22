@@ -346,7 +346,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home Enterprise</h4>
                                     </div>
 
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post">
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nombre_proveedor">Nombre</label>
                                             <input type="text" id="nombre_proveedor" name="nombre_proveedor"

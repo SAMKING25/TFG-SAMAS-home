@@ -388,7 +388,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <img src="/img/logos/logo-marron-nobg.png" style="width: 185px;" alt="logo">
                                         <h4 class="mt-1 mb-5 pb-1">SAMAS home</h4>
                                     </div>
-                                    <form method="post" enctype="multipart/form-data">
+                                    <form method="post">
                                         <div data-mdb-input-init class="form-outline mb-4">
                                             <label class="form-label" for="nombre_usuario">Nombre</label>
                                             <input type="text" id="nombre_usuario" name="nombre_usuario"

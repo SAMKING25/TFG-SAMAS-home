@@ -262,7 +262,7 @@ session_start();
 			<div class="contact-form-panel">
 				<h2>Envíanos un mensaje</h2>
 				<!-- Formulario de contacto -->
-				<form class="contact-form" action="datos" method="post" enctype="multipart/form-data" novalidate>
+				<form class="contact-form" action="datos" method="post" novalidate>
 					<div class="row">
 						<div class="col-md-6 mb-2">
 							<label class="form-label">Nombre</label>

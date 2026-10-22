@@ -192,7 +192,7 @@ $importe = floatval($_POST['importe']);
           // Envía los datos del pedido al backend para tramitarlo
           return fetch('/pedidos/tramitar-pedido', {
               method: 'POST',
-              body: formData2
+              body: new URLSearchParams(formData2)
             })
             .then(response => response.json())
             .then(data => {
@@ -218,7 +218,7 @@ $importe = floatval($_POST['importe']);
               // Envía los datos para enviar el correo de confirmación
               return fetch('enviar_correo', {
                 method: 'POST',
-                body: formData
+                body: new URLSearchParams(formData)
               });
             })
             .then(response => response.json())
